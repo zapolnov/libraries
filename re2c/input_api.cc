@@ -21,7 +21,7 @@ std::string InputAPI::expr_peek ()
 			s = "*" + mapCodeName["YYCURSOR"];
 			break;
 		case CUSTOM:
-			s = mapCodeName["YYPEEK"] + " ()";
+			s = mapCodeName["YYPEEK"];
 			break;
 	}
 	return s;
@@ -46,7 +46,7 @@ std::string InputAPI::stmt_skip (uint ind)
 			s = "++" + mapCodeName["YYCURSOR"];
 			break;
 		case CUSTOM:
-			s = mapCodeName["YYSKIP"] + " ()";
+			s = mapCodeName["YYSKIP"];
 			break;
 	}
 	return indent (ind) + s + ";\n";
@@ -61,7 +61,7 @@ std::string InputAPI::stmt_backup (uint ind)
 			s = mapCodeName["YYMARKER"] + " = " + mapCodeName["YYCURSOR"];
 			break;
 		case CUSTOM:
-			s = mapCodeName["YYBACKUP"] + " ()";
+			s = mapCodeName["YYBACKUP"];
 			break;
 	}
 	return indent (ind) + s + ";\n";
@@ -77,7 +77,7 @@ std::string InputAPI::stmt_backupctx (uint ind)
 			s = mapCodeName["YYCTXMARKER"] + " = " + mapCodeName["YYCURSOR"] + " + 1";
 			break;
 		case CUSTOM:
-			s = mapCodeName["YYBACKUPCTX"] + " ()";
+			s = mapCodeName["YYBACKUPCTX"];
 			break;
 	}
 	return indent (ind) + s + ";\n";
@@ -92,7 +92,7 @@ std::string InputAPI::stmt_restore (uint ind)
 			s = mapCodeName["YYCURSOR"] + " = " + mapCodeName["YYMARKER"];
 			break;
 		case CUSTOM:
-			s = mapCodeName["YYRESTORE"] + " ()";
+			s = mapCodeName["YYRESTORE"];
 			break;
 	}
 	return indent (ind) + s + ";\n";
@@ -108,7 +108,7 @@ std::string InputAPI::stmt_restorectx (uint ind)
 			s = indent (ind) + mapCodeName["YYCURSOR"] + " = " + mapCodeName["YYCTXMARKER"] + ";\n";
 			break;
 		case CUSTOM:
-			s = indent (ind) + mapCodeName["YYRESTORECTX"] + " ();\n" + stmt_skip (ind);
+			s = indent (ind) + mapCodeName["YYRESTORECTX"] + ";\n" + stmt_skip (ind);
 			break;
 	}
 	return s;

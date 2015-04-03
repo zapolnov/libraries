@@ -2,11 +2,7 @@
 #ifndef _basics_h
 #define _basics_h
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#elif defined(_WIN32)
-#include "config_w32.h"
-#endif
+#include "re2c_config.h"
 
 namespace re2c
 {

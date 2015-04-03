@@ -1,0 +1,10 @@
+
+#define PACKAGE_VERSION "0.14.2"
+
+#define SIZEOF_CHAR @SIZEOF_CHAR@
+#define SIZEOF_SHORT @SIZEOF_SHORT@
+#define SIZEOF_INT @SIZEOF_INT@
+#define SIZEOF_LONG @SIZEOF_LONG@
+
+#cmakedefine HAVE_STRDUP 1
+#cmakedefine HAVE_STRNDUP 1
