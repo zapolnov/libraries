@@ -88,7 +88,7 @@
  * with files bigger than 4 GB), this option makes ucpp fail to operate
  * on those extremely large files.
  */
-#define UCPP_MMAP
+/* #define UCPP_MMAP */
 
 /*
  * Performance issues:
@@ -285,6 +285,9 @@
 #define STD_ASSERT	"cpu(i386)", "machine(i386)", "system(unix)", \
 			"system(freebsd)"
 */
+#ifndef STD_ASSERT
+#define STD_ASSERT 0
+#endif
 
 /* ====================================================================== */
 /*
@@ -297,6 +300,9 @@
 #define STD_MACROS	"__FreeBSD=4", "__unix", "__i386", \
 			"__FreeBSD__=4", "__unix__", "__i386__"
 */
+#ifndef STD_MACROS
+#define STD_MACROS 0
+#endif
 
 /* ====================================================================== */
 /*
@@ -403,6 +409,9 @@
    but the differences are irrelevant as long as inline functions are static */
 #undef inline
 #define inline __inline__
+#elif defined(_MSC_VER)
+#undef inline
+#define inline __inline
 #elif defined(__DECC) && defined(__linux__)
 /* this is Compaq C under Linux, use __inline__ */
 #undef inline
