@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.1)
 
-add_library(libyaml-nz STATIC EXCLUDE_FROM_ALL
+add_library(libyaml-nz STATIC ${EXCLUDE_FROM_ALL}
     YamlNode.cpp
     YamlNode.h
     YamlParser.cpp

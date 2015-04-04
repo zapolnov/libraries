@@ -14,7 +14,7 @@ check_function_exists(strndup HAVE_STRNDUP)
 configure_file(re2c_config.h.in "${CMAKE_CURRENT_BINARY_DIR}/re2c_config.h")
 include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
-add_executable(re2c EXCLUDE_FROM_ALL
+add_executable(re2c ${EXCLUDE_FROM_ALL}
 	actions.cc
 	basics.h
 	code.cc

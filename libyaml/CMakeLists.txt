@@ -11,7 +11,7 @@ if(MSVC)
 endif()
 
 file(GLOB SRC src/*.c)
-add_library(libyaml STATIC EXCLUDE_FROM_ALL ${SRC})
+add_library(libyaml STATIC ${EXCLUDE_FROM_ALL} ${SRC})
 
 set_target_properties(libyaml PROPERTIES OUTPUT_NAME "yaml")
 target_compile_definitions(libyaml PUBLIC "YAML_DECLARE_STATIC")

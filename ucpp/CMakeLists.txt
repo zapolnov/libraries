@@ -42,11 +42,11 @@ set(source_files
 
 set_source_files_properties(arith.c PROPERTIES HEADER_FILE_ONLY TRUE)
 
-add_library(libucpp STATIC EXCLUDE_FROM_ALL ${source_files})
+add_library(libucpp STATIC ${EXCLUDE_FROM_ALL} ${source_files})
 set_target_properties(libucpp PROPERTIES OUTPUT_NAME "ucpp")
 target_include_directories(libucpp BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
 
-add_executable(ucpp EXCLUDE_FROM_ALL ${source_files})
+add_executable(ucpp ${EXCLUDE_FROM_ALL} ${source_files})
 target_compile_definitions(ucpp PRIVATE "STAND_ALONE")
 
 if(UCPP_MMAP)

@@ -22,6 +22,13 @@
 
 cmake_minimum_required(VERSION 3.1)
 
+option(BUILD_ALL "Build all libraries" OFF)
+IF(BUILD_ALL)
+    set(EXCLUDE_FROM_ALL)
+else()
+    set(EXCLUDE_FROM_ALL "EXCLUDE_FROM_ALL")
+endif()
+
 add_subdirectory(libyaml)
 add_subdirectory(re2c)
 add_subdirectory(ucpp)
