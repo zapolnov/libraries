@@ -22,13 +22,13 @@
 
 cmake_minimum_required(VERSION 3.1)
 
-add_library(yaml-nz STATIC EXCLUDE_FROM_ALL
+add_library(libyaml-nz STATIC EXCLUDE_FROM_ALL
     YamlNode.cpp
     YamlNode.h
     YamlParser.cpp
     YamlParser.h
 )
 
-set_target_properties(yaml-nz PROPERTIES OUTPUT_NAME "yaml-nz" CXX_STANDARD 11)
-target_link_libraries(yaml-nz libyaml)
-target_include_directories(yaml-nz BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
+set_target_properties(libyaml-nz PROPERTIES OUTPUT_NAME "yaml-nz" CXX_STANDARD 11)
+target_link_libraries(libyaml-nz libyaml)
+target_include_directories(libyaml-nz BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
