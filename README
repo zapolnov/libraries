@@ -1,0 +1,6 @@
+
+This repository contains a bunch of open-source C/C++ libraries and tools with CMake build scripts added.
+
+This includes both popular libraries from the wild and the libraries created by me (Nikolay Zapolnov).
+
+For more information about licensing for each library see files LICENSE or README in the corresponding folder.
