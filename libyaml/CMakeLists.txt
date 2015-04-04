@@ -1,16 +1,18 @@
-# Minimal CMake project for building a static library under Windows.
 
-cmake_minimum_required (VERSION 2.8)
-project (yaml C)
+cmake_minimum_required(VERSION 3.1)
+project(yaml C)
 
-set (YAML_VERSION_MAJOR 0)
-set (YAML_VERSION_MINOR 1)
-set (YAML_VERSION_PATCH 4)
-set (YAML_VERSION_STRING "${YAML_VERSION_MAJOR}.${YAML_VERSION_MINOR}.${YAML_VERSION_PATCH}")
+include_directories(win32)
+add_definitions(-DHAVE_CONFIG_H)
 
-file (GLOB SRC src/*.c)
+if(MSVC)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+    add_definitions(/wd4457)
+endif()
 
-include_directories (include win32)
-add_definitions (-DHAVE_CONFIG_H -DYAML_DECLARE_STATIC)
-add_library (yaml STATIC ${SRC})
+file(GLOB SRC src/*.c)
+add_library(libyaml STATIC EXCLUDE_FROM_ALL ${SRC})
 
+set_target_properties(libyaml PROPERTIES OUTPUT_NAME "yaml")
+target_compile_definitions(libyaml PUBLIC "YAML_DECLARE_STATIC")
+target_include_directories(libyaml PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
