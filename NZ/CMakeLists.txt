@@ -23,4 +23,4 @@
 cmake_minimum_required(VERSION 3.1)
 
 add_subdirectory(cmake)
-add_subdirectory(yaml-nz)
+add_subdirectory(yaml)

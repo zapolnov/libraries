@@ -31,4 +31,4 @@ add_library(libyaml-nz STATIC ${EXCLUDE_FROM_ALL}
 
 set_target_properties(libyaml-nz PROPERTIES OUTPUT_NAME "yaml-nz" CXX_STANDARD 11)
 target_link_libraries(libyaml-nz libyaml)
-target_include_directories(libyaml-nz BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
+target_include_directories(libyaml-nz BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
