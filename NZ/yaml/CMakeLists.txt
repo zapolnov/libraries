@@ -22,12 +22,13 @@
 
 cmake_minimum_required(VERSION 3.1)
 
+file(GLOB source_files *.cpp *.h)
+
 add_library(libyaml-nz STATIC ${EXCLUDE_FROM_ALL}
-    YamlNode.cpp
-    YamlNode.h
-    YamlParser.cpp
-    YamlParser.h
+    ${source_files}
 )
+
+source_group("Source Files" FILES ${source_files})
 
 set_target_properties(libyaml-nz PROPERTIES OUTPUT_NAME "yaml-nz" CXX_STANDARD 11)
 target_link_libraries(libyaml-nz libyaml)

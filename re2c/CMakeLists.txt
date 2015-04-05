@@ -14,55 +14,10 @@ check_function_exists(strndup HAVE_STRNDUP)
 configure_file(re2c_config.h.in "${CMAKE_CURRENT_BINARY_DIR}/re2c_config.h")
 include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
+file(GLOB source_files *.cc *.h)
+
 add_executable(re2c ${EXCLUDE_FROM_ALL}
-	actions.cc
-	basics.h
-	code.cc
-	code.h
-	code_names.h
-	dfa.cc
-	dfa.h
-	enc.cc
-	enc.h
-	free_list.h
-	globals.h
-	indent.h
-	input_api.cc
-	input_api.h
-	ins.h
-	main.cc
-	mbo_getopt.cc
-	mbo_getopt.h
-	parser.cc
-	parser.h
-	parser.y
-	print.cc
-	print.h
-	range.cc
-	range.h
-	range_suffix.cc
-	range_suffix.h
-	re.h
-	scanner.cc
-	scanner.h
-	scanner.re
-	smart_ptr.h
-	stream_lc.h
-	substr.cc
-	substr.h
-	token.h
-	translate.cc
-	utf16.cc
-	utf16.h
-	utf16_range.cc
-	utf16_range.h
-	utf16_regexp.cc
-	utf16_regexp.h
-	utf8.cc
-	utf8.h
-	utf8_range.cc
-	utf8_range.h
-	utf8_regexp.cc
-	utf8_regexp.h
-	y.tab.h
+    ${source_files}
 )
+
+source_group("Source Files" FILES ${source_files})

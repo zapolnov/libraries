@@ -4,30 +4,16 @@ project(libpng C)
 
 configure_file(scripts/pnglibconf.h.prebuilt "${CMAKE_CURRENT_BINARY_DIR}/pnglibconf.h" COPYONLY)
 
+set(scripts_files scripts/pnglibconf.h.prebuilt)
+file(GLOB root_files *.c *.h)
+
 add_library(libpng STATIC ${EXCLUDE_FROM_ALL}
-	scripts/pnglibconf.h.prebuilt
-	png.c
-	png.h
-	pngconf.h
-	pngdebug.h
-	pngerror.c
-	pngget.c
-	pnginfo.h
-	pngmem.c
-	pngpread.c
-	pngpriv.h
-	pngread.c
-	pngrio.c
-	pngrtran.c
-	pngrutil.c
-	pngset.c
-	pngstruct.h
-	pngtrans.c
-	pngwio.c
-	pngwrite.c
-	pngwtran.c
-	pngwutil.c
+	${script_files}
+	${root_files}
 )
+
+source_group("Source Files\\scripts" FILES ${scripts_files})
+source_group("Source Files" FILES ${root_files})
 
 set_source_files_properties(scripts/pnglibconf.h.prebuilt PROPERTIES HEADER_FILE_ONLY TRUE)
 set_target_properties(libpng PROPERTIES OUTPUT_NAME "png")

@@ -7,33 +7,11 @@ if(MSVC)
     add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
 endif()
 
+file(GLOB source_files *.c *.h)
+source_group("Source Files" FILES ${source_files})
+
 add_library(zlib STATIC ${EXCLUDE_FROM_ALL}
-    adler32.c
-    compress.c
-    crc32.c
-    crc32.h
-    deflate.c
-    deflate.h
-    gzclose.c
-    gzguts.h
-    gzlib.c
-    gzread.c
-    gzwrite.c
-    infback.c
-    inffast.c
-    inffast.h
-    inffixed.h
-    inflate.c
-    inflate.h
-    inftrees.c
-    inftrees.h
-    trees.c
-    trees.h
-    uncompr.c
-    zconf.h
-    zlib.h
-    zutil.c
-    zutil.h
+    ${source_files}
 )
 
 set_target_properties(zlib PROPERTIES OUTPUT_NAME "z")

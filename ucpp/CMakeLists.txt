@@ -21,26 +21,9 @@ check_c_source_compiles("
     }"
     UCPP_MMAP)
 
-set(source_files
-    arith.c
-    arith.h
-    assert.c
-    cpp.c
-    cpp.h
-    eval.c
-    hash.c
-    hash.h
-    lexer.c
-    macro.c
-    mem.c
-    mem.h
-    nhash.c
-    nhash.h
-    tune.h
-    ucppi.h
-)
-
-set_source_files_properties(arith.c PROPERTIES HEADER_FILE_ONLY TRUE)
+file(GLOB source_files *.c *.h)
+set_source_files_properties(arith.c sample.c PROPERTIES HEADER_FILE_ONLY TRUE)
+source_group("Source Files" FILES ${source_files})
 
 add_library(libucpp STATIC ${EXCLUDE_FROM_ALL} ${source_files})
 set_target_properties(libucpp PROPERTIES OUTPUT_NAME "ucpp")

@@ -10,8 +10,19 @@ if(MSVC)
     add_definitions(/wd4457)
 endif()
 
-file(GLOB SRC src/*.c)
-add_library(libyaml STATIC ${EXCLUDE_FROM_ALL} ${SRC})
+file(GLOB include_files include/*)
+file(GLOB src_files src/*)
+file(GLOB win32_files win32/*)
+
+add_library(libyaml STATIC ${EXCLUDE_FROM_ALL}
+    ${include_files}
+    ${src_files}
+    ${win32_files}
+)
+
+source_group("Source Files\\include" FILES ${include_files})
+source_group("Source Files\\src" FILES ${src_files})
+source_group("Source Files\\win32" FILES ${win32_files})
 
 set_target_properties(libyaml PROPERTIES OUTPUT_NAME "yaml")
 target_compile_definitions(libyaml PUBLIC "YAML_DECLARE_STATIC")
