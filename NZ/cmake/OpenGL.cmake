@@ -20,7 +20,35 @@
 # THE SOFTWARE.
 #
 
-cmake_minimum_required(VERSION 3.1)
+if(NOT __Z_OPENGL_CMAKE_INCLUDED)
+	set(__Z_OPENGL_CMAKE_INCLUDED TRUE)
 
-add_subdirectory(cmake)
-add_subdirectory(yaml-nz)
+	find_package(OpenGL)
+	if(OPENGL_INCLUDE_DIR)
+		include_directories(${OPENGL_INCLUDE_DIR})
+	endif()
+
+	if(NOT OPENGL_FOUND)
+		find_package(PkgConfig)
+		pkg_check_modules(OpenGL gl)
+		if(${OpenGL_INCLUDE_DIRS})
+			include_directories(${OpenGL_INCLUDE_DIRS})
+		endif()
+		if(${OpenGL_LDFLAGS})
+			set(OPENGL_LIBRARIES ${OpenGL_LDFLAGS})
+		endif()
+	endif()
+
+	macro(z_get_opengl_libraries target_variable)
+		if(OPENGL_LIBRARIES)
+			list(APPEND "${target_variable}" ${OPENGL_LIBRARIES})
+		endif()
+	endmacro()
+
+	macro(z_target_link_opengl name)
+		set(opengl_libraries)
+		z_get_opengl_libraries(opengl_libraries)
+		target_link_libraries("${name}" ${opengl_libraries})
+	endmacro()
+
+endif()

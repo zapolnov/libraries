@@ -20,7 +20,15 @@
 # THE SOFTWARE.
 #
 
-cmake_minimum_required(VERSION 3.1)
+if(NOT __Z_SET_SOURCE_GROUPS_CMAKE_INCLUDED)
+	set(__Z_SET_SOURCE_GROUPS_CMAKE_INCLUDED TRUE)
 
-add_subdirectory(cmake)
-add_subdirectory(yaml-nz)
+	macro(z_set_source_groups)
+		foreach(file ${ARGN})
+			get_filename_component(path "${file}" DIRECTORY)
+			string(REPLACE "/" "\\" path "${path}")
+			source_group("Source Files\\${path}" FILES "${file}")
+		endforeach()
+	endmacro()
+
+endif()
