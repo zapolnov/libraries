@@ -22,6 +22,7 @@
 
 cmake_minimum_required(VERSION 3.1)
 
+include(../cmake/Qt5.cmake)
 include(../cmake/TargetPlatform.cmake)
 
 file(GLOB streams_sources streams/*.cpp streams/*.h)
@@ -32,9 +33,7 @@ add_library(utility-nz STATIC ${EXCLUDE_FROM_ALL}
     ${root_sources}
 )
 
-if(NOT Z_TARGET_QT5)
-    set_source_files_properties(streams/QtFileReader.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
-endif()
+z_qt5_sources(streams/QtFileReader.cpp)
 
 source_group("Source Files\\streams" FILES ${streams_sources})
 source_group("Source Files" FILES ${root_sources})

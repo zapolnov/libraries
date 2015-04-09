@@ -24,12 +24,12 @@ cmake_minimum_required(VERSION 3.1)
 
 file(GLOB source_files *.cpp *.h)
 
-add_library(libyaml-nz STATIC ${EXCLUDE_FROM_ALL}
+add_library(yaml-nz STATIC ${EXCLUDE_FROM_ALL}
     ${source_files}
 )
 
 source_group("Source Files" FILES ${source_files})
 
-set_target_properties(libyaml-nz PROPERTIES OUTPUT_NAME "yaml-nz" CXX_STANDARD 11)
-target_link_libraries(libyaml-nz libyaml)
-target_include_directories(libyaml-nz BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
+set_target_properties(yaml-nz PROPERTIES CXX_STANDARD 11)
+target_link_libraries(yaml-nz libyaml)
+target_include_directories(yaml-nz BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")

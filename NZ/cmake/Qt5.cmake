@@ -43,4 +43,10 @@ if(NOT __Z_FIND_QT5_CMAKE_INCLUDED)
         endif()
     endmacro()
 
+    macro(z_qt5_sources)
+        if(NOT Z_TARGET_QT5)
+            set_source_files_properties(${ARGN} PROPERTIES HEADER_FILE_ONLY TRUE)
+        endif()
+    endmacro()
+
 endif()
