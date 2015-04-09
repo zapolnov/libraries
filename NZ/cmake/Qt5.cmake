@@ -20,21 +20,27 @@
 # THE SOFTWARE.
 #
 
-cmake_minimum_required(VERSION 3.1)
+if(NOT __Z_FIND_QT5_CMAKE_INCLUDED)
+    set(__Z_FIND_QT5_CMAKE_INCLUDED TRUE)
 
-option(Z_BUILD_ALL "Build all libraries" OFF)
-IF(Z_BUILD_ALL)
-    set(EXCLUDE_FROM_ALL)
-else()
-    set(EXCLUDE_FROM_ALL "EXCLUDE_FROM_ALL")
+    set(Z_QT5_FOUND NO)
+
+    find_package(Qt5Widgets)
+    if(Qt5Widgets_FOUND)
+        find_package(Qt5Core)
+        find_package(Qt5Gui)
+        find_package(Qt5Network)
+        find_package(Qt5Multimedia)
+        find_package(Qt5OpenGL)
+        if(Qt5Core_FOUND AND Qt5Gui_FOUND AND Qt5Network_FOUND AND Qt5Multimedia_FOUND AND Qt5OpenGL_FOUND)
+            set(Z_QT5_FOUND YES)
+        endif()
+    endif()
+
+    macro(z_target_link_qt5 target)
+        if(Z_QT5_FOUND)
+            target_link_libraries("${target}" Qt5::Core Qt5::Gui Qt5::Network Qt5::Multimedia Qt5::OpenGL)
+        endif()
+    endmacro()
+
 endif()
-
-add_subdirectory(libyaml)
-add_subdirectory(re2c)
-add_subdirectory(ucpp)
-add_subdirectory(zlib)
-add_subdirectory(libpng)
-add_subdirectory(glm)
-add_subdirectory(liquidfun)
-add_subdirectory(utf8_dfa)
-add_subdirectory(NZ)

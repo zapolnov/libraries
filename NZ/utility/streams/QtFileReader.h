@@ -21,7 +21,6 @@
  */
 
 #pragma once
-#ifdef Z_TARGET_QT
 
 #include "FileReader.h"
 #include "../Utf8String.h"
@@ -53,5 +52,3 @@ namespace Z
         QtFileReader& operator=(const QtFileReader&) = delete;
     };
 }
-
-#endif

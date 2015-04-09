@@ -19,8 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifdef Z_TARGET_QT
-#include "FileReader.h"
+#include "QtFileReader.h"
+#include "utility/macros.h"
 #include "utility/debug.h"
 #include <cerrno>
 #include <cstring>
@@ -59,7 +59,7 @@ namespace Z
         {
             if (!m_File->seek(qint64(offset)))
             {
-                Z_LOG("Seek failed in file \"" << m_Name << "\": " << qUtf8Printable(m_File->errorString()));
+                Z_LOG("Seek failed in file \"" << m_Name << "\": " << zqUtf8Printable(m_File->errorString()));
                 return false;
             }
             m_Offset = offset;
@@ -68,7 +68,7 @@ namespace Z
         qint64 bytesRead = m_File->read(reinterpret_cast<char*>(buffer), qint64(size));
         if (bytesRead < 0)
         {
-            Z_LOG("Error reading file \"" << m_Name << "\": " << qUtf8Printable(m_File->errorString()));
+            Z_LOG("Error reading file \"" << m_Name << "\": " << zqUtf8Printable(m_File->errorString()));
             return false;
         }
 
@@ -83,7 +83,3 @@ namespace Z
         return true;
     }
 }
-
-#else
-char _qt_file_reader_dummy;     // prevent linker warning
-#endif

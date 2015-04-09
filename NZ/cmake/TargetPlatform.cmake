@@ -20,21 +20,43 @@
 # THE SOFTWARE.
 #
 
-cmake_minimum_required(VERSION 3.1)
+if(NOT __Z_TARGET_PLATFORM_CMAKE_INCLUDED)
+    set(__Z_TARGET_PLATFORM_CMAKE_INCLUDED TRUE)
 
-option(Z_BUILD_ALL "Build all libraries" OFF)
-IF(Z_BUILD_ALL)
-    set(EXCLUDE_FROM_ALL)
-else()
-    set(EXCLUDE_FROM_ALL "EXCLUDE_FROM_ALL")
+    get_filename_component(path "${CMAKE_CURRENT_LIST_FILE}" PATH)
+    include("${path}/Qt5.cmake")
+    include("${path}/EnumOption.cmake")
+
+    set(Z_SUPPORTED_PLATFORMS "dummy")
+    set(Z_DEFAULT_PLATFORM "dummy")
+
+    #######################
+    # Supported platforms
+
+    if(${Z_QT5_FOUND})
+        list(APPEND Z_SUPPORTED_PLATFORMS "qt5")
+    endif()
+
+    #######################
+    # Default platform
+
+    if (${Z_QT5_FOUND})
+        set(Z_DEFAULT_PLATFORM "qt5")
+    endif()
+
+    #######################
+
+    z_enum_option(Z_TARGET_PLATFORM "Target platform" "${Z_DEFAULT_PLATFORM}" "${Z_SUPPORTED_PLATFORMS}")
+
+    set(Z_TARGET_DUMMY FALSE)
+    set(Z_TARGET_QT5 FALSE)
+
+    if(Z_TARGET_PLATFORM STREQUAL "dummy")
+        set(Z_TARGET_DUMMY TRUE)
+        add_definitions(-DZ_TARGET_DUMMY)
+    elseif(Z_TARGET_PLATFORM STREQUAL "qt5")
+        set(Z_TARGET_QT5 TRUE)
+        add_definitions(-DZ_TARGET_QT5)
+    endif()
+
 endif()
-
-add_subdirectory(libyaml)
-add_subdirectory(re2c)
-add_subdirectory(ucpp)
-add_subdirectory(zlib)
-add_subdirectory(libpng)
-add_subdirectory(glm)
-add_subdirectory(liquidfun)
-add_subdirectory(utf8_dfa)
-add_subdirectory(NZ)

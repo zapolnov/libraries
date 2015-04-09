@@ -20,21 +20,23 @@
 # THE SOFTWARE.
 #
 
-cmake_minimum_required(VERSION 3.1)
+if(NOT __Z_ENUM_OPTION_CMAKE_INCLUDED)
+    set(__Z_ENUM_OPTION_CMAKE_INCLUDED TRUE)
 
-option(Z_BUILD_ALL "Build all libraries" OFF)
-IF(Z_BUILD_ALL)
-    set(EXCLUDE_FROM_ALL)
-else()
-    set(EXCLUDE_FROM_ALL "EXCLUDE_FROM_ALL")
+    macro(z_enum_option name description value values)
+        set("${name}" "${value}" CACHE STRING "${description} (possible values are: ${values})")
+
+        set(valid NO)
+        foreach(possible_value ${values})
+            if("${${name}}" STREQUAL "${possible_value}")
+                set(valid YES)
+                break()
+            endif()
+        endforeach()
+
+        if(NOT ${valid})
+            message(FATAL_ERROR "Invalid value \"${${name}}\" for option \"${name}\". Valid values are: ${values}")
+        endif()
+    endmacro()
+
 endif()
-
-add_subdirectory(libyaml)
-add_subdirectory(re2c)
-add_subdirectory(ucpp)
-add_subdirectory(zlib)
-add_subdirectory(libpng)
-add_subdirectory(glm)
-add_subdirectory(liquidfun)
-add_subdirectory(utf8_dfa)
-add_subdirectory(NZ)

@@ -21,14 +21,14 @@
 #
 
 if(NOT __Z_SET_SOURCE_GROUPS_CMAKE_INCLUDED)
-	set(__Z_SET_SOURCE_GROUPS_CMAKE_INCLUDED TRUE)
+    set(__Z_SET_SOURCE_GROUPS_CMAKE_INCLUDED TRUE)
 
-	macro(z_set_source_groups)
-		foreach(file ${ARGN})
-			get_filename_component(path "${file}" DIRECTORY)
-			string(REPLACE "/" "\\" path "${path}")
-			source_group("Source Files\\${path}" FILES "${file}")
-		endforeach()
-	endmacro()
+    macro(z_set_source_groups)
+        foreach(file ${ARGN})
+            get_filename_component(path "${file}" DIRECTORY)
+            string(REPLACE "/" "\\" path "${path}")
+            source_group("Source Files\\${path}" FILES "${file}")
+        endforeach()
+    endmacro()
 
 endif()

@@ -27,3 +27,7 @@
 #else
  #define Z_THREADLOCAL __thread
 #endif
+
+#ifdef Z_TARGET_QT5
+ #define zqUtf8Printable(str) ((str).toUtf8().constData())
+#endif
