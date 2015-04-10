@@ -22,8 +22,22 @@
 
 cmake_minimum_required(VERSION 3.1)
 
-add_subdirectory(cmake)
-add_subdirectory(yaml)
-add_subdirectory(utility)
-add_subdirectory(opengl)
-add_subdirectory(main)
+include(../cmake/Qt5.cmake)
+include(../cmake/TargetPlatform.cmake)
+
+file(GLOB qt5_sources qt5/*.cpp qt5/*.h)
+file(GLOB root_sources *.cpp *.h)
+
+add_library(opengl-nz STATIC ${EXCLUDE_FROM_ALL}
+    ${qt5_sources}
+    ${root_sources}
+)
+
+z_qt5_sources(${qt5_sources})
+
+source_group("Source Files\\qt5" FILES ${qt5_sources})
+source_group("Source Files" FILES ${root_sources})
+
+set_target_properties(opengl-nz PROPERTIES CXX_STANDARD 11)
+target_include_directories(opengl-nz BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
+target_link_libraries(opengl-nz utility-nz)

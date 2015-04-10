@@ -21,30 +21,28 @@
  */
 
 #pragma once
-#include "RenderThread.h"
-#include <QGLWidget>
 
 namespace Z
 {
-    class OpenGLWindow : public QGLWidget
+    class OpenGLWindowDelegate
     {
     public:
-        OpenGLWindow();
-        ~OpenGLWindow();
+        virtual ~OpenGLWindowDelegate() = default;
 
-    protected:
-        void resizeEvent(QResizeEvent* resizeEvent) override;
-        void paintEvent(QPaintEvent* paintEvent) override;
+        virtual int preferredScreenWidth() const { return 1024; }
+        virtual int preferredScreenHeight() const { return 768; }
+        virtual int preferredDepthBufferBits() const { return 16; }
+        virtual int preferredStencilBufferBits() const { return 0; }
 
-        void showEvent(QShowEvent* showEvent) override;
-        void hideEvent(QHideEvent* hideEvent) override;
+        virtual void onInitialize(int width, int height) { (void)width; (void)height; }
+        virtual void onShutdown() {}
 
-        void mousePressEvent(QMouseEvent* mouseEvent) override;
-        void mouseMoveEvent(QMouseEvent* mouseEvent) override;
-        void mouseReleaseEvent(QMouseEvent* mouseEvent) override;
+        virtual void onSuspend() {}
+        virtual void onResume() {}
 
-    private:
-        RenderThread m_RenderThread;
-        bool m_Initialized = false;
+        virtual void onResize(int width, int height) { (void)width; (void)height; }
+
+        virtual void update(double time) { (void)time; }
+        virtual void draw() {}
     };
 }

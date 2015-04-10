@@ -22,22 +22,22 @@
 
 #pragma once
 #include "utility/FunctionQueue.h"
+#include "../OpenGLWindowDelegate.h"
 #include <atomic>
+#include <future>
 #include <QElapsedTimer>
 #include <QThread>
 #include <QGLWidget>
 
 namespace Z
 {
-    class RenderThread : public QThread
+    class QtRenderThread : public QThread
     {
     public:
-        RenderThread(QGLWidget* qt);
-        ~RenderThread();
+        QtRenderThread(QGLWidget* qt, OpenGLWindowDelegate* delegate);
+        ~QtRenderThread();
 
-        static RenderThread* instance() { return m_Instance; }
-
-        void start();
+        void start(int width, int height);
         void suspend();
         void resume();
 
@@ -48,15 +48,14 @@ namespace Z
         void run() override;
 
     private:
-        static RenderThread* m_Instance;
-
         QGLWidget* m_GL;
-//        Z::PlatformCallbacks* m_Engine = nullptr;
+        OpenGLWindowDelegate* m_Delegate;
         Z::FunctionQueue m_FunctionQueue;
         QElapsedTimer m_Timer;
         int m_ViewportWidth = 0;
         int m_ViewportHeight = 0;
         bool m_ViewportResized = false;
+        std::promise<void> m_ThreadStartPromise;
         std::atomic<bool> m_Suspended;
         std::atomic<bool> m_ShuttingDown;
     };

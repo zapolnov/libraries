@@ -19,17 +19,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include "opengl/qt5/QtOpenGLWindow.h"
-#include "main/main.h"
-#include <QApplication>
 
-int main(int argc, char** argv)
+#pragma once
+#include "QtRenderThread.h"
+#include <QGLWidget>
+
+namespace Z
 {
-    QCoreApplication::setAttribute(Qt::AA_X11InitThreads);
-    QApplication app(argc, argv);
+    class QtOpenGLWindow : public QGLWidget
+    {
+    public:
+        explicit QtOpenGLWindow(OpenGLWindowDelegate* delegate, QWidget* parent = nullptr);
+        ~QtOpenGLWindow();
 
-    Z::QtOpenGLWindow window(Z::gameInstance());
-    window.show();
+    protected:
+        void resizeEvent(QResizeEvent* resizeEvent) override;
+        void paintEvent(QPaintEvent* paintEvent) override;
 
-    return app.exec();
+        void showEvent(QShowEvent* showEvent) override;
+        void hideEvent(QHideEvent* hideEvent) override;
+
+        void mousePressEvent(QMouseEvent* mouseEvent) override;
+        void mouseMoveEvent(QMouseEvent* mouseEvent) override;
+        void mouseReleaseEvent(QMouseEvent* mouseEvent) override;
+
+    private:
+        QtRenderThread m_RenderThread;
+        bool m_Initialized = false;
+    };
 }

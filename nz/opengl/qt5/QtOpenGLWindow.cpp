@@ -19,33 +19,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include "OpenGLWindow.h"
+#include "QtOpenGLWindow.h"
+#include "utility/debug.h"
 #include <QResizeEvent>
 #include <QDesktopWidget>
 
 namespace Z
 {
-    OpenGLWindow::OpenGLWindow()
-        : m_RenderThread(this)
+    QtOpenGLWindow::QtOpenGLWindow(OpenGLWindowDelegate* delegate, QWidget* parent)
+        : QGLWidget(parent)
+        , m_RenderThread(this, delegate)
     {
-        resize(1024, 768);
+        Z_ASSERT(delegate != nullptr);
+        resize(delegate->preferredScreenWidth(), delegate->preferredScreenHeight());
 
-        QRect position = frameGeometry();
-        position.moveCenter(QDesktopWidget().availableGeometry().center());
-        move(position.topLeft());
+        if (!parent) {
+            QRect position = frameGeometry();
+            position.moveCenter(QDesktopWidget().availableGeometry().center());
+            move(position.topLeft());
+        }
 
         QGLFormat openGLFormat;
+        openGLFormat.setSwapInterval(1);
         openGLFormat.setDoubleBuffer(true);
+
+        int depthBits = delegate->preferredDepthBufferBits();
+        if (depthBits <= 0)
+            openGLFormat.setDepth(false);
+        else
+            openGLFormat.setDepthBufferSize(depthBits);
+
+        int stencilBits = delegate->preferredStencilBufferBits();
+        if (stencilBits <= 0)
+            openGLFormat.setStencil(false);
+        else
+            openGLFormat.setStencilBufferSize(stencilBits);
+
         setFormat(openGLFormat);
     }
 
-    OpenGLWindow::~OpenGLWindow()
+    QtOpenGLWindow::~QtOpenGLWindow()
     {
         m_RenderThread.postShutdown();
         m_RenderThread.wait();
     }
 
-    void OpenGLWindow::resizeEvent(QResizeEvent* resizeEvent)
+    void QtOpenGLWindow::resizeEvent(QResizeEvent* resizeEvent)
     {
         if (m_Initialized)
         {
@@ -55,37 +74,36 @@ namespace Z
         }
     }
 
-    void OpenGLWindow::paintEvent(QPaintEvent*)
+    void QtOpenGLWindow::paintEvent(QPaintEvent*)
     {
         if (!m_Initialized)
         {
-            m_RenderThread.postResize(width(), height());
-            m_RenderThread.start();
+            m_RenderThread.start(width(), height());
             m_Initialized = true;
         }
     }
 
-    void OpenGLWindow::showEvent(QShowEvent*)
+    void QtOpenGLWindow::showEvent(QShowEvent*)
     {
         if (m_Initialized)
             m_RenderThread.resume();
     }
 
-    void OpenGLWindow::hideEvent(QHideEvent*)
+    void QtOpenGLWindow::hideEvent(QHideEvent*)
     {
         if (m_Initialized)
             m_RenderThread.suspend();
     }
 
-    void OpenGLWindow::mousePressEvent(QMouseEvent*)
+    void QtOpenGLWindow::mousePressEvent(QMouseEvent*)
     {
     }
 
-    void OpenGLWindow::mouseMoveEvent(QMouseEvent*)
+    void QtOpenGLWindow::mouseMoveEvent(QMouseEvent*)
     {
     }
 
-    void OpenGLWindow::mouseReleaseEvent(QMouseEvent*)
+    void QtOpenGLWindow::mouseReleaseEvent(QMouseEvent*)
     {
     }
 }
