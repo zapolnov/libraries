@@ -21,6 +21,7 @@
  */
 
 #pragma once
+#include "QtPropertyListItem.h"
 #include <QList>
 #include <QStandardItemModel>
 #include <unordered_map>
@@ -29,7 +30,6 @@ class QTreeView;
 
 namespace Z
 {
-    class QtPropertyListItem;
     class QtPropertyDataType;
 
     class QtPropertyList : public QStandardItemModel
