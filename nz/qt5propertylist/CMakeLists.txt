@@ -22,9 +22,16 @@
 
 cmake_minimum_required(VERSION 3.1)
 
-add_subdirectory(cmake)
-add_subdirectory(yaml)
-add_subdirectory(utility)
-add_subdirectory(opengl)
-add_subdirectory(main)
-add_subdirectory(qt5propertylist)
+include(../cmake/Qt5.cmake)
+
+if(Z_QT5_FOUND)
+    set(CMAKE_AUTOMOC TRUE)
+
+    file(GLOB root_sources *.cpp *.h)
+    add_library(qt5propertylist-nz STATIC ${EXCLUDE_FROM_ALL} ${root_sources})
+    source_group("Source Files" FILES ${root_sources})
+
+    set_target_properties(qt5propertylist-nz PROPERTIES CXX_STANDARD 11)
+    target_include_directories(qt5propertylist-nz BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
+    z_target_link_qt5(qt5propertylist-nz)
+endif()
