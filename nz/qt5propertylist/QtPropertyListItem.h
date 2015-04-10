@@ -37,7 +37,7 @@ namespace Z
 
     public:
         QtPropertyList* list() const;
-        QtPropertyDataType* dataType() const { return m_DataType; }
+        const QtPropertyDataType* dataType() const { return m_DataType; }
 
         const QVariant& value() const { return m_Value; }
         void setValue(const QVariant& data) { m_Value = data; emit valueChanged(); }
@@ -49,7 +49,7 @@ namespace Z
     private:
         QStandardItem* m_NameItem = nullptr;
         QStandardItem* m_ValueItem = nullptr;
-        QtPropertyDataType* m_DataType = nullptr;
+        const QtPropertyDataType* m_DataType = nullptr;
         QVariant m_Value;
 
         explicit QtPropertyListItem(QtPropertyList* list);
