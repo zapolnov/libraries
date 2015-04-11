@@ -24,6 +24,11 @@
 #include <QObject>
 #include <QVariant>
 
+class QWidget;
+class QPainter;
+class QStyle;
+class QStyleOptionViewItem;
+
 namespace Z
 {
     class QtPropertyDataType
@@ -32,10 +37,16 @@ namespace Z
         static const QtPropertyDataType* const Bool;
         static const QtPropertyDataType* const Int;
         static const QtPropertyDataType* const String;
-
         static const QtPropertyDataType* floatType(int precision);
 
         virtual ~QtPropertyDataType() = default;
-        virtual QVariant formatForDisplay(const QVariant& data) const { return data; }
+
+        virtual QVariant formatForDisplay(const QVariant& data) const;
+        virtual void paint(QPainter* painter, const QVariant& data,
+            QStyle* style, const QStyleOptionViewItem& option) const;
+
+        virtual QWidget* createEditor(QWidget* parent) const;
+        virtual QVariant getEditorData(QWidget* editor) const;
+        virtual void setEditorData(QWidget* editor, const QVariant& data) const;
     };
 }

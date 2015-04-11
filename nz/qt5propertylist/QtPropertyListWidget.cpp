@@ -20,6 +20,7 @@
  * THE SOFTWARE.
  */
 #include "QtPropertyListWidget.h"
+#include "QtPropertyListItemDelegate.h"
 #include <QHeaderView>
 
 namespace Z
@@ -43,5 +44,7 @@ namespace Z
         setUniformRowHeights(true);
         setAllColumnsShowFocus(true);
         header()->setCascadingSectionResizes(true);
+
+        new QtPropertyListItemDelegate(this);
     }
 }

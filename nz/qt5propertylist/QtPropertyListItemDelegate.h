@@ -21,42 +21,35 @@
  */
 
 #pragma once
-#include <QObject>
-#include <QVariant>
+#include <QStyledItemDelegate>
 
-class QStandardItem;
+class QAbstractItemView;
 
 namespace Z
 {
-    class QtPropertyList;
-    class QtPropertyListItemDelegate;
-    class QtPropertyDataType;
+    class QtPropertyListItem;
 
-    class QtPropertyListItem : public QObject
+    class QtPropertyListItemDelegate : public QStyledItemDelegate
     {
         Q_OBJECT
 
     public:
-        QtPropertyList* list() const;
-        const QtPropertyDataType* dataType() const { return m_DataType; }
+        QtPropertyListItemDelegate(QAbstractItemView* view);
+        ~QtPropertyListItemDelegate();
 
-        const QVariant& value() const { return m_Value; }
-        void setValue(const QVariant& data) { m_Value = data; emit valueChanged(); }
+        QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 
-    signals:
-        void valueChanged();
-        void valueEdited();
+        void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
+
+        QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
+        void setEditorData(QWidget* editor, const QModelIndex & index) const override;
+        void setModelData(QWidget* editor, QAbstractItemModel* inModel, const QModelIndex& index) const override;
 
     private:
-        QStandardItem* m_NameItem = nullptr;
-        QStandardItem* m_ValueItem = nullptr;
-        const QtPropertyDataType* m_DataType = nullptr;
-        QVariant m_Value;
+        QAbstractItemView* m_View;
 
-        explicit QtPropertyListItem(QtPropertyList* list);
-        Q_DISABLE_COPY(QtPropertyListItem)
+        QtPropertyListItem* propertyForIndex(const QModelIndex& index) const;
 
-        friend class QtPropertyList;
-        friend class QtPropertyListItemDelegate;
+        Q_DISABLE_COPY(QtPropertyListItemDelegate)
     };
 }
