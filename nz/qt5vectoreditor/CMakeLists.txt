@@ -28,11 +28,19 @@ if(Z_QT5_FOUND)
     set(CMAKE_AUTOMOC TRUE)
     set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 
+    file(GLOB objects_sources objects/*.cpp objects/*.h)
     file(GLOB root_sources *.cpp *.h)
-    add_library(qt5propertylist-nz STATIC ${EXCLUDE_FROM_ALL} ${root_sources})
+
+    add_library(qt5vectoreditor-nz STATIC ${EXCLUDE_FROM_ALL}
+        ${objects_sources}
+        ${root_sources}
+    )
+
+    source_group("Source Files\\objects" FILES ${objects_sources})
     source_group("Source Files" FILES ${root_sources})
 
-    set_target_properties(qt5propertylist-nz PROPERTIES CXX_STANDARD 11)
-    target_include_directories(qt5propertylist-nz BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
-    z_target_link_qt5(qt5propertylist-nz)
+    set_target_properties(qt5vectoreditor-nz PROPERTIES CXX_STANDARD 11)
+    target_include_directories(qt5vectoreditor-nz BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
+    target_link_libraries(qt5vectoreditor-nz qt5propertylist-nz)
+    z_target_link_qt5(qt5vectoreditor-nz)
 endif()

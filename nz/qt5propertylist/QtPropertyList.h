@@ -43,9 +43,9 @@ namespace Z
         QTreeView* view() const { return m_View; }
         void setView(QTreeView* view) { m_View = view; }
 
-        int addGroup(const QString& groupName, bool sorted);
+        int addGroup(const QString& groupName, bool sorted = false);
         QtPropertyListItem* addProperty(int groupIndex, const QString& name,
-            const QtPropertyDataType* type, bool sorted);
+            const QtPropertyDataType* type, bool sorted = false);
 
         QModelIndex buddy(const QModelIndex& index) const override;
         QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
