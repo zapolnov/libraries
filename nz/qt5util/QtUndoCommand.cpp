@@ -25,16 +25,8 @@
 namespace Z
 {
     QtUndoCommand::QtUndoCommand(const QString& text, QUndoCommand* parent)
-        : QUndoCommand(text, parent),
-          m_SkipRedo(true),
-          m_MergeID(-1)
-    {
-    }
-
-    QtUndoCommand::QtUndoCommand(const QString& text, int mergeID, QUndoCommand* parent)
-        : QUndoCommand(text, parent),
-          m_SkipRedo(true),
-          m_MergeID(mergeID)
+        : QUndoCommand(text, parent)
+        , m_SkipRedo(true)
     {
     }
 

@@ -22,6 +22,8 @@
 #include "QtVectorObject.h"
 #include "QtVectorObjectKind.h"
 #include "QtVectorScene.h"
+#include "QtVectorUndoCommandId.h"
+#include "qt5util/QtMergeableUndoCommand.h"
 #include "qt5propertylist/QtPropertyDataType.h"
 #include "qt5propertylist/QtPropertyList.h"
 
@@ -77,7 +79,7 @@ namespace Z
 
     QtVectorScene* QtVectorObject::scene() const
     {
-        return qobject_cast<QtVectorScene*>(parent());
+        return qobject_cast<QtVectorScene*>(QObject::parent());
     }
 
     QtVectorObject* QtVectorObject::parent() const
@@ -112,10 +114,17 @@ namespace Z
     {
         switch (change)
         {
-        case QGraphicsItem::ItemPositionHasChanged:
-            m_XProperty->setValue(x());
-            m_YProperty->setValue(y());
-            break;
+        case QGraphicsItem::ItemPositionChange:
+          {
+            QVariant v = QGraphicsItem::itemChange(change, value);
+            QPointF newPos = v.value<QPointF>();
+            if (x() != newPos.x() || y() != newPos.y()) {
+                m_XProperty->setValue(newPos.x());
+                m_YProperty->setValue(newPos.y());
+                addUndoCommandForMove(newPos.x(), newPos.y(), true);
+            }
+            return v;
+          }
 
         default:
             break;
@@ -124,17 +133,72 @@ namespace Z
         return QGraphicsItem::itemChange(change, value);
     }
 
+    void QtVectorObject::setPosWithoutNotification(qreal x, qreal y)
+    {
+        setFlag(QGraphicsItem::ItemSendsGeometryChanges, false);
+        setPos(x, y);
+        setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
+    }
+
+    void QtVectorObject::addUndoCommandForMove(qreal newX, qreal newY, bool allowMerge)
+    {
+        struct Data : Z::QtMergeableUndoCommand::Data {
+            QtVectorObject* object;
+            qreal oldX, oldY, newX, newY;
+            time_t time;
+        };
+
+        Data* data = new Data;
+        data->object = this;
+        data->oldX = x();
+        data->oldY = y();
+        data->newX = newX;
+        data->newY = newY;
+        data->time = time(nullptr);
+
+        auto undoCommand = Z::QtMergeableUndoCommand::create(
+            tr("Move item to (%1, %2).").arg(data->newX).arg(data->newY),
+            int(QtVectorUndoCommandId::ItemMove),
+            data,
+            [this, data]() {
+                m_XProperty->setValue(data->newX);
+                m_YProperty->setValue(data->newY);
+                setPosWithoutNotification(data->newX, data->newY);
+            }, [this, data]() {
+                m_XProperty->setValue(data->oldX);
+                m_YProperty->setValue(data->oldY);
+                setPosWithoutNotification(data->oldX, data->oldY);
+            }, [this, data](const QtMergeableUndoCommand::Data* other, QString& text, const QString& otherText) {
+                auto oth = static_cast<const Data*>(other);
+                if (data->object != oth->object || abs(int(data->time - oth->time)) > 3)
+                    return false;
+                data->newX = oth->newX;
+                data->newY = oth->newY;
+                data->time = std::max(data->time, oth->time);
+                text = otherText;
+                return true;
+            }
+        );
+
+        undoCommand->setAllowMerging(allowMerge);
+        scene()->undoStack()->push(undoCommand);
+    }
+
     void QtVectorObject::xEdited()
     {
         qreal pos = m_XProperty->value().toFloat();
-        if (pos != x())
-            setX(pos);
+        if (pos != x()) {
+            addUndoCommandForMove(pos, y(), false);
+            setPosWithoutNotification(pos, y());
+        }
     }
 
     void QtVectorObject::yEdited()
     {
         qreal pos = m_YProperty->value().toFloat();
-        if (pos != y())
-            setY(pos);
+        if (pos != y()) {
+            addUndoCommandForMove(x(), pos, false);
+            setPosWithoutNotification(x(), pos);
+        }
     }
 }

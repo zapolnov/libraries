@@ -41,6 +41,6 @@ if(Z_QT5_FOUND)
 
     set_target_properties(qt5vectoreditor-nz PROPERTIES CXX_STANDARD 11)
     target_include_directories(qt5vectoreditor-nz BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
-    target_link_libraries(qt5vectoreditor-nz qt5propertylist-nz)
+    target_link_libraries(qt5vectoreditor-nz qt5util-nz qt5propertylist-nz)
     z_target_link_qt5(qt5vectoreditor-nz)
 endif()

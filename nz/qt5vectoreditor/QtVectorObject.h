@@ -66,6 +66,10 @@ namespace Z
         QObject* m_SpecificData;
 
         void init();
+
+        void setPosWithoutNotification(qreal x, qreal y);
+        void addUndoCommandForMove(qreal newX, qreal newY, bool allowMerge);
+
         Q_SLOT void xEdited();
         Q_SLOT void yEdited();
 

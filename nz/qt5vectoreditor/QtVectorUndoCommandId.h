@@ -21,32 +21,11 @@
  */
 
 #pragma once
-#include <QUndoCommand>
-#include <functional>
 
 namespace Z
 {
-    class QtUndoCommand : public QUndoCommand
+    enum class QtVectorUndoCommandId : int
     {
-    public:
-        using Fn = std::function<void()>;
-        using FnRef = const Fn&;
-
-        explicit QtUndoCommand(const QString& text, QUndoCommand* parent = nullptr);
-
-        static QtUndoCommand* create(const QString& text, FnRef fnrepeat, FnRef fnrevert);
-        static QtUndoCommand* create(const QString& text, QUndoCommand* parent, FnRef fnrepeat, FnRef fnrevert);
-
-    protected:
-        virtual void repeat() = 0;
-        virtual void revert() = 0;
-
-    private:
-        bool m_SkipRedo;
-
-        void undo() final override;
-        void redo() final override;
-
-        Q_DISABLE_COPY(QtUndoCommand)
+        ItemMove,
     };
 }
