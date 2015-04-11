@@ -30,7 +30,6 @@
 #include <memory>
 #include <limits>
 #include <unordered_map>
-#include <cassert>
 
 namespace Z
 {
@@ -164,7 +163,7 @@ namespace Z
 
     const QtPropertyDataType* QtPropertyDataType::floatType(int precision)
     {
-        assert(precision >= 0);
+        Q_ASSERT(precision >= 0);
 
         std::unique_ptr<FloatType>& ptr = floatTypes[precision];
         if (!ptr)

@@ -24,7 +24,6 @@
 #include "QtVectorScene.h"
 #include "qt5propertylist/QtPropertyDataType.h"
 #include "qt5propertylist/QtPropertyList.h"
-#include <cassert>
 
 namespace Z
 {
@@ -33,19 +32,19 @@ namespace Z
         , m_Kind(kind)
         , m_SpecificData(nullptr)
     {
-        assert(kind != nullptr);
-        assert(scene != nullptr);
+        Q_ASSERT(kind != nullptr);
+        Q_ASSERT(scene != nullptr);
         scene->addItem(this);
         init();
     }
 
     QtVectorObject::QtVectorObject(QtVectorObjectKind* kind, QtVectorObject* parent)
-        : QObject((assert(parent != nullptr), parent->scene()))
+        : QObject((Q_ASSERT(parent != nullptr), parent->scene()))
         , QGraphicsItem(parent)
         , m_Kind(kind)
         , m_SpecificData(nullptr)
     {
-        assert(kind != nullptr);
+        Q_ASSERT(kind != nullptr);
         init();
     }
 

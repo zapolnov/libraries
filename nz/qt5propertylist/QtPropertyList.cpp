@@ -26,7 +26,6 @@
 #include <QTreeView>
 #include <vector>
 #include <utility>
-#include <cassert>
 
 namespace Z
 {
@@ -106,7 +105,7 @@ namespace Z
         Group& group = m_Groups[groupIndex];
         QtPropertyListItem* property = new QtPropertyListItem(this);
 
-        assert(type != nullptr);
+        Q_ASSERT(type != nullptr);
         property->m_DataType = type;
 
         property->m_NameItem = new QStandardItem(name);
