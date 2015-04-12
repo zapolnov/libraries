@@ -96,12 +96,48 @@ namespace Z
         return property;
     }
 
+    QtPropertyListItem* QtVectorSceneItem::addRotationProperty(QtPropertyList* propertyList, int groupIndex) const
+    {
+        auto property = propertyList->addProperty(groupIndex, tr("rotation"), QtPropertyDataType::floatType(2));
+        property->setValue(rotation());
+        connect(this, SIGNAL(setRotationValue(const QVariant&)), property, SLOT(setValue(const QVariant&)));
+        connect(property, SIGNAL(valueEdited()), SLOT(rotationEdited()));
+        connect(property, SIGNAL(valueChanged()), SLOT(rotationPropertyChanged()));
+        return property;
+    }
+
+    QtPropertyListItem* QtVectorSceneItem::addScaleProperty(QtPropertyList* propertyList, int groupIndex) const
+    {
+        auto property = propertyList->addProperty(groupIndex, tr("scale"), QtPropertyDataType::floatType(2));
+        property->setValue(scale());
+        connect(this, SIGNAL(setScaleValue(const QVariant&)), property, SLOT(setValue(const QVariant&)));
+        connect(property, SIGNAL(valueEdited()), SLOT(scaleEdited()));
+        connect(property, SIGNAL(valueChanged()), SLOT(scalePropertyChanged()));
+        return property;
+    }
+
     void QtVectorSceneItem::setPosWithoutUndo(qreal x, qreal y)
     {
         setFlag(QGraphicsItem::ItemSendsGeometryChanges, false);
         setPos(x, y);
         setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
         emit positionChanged();
+    }
+
+    void QtVectorSceneItem::setRotationWithoutUndo(qreal r)
+    {
+        setFlag(QGraphicsItem::ItemSendsGeometryChanges, false);
+        setRotation(r);
+        setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
+        emit rotationChanged();
+    }
+
+    void QtVectorSceneItem::setScaleWithoutUndo(qreal s)
+    {
+        setFlag(QGraphicsItem::ItemSendsGeometryChanges, false);
+        setScale(s);
+        setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
+        emit scaleChanged();
     }
 
     void QtVectorSceneItem::addUndoCommandForMove(const QString& text, qreal newX, qreal newY, bool allowMerge)
@@ -125,16 +161,12 @@ namespace Z
             int(QtVectorUndo::ItemMove),
             data,
             [this, data]() {
-                m_Changing = true;
-                emit setXValue(data->newX);
-                emit setYValue(data->newY);
-                m_Changing = false;
+                m_Flags |= ChangingX; emit setXValue(data->newX); m_Flags &= ~ChangingX;
+                m_Flags |= ChangingY; emit setYValue(data->newY); m_Flags &= ~ChangingY;
                 setPosWithoutUndo(data->newX, data->newY);
             }, [this, data]() {
-                m_Changing = true;
-                emit setXValue(data->oldX);
-                emit setYValue(data->oldY);
-                m_Changing = false;
+                m_Flags |= ChangingX; emit setXValue(data->oldX); m_Flags &= ~ChangingX;
+                m_Flags |= ChangingY; emit setYValue(data->oldY); m_Flags &= ~ChangingY;
                 setPosWithoutUndo(data->oldX, data->oldY);
             }, [this, data](const QtMergeableUndoCommand::Data* other, QString& text, const QString& otherText) {
                 auto oth = static_cast<const Data*>(other);
@@ -153,11 +185,93 @@ namespace Z
         scene()->undoStack()->push(undoCommand);
     }
 
+    void QtVectorSceneItem::addUndoCommandForRotation(const QString& text, qreal newRotation, bool allowMerge)
+    {
+        struct Data : Z::QtMergeableUndoCommand::Data {
+            QtVectorSceneItem* object;
+            qreal oldRotation, newRotation;
+            time_t time;
+        };
+
+        Data* data = new Data;
+        data->object = this;
+        data->oldRotation = rotation();
+        data->newRotation = newRotation;
+        data->time = time(nullptr);
+
+        auto undoCommand = Z::QtMergeableUndoCommand::create(
+            text,
+            int(QtVectorUndo::ItemRotate),
+            data,
+            [this, data]() {
+                m_Flags |= ChangingRotation; emit setRotationValue(data->newRotation); m_Flags &= ~ChangingRotation;
+                setRotationWithoutUndo(data->newRotation);
+            }, [this, data]() {
+                m_Flags |= ChangingRotation; emit setRotationValue(data->oldRotation); m_Flags &= ~ChangingRotation;
+                setRotationWithoutUndo(data->oldRotation);
+            }, [this, data](const QtMergeableUndoCommand::Data* other, QString& text, const QString& otherText) {
+                auto oth = static_cast<const Data*>(other);
+                if (data->object != oth->object || abs(int(data->time - oth->time)) > UNDO_AUTOMERGE_SECONDS)
+                    return false;
+                data->newRotation = oth->newRotation;
+                data->time = std::max(data->time, oth->time);
+                text = otherText;
+                return true;
+            }
+        );
+        undoCommand->setAllowMerging(allowMerge);
+
+        Q_ASSERT(scene() != nullptr);
+        scene()->undoStack()->push(undoCommand);
+    }
+
+    void QtVectorSceneItem::addUndoCommandForScale(const QString& text, qreal newScale, bool allowMerge)
+    {
+        struct Data : Z::QtMergeableUndoCommand::Data {
+            QtVectorSceneItem* object;
+            qreal oldScale, newScale;
+            time_t time;
+        };
+
+        Data* data = new Data;
+        data->object = this;
+        data->oldScale = scale();
+        data->newScale = newScale;
+        data->time = time(nullptr);
+
+        auto undoCommand = Z::QtMergeableUndoCommand::create(
+            text,
+            int(QtVectorUndo::ItemRotate),
+            data,
+            [this, data]() {
+                m_Flags |= ChangingScale; emit setScaleValue(data->newScale); m_Flags &= ~ChangingScale;
+                setScaleWithoutUndo(data->newScale);
+            }, [this, data]() {
+                m_Flags |= ChangingScale; emit setScaleValue(data->oldScale); m_Flags &= ~ChangingScale;
+                setScaleWithoutUndo(data->oldScale);
+            }, [this, data](const QtMergeableUndoCommand::Data* other, QString& text, const QString& otherText) {
+                auto oth = static_cast<const Data*>(other);
+                if (data->object != oth->object || abs(int(data->time - oth->time)) > UNDO_AUTOMERGE_SECONDS)
+                    return false;
+                data->newScale = oth->newScale;
+                data->time = std::max(data->time, oth->time);
+                text = otherText;
+                return true;
+            }
+        );
+        undoCommand->setAllowMerging(allowMerge);
+
+        Q_ASSERT(scene() != nullptr);
+        scene()->undoStack()->push(undoCommand);
+    }
+
     void QtVectorSceneItem::initPropertyList(QtPropertyList* propertyList)
     {
         int group = propertyList->addGroup(titleName());
         addXProperty(propertyList, group);
         addYProperty(propertyList, group);
+        addRotationProperty(propertyList, group);
+        addScaleProperty(propertyList, group);
     }
 
     QVariant QtVectorSceneItem::itemChange(GraphicsItemChange change, const QVariant& value)
@@ -169,10 +283,8 @@ namespace Z
             QVariant v = QGraphicsObject::itemChange(change, value);
             QPointF newPos = v.value<QPointF>();
             if (x() != newPos.x() || y() != newPos.y()) {
-                m_Changing = true;
-                emit setXValue(newPos.x());
-                emit setYValue(newPos.y());
-                m_Changing = false;
+                m_Flags |= ChangingX; emit setXValue(newPos.x()); m_Flags &= ~ChangingX;
+                m_Flags |= ChangingY; emit setYValue(newPos.y()); m_Flags &= ~ChangingY;
                 QString text = tr("Move %1 to (%2, %3).").arg(name()).arg(newPos.x()).arg(newPos.y());
                 addUndoCommandForMove(text, newPos.x(), newPos.y(), true);
             }
@@ -181,6 +293,38 @@ namespace Z
 
         case QGraphicsItem::ItemPositionHasChanged:
             emit positionChanged();
+            break;
+
+        case QGraphicsItem::ItemRotationChange:
+          {
+            QVariant v = QGraphicsObject::itemChange(change, value);
+            qreal newRotation = v.toFloat();
+            if (rotation() != newRotation) {
+                m_Flags |= ChangingRotation; emit setRotationValue(newRotation); m_Flags &= ~ChangingRotation;
+                QString text = tr("Rotate %1 to %2 degrees.").arg(name()).arg(newRotation);
+                addUndoCommandForRotation(text, newRotation, true);
+            }
+            return v;
+          }
+
+        case QGraphicsItem::ItemRotationHasChanged:
+            emit rotationChanged();
+            break;
+
+        case QGraphicsItem::ItemScaleChange:
+          {
+            QVariant v = QGraphicsObject::itemChange(change, value);
+            qreal newScale = v.toFloat();
+            if (scale() != newScale) {
+                m_Flags |= ChangingScale; emit setScaleValue(newScale); m_Flags &= ~ChangingScale;
+                QString text = tr("Scale %1 to %2.").arg(name()).arg(newScale);
+                addUndoCommandForScale(text, newScale, true);
+            }
+            return v;
+          }
+
+        case QGraphicsItem::ItemScaleHasChanged:
+            emit scaleChanged();
             break;
 
         default:
@@ -193,28 +337,50 @@ namespace Z
     void QtVectorSceneItem::xEdited()
     {
         auto property = qobject_cast<QtPropertyListItem*>(sender());
-        qreal pos = property->value().toFloat();
-        if (pos != x()) {
-            QString text = tr("Change %1 to %2.").arg(property->name()).arg(pos);
-            addUndoCommandForMove(text, pos, y(), false);
-            setPosWithoutUndo(pos, y());
+        qreal value = property->value().toFloat();
+        if (value != x()) {
+            QString text = tr("Change %1 to %2.").arg(property->name()).arg(value);
+            addUndoCommandForMove(text, value, y(), false);
+            setPosWithoutUndo(value, y());
         }
     }
 
     void QtVectorSceneItem::yEdited()
     {
         auto property = qobject_cast<QtPropertyListItem*>(sender());
-        qreal pos = property->value().toFloat();
-        if (pos != y()) {
-            QString text = tr("Change %1 to %2.").arg(property->name()).arg(pos);
-            addUndoCommandForMove(text, x(), pos, false);
-            setPosWithoutUndo(x(), pos);
+        qreal value = property->value().toFloat();
+        if (value != y()) {
+            QString text = tr("Change %1 to %2.").arg(property->name()).arg(value);
+            addUndoCommandForMove(text, x(), value, false);
+            setPosWithoutUndo(x(), value);
+        }
+    }
+
+    void QtVectorSceneItem::rotationEdited()
+    {
+        auto property = qobject_cast<QtPropertyListItem*>(sender());
+        qreal value = property->value().toFloat();
+        if (value != rotation()) {
+            QString text = tr("Change %1 to %2.").arg(property->name()).arg(value);
+            addUndoCommandForRotation(text, value, false);
+            setRotationWithoutUndo(value);
+        }
+    }
+
+    void QtVectorSceneItem::scaleEdited()
+    {
+        auto property = qobject_cast<QtPropertyListItem*>(sender());
+        qreal value = property->value().toFloat();
+        if (value != scale()) {
+            QString text = tr("Change %1 to %2.").arg(property->name()).arg(value);
+            addUndoCommandForScale(text, value, false);
+            setScaleWithoutUndo(value);
         }
     }
 
     void QtVectorSceneItem::xPropertyChanged()
     {
-        if (!m_Changing) {
+        if (!(m_Flags & ChangingX)) {
             auto property = qobject_cast<QtPropertyListItem*>(sender());
             setPosWithoutUndo(property->value().toFloat(), y());
         }
@@ -222,9 +388,25 @@ namespace Z
 
     void QtVectorSceneItem::yPropertyChanged()
     {
-        if (!m_Changing) {
+        if (!(m_Flags & ChangingY)) {
             auto property = qobject_cast<QtPropertyListItem*>(sender());
             setPosWithoutUndo(x(), property->value().toFloat());
+        }
+    }
+
+    void QtVectorSceneItem::rotationPropertyChanged()
+    {
+        if (!(m_Flags & ChangingRotation)) {
+            auto property = qobject_cast<QtPropertyListItem*>(sender());
+            setRotationWithoutUndo(property->value().toFloat());
+        }
+    }
+
+    void QtVectorSceneItem::scalePropertyChanged()
+    {
+        if (!(m_Flags & ChangingScale)) {
+            auto property = qobject_cast<QtPropertyListItem*>(sender());
+            setScaleWithoutUndo(property->value().toFloat());
         }
     }
 }

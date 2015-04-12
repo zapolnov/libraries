@@ -308,6 +308,8 @@ namespace Z
         int group = propertyList->addGroup(QObject::tr("Position"));
         r->object()->addXProperty(propertyList, group);
         r->object()->addYProperty(propertyList, group);
+        r->object()->addRotationProperty(propertyList, group);
+        r->object()->addScaleProperty(propertyList, group);
 
         int group2 = propertyList->addGroup(QObject::tr("Bounding rectangle"));
         addXProperty(r, propertyList, group2);

@@ -31,12 +31,15 @@ namespace Z
         Q_OBJECT
 
     public:
+        enum { Type = ControlPointType };
+
         std::function<void(qreal& x, qreal& y)> movementValidator;
 
         explicit QtVectorControlPoint(QtVectorScene* scene);
         explicit QtVectorControlPoint(QtVectorSceneItem* parent);
         ~QtVectorControlPoint() = default;
 
+        int type() const override { return Type; }
         QString name() const override;
 
         QRectF boundingRect() const override;

@@ -41,6 +41,8 @@ namespace Z
         virtual void cleanupObject(QObject* data) const = 0;
 
         virtual QString nameForObject(const QObject* data) const = 0;
+        virtual bool objectCanBeRotated(const QObject* data) const = 0;
+        virtual bool objectCanBeScaled(const QObject* data) const = 0;
         virtual QRectF boundingRectForObject(const QObject *data) const = 0;
 
         virtual void paintObject(const QObject* data, QPainter* painter) const = 0;

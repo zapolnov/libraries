@@ -42,6 +42,7 @@ namespace Z
         ~QtVectorObject();
 
         int type() const override { return Type; }
+        QString name() const override;
 
         void setNumControlPoints(size_t count);
         QtVectorControlPoint* controlPoint(size_t index);
@@ -49,7 +50,6 @@ namespace Z
         QRectF boundingRect() const override;
 
     protected:
-        QString name() const override;
         void initPropertyList(QtPropertyList* propertyList) override;
         void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
 

@@ -106,6 +106,8 @@ namespace Z
         void cleanupObject(QObject* data) const override;
 
         QString nameForObject(const QObject* data) const override;
+        bool objectCanBeRotated(const QObject* data) const override { return true; }
+        bool objectCanBeScaled(const QObject* data) const override { return true; }
         QRectF boundingRectForObject(const QObject *data) const override;
 
         void paintObject(const QObject* data, QPainter* painter) const override;

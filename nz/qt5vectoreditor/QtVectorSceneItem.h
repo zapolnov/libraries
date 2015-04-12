@@ -53,32 +53,56 @@ namespace Z
         QtPropertyList* propertyList() const;
         QtPropertyListItem* addXProperty(QtPropertyList* propertyList, int groupIndex) const;
         QtPropertyListItem* addYProperty(QtPropertyList* propertyList, int groupIndex) const;
+        QtPropertyListItem* addRotationProperty(QtPropertyList* propertyList, int groupIndex) const;
+        QtPropertyListItem* addScaleProperty(QtPropertyList* propertyList, int groupIndex) const;
 
         Q_SLOT void setPosWithoutUndo(qreal x, qreal y);
+        Q_SLOT void setRotationWithoutUndo(qreal r);
+        Q_SLOT void setScaleWithoutUndo(qreal s);
+
         void addUndoCommandForMove(const QString& text, qreal newX, qreal newY, bool allowMerge);
+        void addUndoCommandForRotation(const QString& text, qreal newRotation, bool allowMerge);
+        void addUndoCommandForScale(const QString& text, qreal newScale, bool allowMerge);
 
         void prepareGeometryChange() { QGraphicsObject::prepareGeometryChange(); }
 
     signals:
         void positionChanged();
+        void rotationChanged();
+        void scaleChanged();
+
         void setXValue(const QVariant& value);
         void setYValue(const QVariant& value);
+        void setRotationValue(const QVariant& value);
+        void setScaleValue(const QVariant& value);
 
     protected:
         virtual void initPropertyList(QtPropertyList* propertyList);
         QVariant itemChange(GraphicsItemChange change, const QVariant& value) override;
 
     private:
+        enum {
+            ChangingX           = 0b0000000001,
+            ChangingY           = 0b0000000010,
+            ChangingRotation    = 0b0000000100,
+            ChangingScale       = 0b0000001000,
+        };
+
         QtVectorScene* m_Scene;
         mutable QtPropertyList* m_PropertyList = nullptr;
-        bool m_Changing = false;
+        int m_Flags = 0;
 
         void init();
 
         Q_SLOT void xEdited();
         Q_SLOT void yEdited();
+        Q_SLOT void rotationEdited();
+        Q_SLOT void scaleEdited();
+
         Q_SLOT void xPropertyChanged();
         Q_SLOT void yPropertyChanged();
+        Q_SLOT void rotationPropertyChanged();
+        Q_SLOT void scalePropertyChanged();
 
         Q_DISABLE_COPY(QtVectorSceneItem);
     };

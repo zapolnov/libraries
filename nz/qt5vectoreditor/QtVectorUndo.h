@@ -32,6 +32,8 @@ namespace Z
     enum class QtVectorUndo : int
     {
         ItemMove,
+        ItemRotate,
+        ItemScale,
         PropertyChange,
     };
 

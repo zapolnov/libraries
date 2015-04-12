@@ -50,6 +50,11 @@ namespace Z
         delete m_SpecificData;
     }
 
+    QString QtVectorObject::name() const
+    {
+        return m_Kind->nameForObject(m_SpecificData);
+    }
+
     void QtVectorObject::setNumControlPoints(size_t count)
     {
         if (count < m_ControlPoints.size()) {
@@ -71,11 +76,6 @@ namespace Z
     QRectF QtVectorObject::boundingRect() const
     {
         return m_Kind->boundingRectForObject(m_SpecificData);
-    }
-
-    QString QtVectorObject::name() const
-    {
-        return m_Kind->nameForObject(m_SpecificData);
     }
 
     void QtVectorObject::initPropertyList(QtPropertyList* propertyList)
