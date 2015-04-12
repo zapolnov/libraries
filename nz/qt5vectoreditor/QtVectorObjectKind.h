@@ -27,6 +27,7 @@ class QPainter;
 
 namespace Z
 {
+    class QtPropertyList;
     class QtVectorObject;
 
     class QtVectorObjectKind
@@ -36,9 +37,12 @@ namespace Z
 
         virtual QObject* createDataForObject(QtVectorObject* object) const = 0;
         virtual void initObject(QObject* data) const = 0;
+        virtual void initPropertyListForObject(QObject* data, QtPropertyList* propertyList) const = 0;
         virtual void cleanupObject(QObject* data) const = 0;
 
+        virtual QString nameForObject(const QObject* data) const = 0;
         virtual QRectF boundingRectForObject(const QObject *data) const = 0;
+
         virtual void paintObject(const QObject* data, QPainter* painter) const = 0;
     };
 }

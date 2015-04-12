@@ -38,6 +38,7 @@ namespace Z
         static const QtPropertyDataType* const Int;
         static const QtPropertyDataType* const String;
         static const QtPropertyDataType* floatType(int precision);
+        static const QtPropertyDataType* rangedFloatType(int precision, float mn, float mx);
 
         virtual ~QtPropertyDataType() = default;
 

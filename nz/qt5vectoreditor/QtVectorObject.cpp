@@ -22,32 +22,26 @@
 #include "QtVectorObject.h"
 #include "QtVectorObjectKind.h"
 #include "QtVectorScene.h"
-#include "QtVectorUndo.h"
-#include "qt5util/QtMergeableUndoCommand.h"
-#include "qt5propertylist/QtPropertyDataType.h"
-#include "qt5propertylist/QtPropertyList.h"
+#include "QtVectorPoint.h"
 
 namespace Z
 {
     QtVectorObject::QtVectorObject(QtVectorObjectKind* kind, QtVectorScene* scene)
-        : QObject(scene)
+        : QtVectorSceneItem(scene)
         , m_Kind(kind)
-        , m_SpecificData(nullptr)
     {
         Q_ASSERT(kind != nullptr);
-        Q_ASSERT(scene != nullptr);
-        scene->addItem(this);
-        init();
+        m_SpecificData = m_Kind->createDataForObject(this);
+        m_Kind->initObject(m_SpecificData);
     }
 
     QtVectorObject::QtVectorObject(QtVectorObjectKind* kind, QtVectorObject* parent)
-        : QObject((Q_ASSERT(parent != nullptr), parent->scene()))
-        , QGraphicsItem(parent)
+        : QtVectorSceneItem(parent)
         , m_Kind(kind)
-        , m_SpecificData(nullptr)
     {
         Q_ASSERT(kind != nullptr);
-        init();
+        m_SpecificData = m_Kind->createDataForObject(this);
+        m_Kind->initObject(m_SpecificData);
     }
 
     QtVectorObject::~QtVectorObject()
@@ -56,48 +50,22 @@ namespace Z
         delete m_SpecificData;
     }
 
-    void QtVectorObject::init()
+    void QtVectorObject::setNumControlPoints(size_t count)
     {
-        m_PropertyList = new QtPropertyList(this);
-        int group = m_PropertyList->addGroup(tr("Object"));
-
-        m_XProperty = m_PropertyList->addProperty(group, tr("x"), QtPropertyDataType::floatType(2));
-        m_XProperty->setValue(x());
-        connect(m_XProperty, SIGNAL(valueEdited()), SLOT(xEdited()));
-
-        m_YProperty = m_PropertyList->addProperty(group, tr("y"), QtPropertyDataType::floatType(2));
-        m_YProperty->setValue(y());
-        connect(m_YProperty, SIGNAL(valueEdited()), SLOT(yEdited()));
-
-        setFlag(QGraphicsItem::ItemSendsGeometryChanges);
-        setFlag(QGraphicsItem::ItemIsMovable);
-        setFlag(QGraphicsItem::ItemIsSelectable);
-
-        m_SpecificData = m_Kind->createDataForObject(this);
-        m_Kind->initObject(m_SpecificData);
+        if (count < m_ControlPoints.size()) {
+            for (size_t i = count; i < m_ControlPoints.size(); i++)
+                delete m_ControlPoints[i];
+        }
+        m_ControlPoints.resize(count);
     }
 
-    QtVectorScene* QtVectorObject::scene() const
+    QtVectorPoint* QtVectorObject::controlPoint(size_t index)
     {
-        return qobject_cast<QtVectorScene*>(QObject::parent());
-    }
-
-    QtVectorObject* QtVectorObject::parent() const
-    {
-        auto p = parentItem();
-        if (p && p->type() == Type)
-            return static_cast<QtVectorObject*>(p);
-        return nullptr;
-    }
-
-    void QtVectorObject::setParent(QtVectorObject* parent)
-    {
-        setParentItem(parent);
-    }
-
-    void QtVectorObject::prepareGeometryChange()
-    {
-        QGraphicsItem::prepareGeometryChange();
+        Q_ASSERT(index < m_ControlPoints.size());
+        QtVectorPoint*& point = m_ControlPoints[index];
+        if (!point)
+            point = new QtVectorPoint(this);
+        return point;
     }
 
     QRectF QtVectorObject::boundingRect() const
@@ -105,103 +73,18 @@ namespace Z
         return m_Kind->boundingRectForObject(m_SpecificData);
     }
 
+    QString QtVectorObject::name() const
+    {
+        return m_Kind->nameForObject(m_SpecificData);
+    }
+
+    void QtVectorObject::initPropertyList(QtPropertyList* propertyList)
+    {
+        m_Kind->initPropertyListForObject(m_SpecificData, propertyList);
+    }
+
     void QtVectorObject::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*)
     {
         m_Kind->paintObject(m_SpecificData, painter);
-    }
-
-    QVariant QtVectorObject::itemChange(GraphicsItemChange change, const QVariant& value)
-    {
-        switch (change)
-        {
-        case QGraphicsItem::ItemPositionChange:
-          {
-            QVariant v = QGraphicsItem::itemChange(change, value);
-            QPointF newPos = v.value<QPointF>();
-            if (x() != newPos.x() || y() != newPos.y()) {
-                m_XProperty->setValue(newPos.x());
-                m_YProperty->setValue(newPos.y());
-                QString text = tr("Move item to (%1, %2).").arg(newPos.x()).arg(newPos.y());
-                addUndoCommandForMove(text, newPos.x(), newPos.y(), true);
-            }
-            return v;
-          }
-
-        default:
-            break;
-        }
-
-        return QGraphicsItem::itemChange(change, value);
-    }
-
-    void QtVectorObject::setPosWithoutNotification(qreal x, qreal y)
-    {
-        setFlag(QGraphicsItem::ItemSendsGeometryChanges, false);
-        setPos(x, y);
-        setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
-    }
-
-    void QtVectorObject::addUndoCommandForMove(const QString& text, qreal newX, qreal newY, bool allowMerge)
-    {
-        struct Data : Z::QtMergeableUndoCommand::Data {
-            QtVectorObject* object;
-            qreal oldX, oldY, newX, newY;
-            time_t time;
-        };
-
-        Data* data = new Data;
-        data->object = this;
-        data->oldX = x();
-        data->oldY = y();
-        data->newX = newX;
-        data->newY = newY;
-        data->time = time(nullptr);
-
-        auto undoCommand = Z::QtMergeableUndoCommand::create(
-            text,
-            int(QtVectorUndo::ItemMove),
-            data,
-            [this, data]() {
-                m_XProperty->setValue(data->newX);
-                m_YProperty->setValue(data->newY);
-                setPosWithoutNotification(data->newX, data->newY);
-            }, [this, data]() {
-                m_XProperty->setValue(data->oldX);
-                m_YProperty->setValue(data->oldY);
-                setPosWithoutNotification(data->oldX, data->oldY);
-            }, [this, data](const QtMergeableUndoCommand::Data* other, QString& text, const QString& otherText) {
-                auto oth = static_cast<const Data*>(other);
-                if (data->object != oth->object || abs(int(data->time - oth->time)) > 3)
-                    return false;
-                data->newX = oth->newX;
-                data->newY = oth->newY;
-                data->time = std::max(data->time, oth->time);
-                text = otherText;
-                return true;
-            }
-        );
-
-        undoCommand->setAllowMerging(allowMerge);
-        scene()->undoStack()->push(undoCommand);
-    }
-
-    void QtVectorObject::xEdited()
-    {
-        qreal pos = m_XProperty->value().toFloat();
-        if (pos != x()) {
-            QString text = tr("Change %1 to %2.").arg("x").arg(pos);
-            addUndoCommandForMove(text, pos, y(), false);
-            setPosWithoutNotification(pos, y());
-        }
-    }
-
-    void QtVectorObject::yEdited()
-    {
-        qreal pos = m_YProperty->value().toFloat();
-        if (pos != y()) {
-            QString text = tr("Change %1 to %2.").arg("y").arg(pos);
-            addUndoCommandForMove(text, x(), pos, false);
-            setPosWithoutNotification(x(), pos);
-        }
     }
 }

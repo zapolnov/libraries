@@ -43,7 +43,7 @@ namespace Z
         const QString& name() const { return m_Name; }
 
         const QVariant& value() const { return m_Value; }
-        void setValue(const QVariant& data) { m_Value = data; emit valueChanged(); }
+        Q_SLOT void setValue(const QVariant& data) { m_Value = data; emit valueChanged(); }
 
     signals:
         void valueChanged();

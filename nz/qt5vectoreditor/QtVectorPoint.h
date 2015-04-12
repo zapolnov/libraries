@@ -21,18 +21,31 @@
  */
 
 #pragma once
-#include <QGraphicsEllipseItem>
+#include "QtVectorSceneItem.h"
+#include <functional>
 
 namespace Z
 {
-    class QtVectorPoint : protected QGraphicsEllipseItem
+    class QtVectorPoint : public QtVectorSceneItem
     {
+        Q_OBJECT
+
     public:
-        QtVectorPoint();
-        explicit QtVectorPoint(const QPointF& p) : QtVectorPoint() { setPos(p); }
-        QtVectorPoint(qreal x, qreal y) : QtVectorPoint() { setPos(x, y); }
+        std::function<void(qreal& x, qreal& y)> movementValidator;
+
+        explicit QtVectorPoint(QtVectorScene* scene);
+        explicit QtVectorPoint(QtVectorSceneItem* parent);
         ~QtVectorPoint() = default;
 
-        QPointF pos() const { return QGraphicsEllipseItem::pos(); }
+        QString name() const override;
+
+        QRectF boundingRect() const override;
+        void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
+
+    protected:
+        QVariant itemChange(GraphicsItemChange change, const QVariant& value) override;
+
+    private:
+        void init();
     };
 }

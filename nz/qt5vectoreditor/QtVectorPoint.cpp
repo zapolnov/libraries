@@ -20,14 +20,57 @@
  * THE SOFTWARE.
  */
 #include "QtVectorPoint.h"
-#include <QGraphicsEllipseItem>
+#include <QPainter>
+#include <QPen>
+#include <QCursor>
 
 namespace Z
 {
-    static const float RADIUS = 3.0f;
+    static const float RADIUS = 5.0f;
 
-    QtVectorPoint::QtVectorPoint()
+    QtVectorPoint::QtVectorPoint(QtVectorScene* scene)
+        : QtVectorSceneItem(scene)
     {
-        setRect(-RADIUS, -RADIUS, RADIUS, RADIUS);
+        init();
+    }
+
+    QtVectorPoint::QtVectorPoint(QtVectorSceneItem* parent)
+        : QtVectorSceneItem(parent)
+    {
+        init();
+    }
+
+    void QtVectorPoint::init()
+    {
+        setVisible(true);
+        setCursor(Qt::SizeAllCursor);
+    }
+
+    QString QtVectorPoint::name() const
+    {
+        return tr("control point");
+    }
+
+    QRectF QtVectorPoint::boundingRect() const
+    {
+        return QRectF(-RADIUS, -RADIUS, 2.0 * RADIUS, 2.0 * RADIUS);
+    }
+
+    void QtVectorPoint::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*)
+    {
+        painter->setPen(QPen(Qt::white));
+        painter->setBrush(Qt::yellow);
+        painter->drawEllipse(boundingRect());
+    }
+
+    QVariant QtVectorPoint::itemChange(GraphicsItemChange change, const QVariant& value)
+    {
+        if (change == QGraphicsItem::ItemPositionChange && movementValidator)
+        {
+            QPointF newPos = value.value<QPointF>();
+            movementValidator(newPos.rx(), newPos.ry());
+            return QtVectorSceneItem::itemChange(change, QVariant(newPos));
+        }
+        return QtVectorSceneItem::itemChange(change, value);
     }
 }

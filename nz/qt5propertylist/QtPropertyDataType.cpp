@@ -29,7 +29,7 @@
 #include <QDoubleSpinBox>
 #include <memory>
 #include <limits>
-#include <unordered_map>
+#include <map>
 
 namespace Z
 {
@@ -104,7 +104,9 @@ namespace Z
 
         struct FloatType : public QtPropertyDataType {
             const int decimals;
-            explicit FloatType(int d) : decimals(d) {}
+            const float minValue;
+            const float maxValue;
+            explicit FloatType(int d, float mn, float mx) : decimals(d), minValue(mn), maxValue(mx) {}
 
             QVariant formatForDisplay(const QVariant& data) const override {
                 return QString::number(data.toFloat(), 'f', decimals);
@@ -112,7 +114,7 @@ namespace Z
 
             QWidget* createEditor(QWidget* parent) const override {
                 auto doubleSpinBox = new QDoubleSpinBox(parent);
-                doubleSpinBox->setRange(-std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
+                doubleSpinBox->setRange(-minValue, maxValue);
                 doubleSpinBox->setDecimals(decimals);
                 return doubleSpinBox;
             }
@@ -151,10 +153,28 @@ namespace Z
             }
         };
 
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        struct FloatKey {
+            const int pr;
+            const float min;
+            const float max;
+
+            FloatKey(int p, float mn, float mx) : pr(p), min(mn), max(mx) {}
+            bool operator==(const FloatKey& oth) const { return pr == oth.pr && min == oth.min && max == oth.max; }
+            bool operator<(const FloatKey& oth) const {
+                if (pr < oth.pr) return true;
+                else if (pr > oth.pr) return false;
+                else if (min < oth.min) return true;
+                else if (min > oth.min) return false;
+                else return max < oth.max;
+            }
+        };
+
         static const BoolType boolType = {};
         static const IntType intType = {};
         static const StringType stringType = {};
-        static std::unordered_map<int, std::unique_ptr<FloatType>> floatTypes;
+        static std::map<FloatKey, std::unique_ptr<FloatType>> floatTypes;
     };
 
     const QtPropertyDataType* const QtPropertyDataType::Bool = &boolType;
@@ -163,11 +183,16 @@ namespace Z
 
     const QtPropertyDataType* QtPropertyDataType::floatType(int precision)
     {
+        return rangedFloatType(precision, std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
+    }
+
+    const QtPropertyDataType* QtPropertyDataType::rangedFloatType(int precision, float mn, float mx)
+    {
         Q_ASSERT(precision >= 0);
 
-        std::unique_ptr<FloatType>& ptr = floatTypes[precision];
+        std::unique_ptr<FloatType>& ptr = floatTypes[FloatKey(precision, mn, mx)];
         if (!ptr)
-            ptr.reset(new FloatType(precision));
+            ptr.reset(new FloatType(precision, mn, mx));
 
         return ptr.get();
     }

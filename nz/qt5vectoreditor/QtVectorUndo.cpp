@@ -52,7 +52,7 @@ namespace Z
                 data->property->setValue(data->oldValue);
             }, [data](const QtMergeableUndoCommand::Data* other, QString& text, const QString& otherText) {
                 auto oth = static_cast<const Data*>(other);
-                if (data->property != oth->property || abs(int(data->time - oth->time)) > 3)
+                if (data->property != oth->property || abs(int(data->time - oth->time)) > UNDO_AUTOMERGE_SECONDS)
                     return false;
                 data->newValue = oth->newValue;
                 data->time = std::max(data->time, oth->time);

@@ -21,57 +21,42 @@
  */
 
 #pragma once
-#include <QGraphicsItem>
+#include "QtVectorSceneItem.h"
+#include <vector>
 
 namespace Z
 {
-    class QtVectorScene;
     class QtVectorObjectKind;
-    class QtPropertyList;
-    class QtPropertyListItem;
+    class QtVectorPoint;
 
-    class QtVectorObject : protected QObject, protected QGraphicsItem
+    class QtVectorObject : public QtVectorSceneItem
     {
         Q_OBJECT
         Q_INTERFACES(QGraphicsItem)
 
     public:
-        enum { Type = UserType };
+        enum { Type = QtVectorSceneItem::ObjectType };
 
         QtVectorObject(QtVectorObjectKind* kind, QtVectorScene* scene);
         QtVectorObject(QtVectorObjectKind* kind, QtVectorObject* parent);
         ~QtVectorObject();
 
-        QtVectorScene* scene() const;
-        QtPropertyList* propertyList() const { return m_PropertyList; }
-
-        QtVectorObject* parent() const;
-        void setParent(QtVectorObject* parent);
-
-        void prepareGeometryChange();
-
-    protected:
         int type() const override { return Type; }
 
-        QRectF boundingRect() const override;
-        void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
+        void setNumControlPoints(size_t count);
+        QtVectorPoint* controlPoint(size_t index);
 
-        QVariant itemChange(GraphicsItemChange change, const QVariant& value) override;
+        QRectF boundingRect() const override;
+
+    protected:
+        QString name() const override;
+        void initPropertyList(QtPropertyList* propertyList) override;
+        void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
 
     private:
         QtVectorObjectKind* m_Kind;
-        QtPropertyList* m_PropertyList;
-        QtPropertyListItem* m_XProperty;
-        QtPropertyListItem* m_YProperty;
         QObject* m_SpecificData;
-
-        void init();
-
-        void setPosWithoutNotification(qreal x, qreal y);
-        void addUndoCommandForMove(const QString& text, qreal newX, qreal newY, bool allowMerge);
-
-        Q_SLOT void xEdited();
-        Q_SLOT void yEdited();
+        std::vector<QtVectorPoint*> m_ControlPoints;
 
         Q_DISABLE_COPY(QtVectorObject);
     };

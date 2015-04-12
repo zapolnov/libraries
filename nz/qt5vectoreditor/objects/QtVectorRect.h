@@ -25,7 +25,9 @@
 
 namespace Z
 {
+    class QtPropertyList;
     class QtPropertyListItem;
+    class QtVectorPoint;
 
     class QtVectorRectData : public QObject
     {
@@ -36,22 +38,63 @@ namespace Z
 
         QtVectorObject* object() const { return m_Object; }
 
+        void init(qreal x, qreal y, qreal w, qreal h);
+        Q_SLOT void updateControlPoints();
+
+        qreal x() const { return m_X; }
+        qreal y() const { return m_Y; }
         qreal width() const { return m_Width; }
         qreal height() const { return m_Height; }
+
+        void setX(qreal x);
+        void setY(qreal y);
         void setWidth(qreal w);
         void setHeight(qreal h);
 
+    signals:
+        void setXValue(const QVariant&);
+        void setYValue(const QVariant&);
+        void setWidthValue(const QVariant&);
+        void setHeightValue(const QVariant&);
+
     private:
+        enum {
+            ChangingX       = 0b00000000001,
+            ChangingY       = 0b00000000010,
+            ChangingWidth   = 0b00000000100,
+            ChangingHeight  = 0b00000001000,
+            ChangingTL      = 0b00000010000,
+            ChangingTR      = 0b00000100000,
+            ChangingBL      = 0b00001000000,
+            ChangingBR      = 0b00010000000,
+        };
+
         QtVectorObject* m_Object;
-        QtPropertyListItem* m_WidthProperty;
-        QtPropertyListItem* m_HeightProperty;
+        qreal m_X = 0.0f;
+        qreal m_Y = 0.0f;
         qreal m_Width = 0.0f;
         qreal m_Height = 0.0f;
+        int m_Flags = 0;
 
+        void rawSetX(qreal x);
+        void rawSetY(qreal y);
+        void rawSetWidth(qreal w);
+        void rawSetHeight(qreal h);
+
+        Q_SLOT void xChanged();
+        Q_SLOT void yChanged();
         Q_SLOT void widthChanged();
         Q_SLOT void heightChanged();
+
+        Q_SLOT void xEdited();
+        Q_SLOT void yEdited();
         Q_SLOT void widthEdited();
         Q_SLOT void heightEdited();
+
+        Q_SLOT void topLeftControlPointPositionChanged();
+        Q_SLOT void topRightControlPointPositionChanged();
+        Q_SLOT void bottomLeftControlPointPositionChanged();
+        Q_SLOT void bottomRightControlPointPositionChanged();
     };
 
     class QtVectorRect : public QtVectorObjectKind
@@ -59,9 +102,18 @@ namespace Z
     public:
         QObject* createDataForObject(QtVectorObject* object) const override;
         void initObject(QObject* data) const override;
+        void initPropertyListForObject(QObject* data, QtPropertyList* propertyList) const override;
         void cleanupObject(QObject* data) const override;
 
+        QString nameForObject(const QObject* data) const override;
         QRectF boundingRectForObject(const QObject *data) const override;
+
         void paintObject(const QObject* data, QPainter* painter) const override;
+
+    protected:
+        void addXProperty(QtVectorRectData* r, QtPropertyList* propertyList, int group) const;
+        void addYProperty(QtVectorRectData* r, QtPropertyList* propertyList, int group) const;
+        void addWidthProperty(QtVectorRectData* r, QtPropertyList* propertyList, int group) const;
+        void addHeightProperty(QtVectorRectData* r, QtPropertyList* propertyList, int group) const;
     };
 }
