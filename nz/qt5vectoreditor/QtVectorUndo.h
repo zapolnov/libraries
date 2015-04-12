@@ -22,10 +22,19 @@
 
 #pragma once
 
+class QVariant;
+
 namespace Z
 {
-    enum class QtVectorUndoCommandId : int
+    class QtVectorScene;
+    class QtPropertyListItem;
+
+    enum class QtVectorUndo : int
     {
         ItemMove,
+        PropertyChange,
     };
+
+    void addUndoCommandForProperty(QtVectorScene* scene, QtPropertyListItem* property,
+        const QVariant& oldValue, const QVariant& newValue, bool allowMerge);
 }

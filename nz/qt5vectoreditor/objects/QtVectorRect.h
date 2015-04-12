@@ -48,6 +48,8 @@ namespace Z
         qreal m_Width = 0.0f;
         qreal m_Height = 0.0f;
 
+        Q_SLOT void widthChanged();
+        Q_SLOT void heightChanged();
         Q_SLOT void widthEdited();
         Q_SLOT void heightEdited();
     };

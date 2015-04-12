@@ -21,6 +21,7 @@
  */
 #include "QtVectorRect.h"
 #include "QtVectorObject.h"
+#include "../QtVectorUndo.h"
 #include "qt5propertylist/QtPropertyDataType.h"
 #include "qt5propertylist/QtPropertyListItem.h"
 #include "qt5propertylist/QtPropertyList.h"
@@ -35,27 +36,39 @@ namespace Z
         int group = propertyList->addGroup(tr("Rectangle"));
 
         m_WidthProperty = propertyList->addProperty(group, tr("width"), QtPropertyDataType::floatType(2));
+        connect(m_WidthProperty, SIGNAL(valueChanged()), SLOT(widthChanged()));
         connect(m_WidthProperty, SIGNAL(valueEdited()), SLOT(widthEdited()));
 
         m_HeightProperty = propertyList->addProperty(group, tr("height"), QtPropertyDataType::floatType(2));
+        connect(m_HeightProperty, SIGNAL(valueChanged()), SLOT(heightChanged()));
         connect(m_HeightProperty, SIGNAL(valueEdited()), SLOT(heightEdited()));
      }
 
     void QtVectorRectData::setWidth(qreal w)
     {
-        if (m_Width != w) {
-            m_Object->prepareGeometryChange();
-            m_Width = w;
-            m_WidthProperty->setValue(w);
-        }
+        m_WidthProperty->setValue(w);
     }
 
     void QtVectorRectData::setHeight(qreal h)
     {
+        m_HeightProperty->setValue(h);
+    }
+
+    void QtVectorRectData::widthChanged()
+    {
+        float w = m_WidthProperty->value().toFloat();
+        if (m_Width != w) {
+            m_Object->prepareGeometryChange();
+            m_Width = w;
+        }
+    }
+
+    void QtVectorRectData::heightChanged()
+    {
+        float h = m_HeightProperty->value().toFloat();
         if (m_Height != h) {
             m_Object->prepareGeometryChange();
             m_Height = h;
-            m_HeightProperty->setValue(h);
         }
     }
 
@@ -63,6 +76,7 @@ namespace Z
     {
         float w = m_WidthProperty->value().toFloat();
         if (m_Width != w) {
+            addUndoCommandForProperty(m_Object->scene(), m_WidthProperty, m_Width, w, false);
             m_Object->prepareGeometryChange();
             m_Width = w;
         }
@@ -72,6 +86,7 @@ namespace Z
     {
         float h = m_HeightProperty->value().toFloat();
         if (m_Height != h) {
+            addUndoCommandForProperty(m_Object->scene(), m_HeightProperty, m_Height, h, false);
             m_Object->prepareGeometryChange();
             m_Height = h;
         }

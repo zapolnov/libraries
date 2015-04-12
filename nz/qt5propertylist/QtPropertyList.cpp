@@ -107,6 +107,7 @@ namespace Z
 
         Q_ASSERT(type != nullptr);
         property->m_DataType = type;
+        property->m_Name = name;
 
         property->m_NameItem = new QStandardItem(name);
         property->m_NameItem->setEditable(false);

@@ -22,7 +22,7 @@
 #include "QtVectorObject.h"
 #include "QtVectorObjectKind.h"
 #include "QtVectorScene.h"
-#include "QtVectorUndoCommandId.h"
+#include "QtVectorUndo.h"
 #include "qt5util/QtMergeableUndoCommand.h"
 #include "qt5propertylist/QtPropertyDataType.h"
 #include "qt5propertylist/QtPropertyList.h"
@@ -121,7 +121,8 @@ namespace Z
             if (x() != newPos.x() || y() != newPos.y()) {
                 m_XProperty->setValue(newPos.x());
                 m_YProperty->setValue(newPos.y());
-                addUndoCommandForMove(newPos.x(), newPos.y(), true);
+                QString text = tr("Move item to (%1, %2).").arg(newPos.x()).arg(newPos.y());
+                addUndoCommandForMove(text, newPos.x(), newPos.y(), true);
             }
             return v;
           }
@@ -140,7 +141,7 @@ namespace Z
         setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
     }
 
-    void QtVectorObject::addUndoCommandForMove(qreal newX, qreal newY, bool allowMerge)
+    void QtVectorObject::addUndoCommandForMove(const QString& text, qreal newX, qreal newY, bool allowMerge)
     {
         struct Data : Z::QtMergeableUndoCommand::Data {
             QtVectorObject* object;
@@ -157,8 +158,8 @@ namespace Z
         data->time = time(nullptr);
 
         auto undoCommand = Z::QtMergeableUndoCommand::create(
-            tr("Move item to (%1, %2).").arg(data->newX).arg(data->newY),
-            int(QtVectorUndoCommandId::ItemMove),
+            text,
+            int(QtVectorUndo::ItemMove),
             data,
             [this, data]() {
                 m_XProperty->setValue(data->newX);
@@ -188,7 +189,8 @@ namespace Z
     {
         qreal pos = m_XProperty->value().toFloat();
         if (pos != x()) {
-            addUndoCommandForMove(pos, y(), false);
+            QString text = tr("Change %1 to %2.").arg("x").arg(pos);
+            addUndoCommandForMove(text, pos, y(), false);
             setPosWithoutNotification(pos, y());
         }
     }
@@ -197,7 +199,8 @@ namespace Z
     {
         qreal pos = m_YProperty->value().toFloat();
         if (pos != y()) {
-            addUndoCommandForMove(x(), pos, false);
+            QString text = tr("Change %1 to %2.").arg("y").arg(pos);
+            addUndoCommandForMove(text, x(), pos, false);
             setPosWithoutNotification(x(), pos);
         }
     }

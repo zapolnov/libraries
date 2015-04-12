@@ -40,6 +40,8 @@ namespace Z
         QtPropertyList* list() const;
         const QtPropertyDataType* dataType() const { return m_DataType; }
 
+        const QString& name() const { return m_Name; }
+
         const QVariant& value() const { return m_Value; }
         void setValue(const QVariant& data) { m_Value = data; emit valueChanged(); }
 
@@ -51,6 +53,7 @@ namespace Z
         QStandardItem* m_NameItem = nullptr;
         QStandardItem* m_ValueItem = nullptr;
         const QtPropertyDataType* m_DataType = nullptr;
+        QString m_Name;
         QVariant m_Value;
 
         explicit QtPropertyListItem(QtPropertyList* list);
