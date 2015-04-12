@@ -27,7 +27,7 @@
 namespace Z
 {
     class QtVectorObjectKind;
-    class QtVectorPoint;
+    class QtVectorControlPoint;
 
     class QtVectorObject : public QtVectorSceneItem
     {
@@ -44,7 +44,7 @@ namespace Z
         int type() const override { return Type; }
 
         void setNumControlPoints(size_t count);
-        QtVectorPoint* controlPoint(size_t index);
+        QtVectorControlPoint* controlPoint(size_t index);
 
         QRectF boundingRect() const override;
 
@@ -56,7 +56,7 @@ namespace Z
     private:
         QtVectorObjectKind* m_Kind;
         QObject* m_SpecificData;
-        std::vector<QtVectorPoint*> m_ControlPoints;
+        std::vector<QtVectorControlPoint*> m_ControlPoints;
 
         Q_DISABLE_COPY(QtVectorObject);
     };

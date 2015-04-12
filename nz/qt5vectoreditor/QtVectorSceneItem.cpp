@@ -22,7 +22,7 @@
 #include "QtVectorSceneItem.h"
 #include "QtVectorScene.h"
 #include "QtVectorUndo.h"
-#include "QtVectorPoint.h"
+#include "QtVectorControlPoint.h"
 #include "qt5util/QtMergeableUndoCommand.h"
 #include "qt5propertylist/QtPropertyDataType.h"
 #include "qt5propertylist/QtPropertyList.h"

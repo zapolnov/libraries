@@ -21,7 +21,7 @@
  */
 #include "QtVectorRect.h"
 #include "QtVectorObject.h"
-#include "../QtVectorPoint.h"
+#include "../QtVectorControlPoint.h"
 #include "../QtVectorUndo.h"
 #include "qt5propertylist/QtPropertyDataType.h"
 #include "qt5propertylist/QtPropertyListItem.h"
@@ -244,7 +244,7 @@ namespace Z
     void QtVectorRectData::topLeftControlPointPositionChanged()
     {
         if (!(m_Flags & ChangingTL)) {
-            auto point = qobject_cast<QtVectorPoint*>(sender());
+            auto point = qobject_cast<QtVectorControlPoint*>(sender());
             m_Flags |= ChangingTL;
             setWidth(m_Width + (m_X - point->x()));
             setHeight(m_Height + (m_Y - point->y()));
@@ -257,7 +257,7 @@ namespace Z
     void QtVectorRectData::topRightControlPointPositionChanged()
     {
         if (!(m_Flags & ChangingTR)) {
-            auto point = qobject_cast<QtVectorPoint*>(sender());
+            auto point = qobject_cast<QtVectorControlPoint*>(sender());
             m_Flags |= ChangingTR;
             setWidth(point->x() - m_X);
             setHeight(m_Height + (m_Y - point->y()));
@@ -269,7 +269,7 @@ namespace Z
     void QtVectorRectData::bottomLeftControlPointPositionChanged()
     {
         if (!(m_Flags & ChangingBL)) {
-            auto point = qobject_cast<QtVectorPoint*>(sender());
+            auto point = qobject_cast<QtVectorControlPoint*>(sender());
             m_Flags |= ChangingBL;
             setWidth(m_Width + (m_X - point->x()));
             setHeight(point->y() - m_Y);
@@ -281,7 +281,7 @@ namespace Z
     void QtVectorRectData::bottomRightControlPointPositionChanged()
     {
         if (!(m_Flags & ChangingBR)) {
-            auto point = qobject_cast<QtVectorPoint*>(sender());
+            auto point = qobject_cast<QtVectorControlPoint*>(sender());
             m_Flags |= ChangingBR;
             setWidth(point->x() - m_X);
             setHeight(point->y() - m_Y);

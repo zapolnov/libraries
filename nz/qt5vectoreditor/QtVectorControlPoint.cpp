@@ -19,51 +19,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include "QtVectorPoint.h"
+#include "QtVectorControlPoint.h"
 #include <QPainter>
 #include <QPen>
 #include <QCursor>
 
 namespace Z
 {
-    static const float RADIUS = 5.0f;
+    static const float RADIUS = 3.0f;
 
-    QtVectorPoint::QtVectorPoint(QtVectorScene* scene)
+    QtVectorControlPoint::QtVectorControlPoint(QtVectorScene* scene)
         : QtVectorSceneItem(scene)
     {
         init();
     }
 
-    QtVectorPoint::QtVectorPoint(QtVectorSceneItem* parent)
+    QtVectorControlPoint::QtVectorControlPoint(QtVectorSceneItem* parent)
         : QtVectorSceneItem(parent)
     {
         init();
     }
 
-    void QtVectorPoint::init()
+    void QtVectorControlPoint::init()
     {
         setVisible(true);
         setCursor(Qt::SizeAllCursor);
     }
 
-    QString QtVectorPoint::name() const
+    QString QtVectorControlPoint::name() const
     {
         return tr("control point");
     }
 
-    QRectF QtVectorPoint::boundingRect() const
+    QRectF QtVectorControlPoint::boundingRect() const
     {
         return QRectF(-RADIUS, -RADIUS, 2.0 * RADIUS, 2.0 * RADIUS);
     }
 
-    void QtVectorPoint::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*)
+    void QtVectorControlPoint::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*)
     {
         painter->setPen(QPen(Qt::white));
         painter->setBrush(Qt::yellow);
         painter->drawEllipse(boundingRect());
     }
 
-    QVariant QtVectorPoint::itemChange(GraphicsItemChange change, const QVariant& value)
+    QVariant QtVectorControlPoint::itemChange(GraphicsItemChange change, const QVariant& value)
     {
         if (change == QGraphicsItem::ItemPositionChange && movementValidator)
         {

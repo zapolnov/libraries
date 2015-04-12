@@ -22,7 +22,7 @@
 #include "QtVectorObject.h"
 #include "QtVectorObjectKind.h"
 #include "QtVectorScene.h"
-#include "QtVectorPoint.h"
+#include "QtVectorControlPoint.h"
 
 namespace Z
 {
@@ -59,12 +59,12 @@ namespace Z
         m_ControlPoints.resize(count);
     }
 
-    QtVectorPoint* QtVectorObject::controlPoint(size_t index)
+    QtVectorControlPoint* QtVectorObject::controlPoint(size_t index)
     {
         Q_ASSERT(index < m_ControlPoints.size());
-        QtVectorPoint*& point = m_ControlPoints[index];
+        QtVectorControlPoint*& point = m_ControlPoints[index];
         if (!point)
-            point = new QtVectorPoint(this);
+            point = new QtVectorControlPoint(this);
         return point;
     }
 

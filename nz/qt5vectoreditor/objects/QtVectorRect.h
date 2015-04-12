@@ -25,9 +25,9 @@
 
 namespace Z
 {
+    class QtVectorControlPoint;
     class QtPropertyList;
     class QtPropertyListItem;
-    class QtVectorPoint;
 
     class QtVectorRectData : public QObject
     {

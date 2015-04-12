@@ -26,16 +26,16 @@
 
 namespace Z
 {
-    class QtVectorPoint : public QtVectorSceneItem
+    class QtVectorControlPoint : public QtVectorSceneItem
     {
         Q_OBJECT
 
     public:
         std::function<void(qreal& x, qreal& y)> movementValidator;
 
-        explicit QtVectorPoint(QtVectorScene* scene);
-        explicit QtVectorPoint(QtVectorSceneItem* parent);
-        ~QtVectorPoint() = default;
+        explicit QtVectorControlPoint(QtVectorScene* scene);
+        explicit QtVectorControlPoint(QtVectorSceneItem* parent);
+        ~QtVectorControlPoint() = default;
 
         QString name() const override;
 
