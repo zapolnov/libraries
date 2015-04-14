@@ -30,16 +30,27 @@ namespace Z
         : QtVectorSceneItem(scene)
         , m_Kind(kind)
     {
-        Q_ASSERT(kind != nullptr);
-        m_SpecificData = m_Kind->createDataForObject(this);
-        m_Kind->initObject(m_SpecificData);
+        init();
     }
 
     QtVectorObject::QtVectorObject(QtVectorObjectKind* kind, QtVectorObject* parent)
         : QtVectorSceneItem(parent)
         , m_Kind(kind)
     {
-        Q_ASSERT(kind != nullptr);
+        init();
+    }
+
+    void QtVectorObject::init()
+    {
+        setFlag(ItemSendsScenePositionChanges);
+
+        m_ControlPointsContainer = new QGraphicsRectItem;
+        m_ControlPointsContainer->setFlags(ItemHasNoContents);
+        m_ControlPointsContainer->setVisible(false);
+        scene()->addItem(m_ControlPointsContainer);
+        m_ControlPointsContainer->installSceneEventFilter(this);
+
+        Q_ASSERT(m_Kind != nullptr);
         m_SpecificData = m_Kind->createDataForObject(this);
         m_Kind->initObject(m_SpecificData);
     }
@@ -48,11 +59,31 @@ namespace Z
     {
         m_Kind->cleanupObject(m_SpecificData);
         delete m_SpecificData;
+
+        auto s = scene();
+        if (s->currentControlPoints() == m_ControlPointsContainer)
+            s->setCurrentControlPoints(nullptr);
+
+        delete m_ControlPointsContainer;
+        m_ControlPointsContainer = nullptr;
     }
 
     QString QtVectorObject::name() const
     {
         return m_Kind->nameForObject(m_SpecificData);
+    }
+
+    bool QtVectorObject::isSelectedForUser() const
+    {
+        if (isSelected())
+            return true;
+
+        for (auto cp : m_ControlPoints) {
+            if (cp && cp->isSelected())
+                return true;
+        }
+
+        return false;
     }
 
     void QtVectorObject::setNumControlPoints(size_t count)
@@ -68,8 +99,10 @@ namespace Z
     {
         Q_ASSERT(index < m_ControlPoints.size());
         QtVectorControlPoint*& point = m_ControlPoints[index];
-        if (!point)
-            point = new QtVectorControlPoint(this);
+        if (!point) {
+            point = new QtVectorControlPoint(m_ControlPointsContainer);
+            point->m_OwnerObject = this;
+        }
         return point;
     }
 
@@ -83,8 +116,34 @@ namespace Z
         m_Kind->initPropertyListForObject(m_SpecificData, propertyList);
     }
 
+    QVariant QtVectorObject::itemChange(GraphicsItemChange change, const QVariant& value)
+    {
+        switch (change)
+        {
+        case ItemPositionHasChanged:
+        case ItemRotationHasChanged:
+        case ItemScaleHasChanged:
+        case ItemScenePositionHasChanged:
+            m_ControlPointsContainer->setTransform(sceneTransform());
+            break;
+
+        default:
+            break;
+        }
+
+        return QtVectorSceneItem::itemChange(change, value);
+    }
+
     void QtVectorObject::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*)
     {
+        m_ControlPointsContainer->setRect(boundingRect());
         m_Kind->paintObject(m_SpecificData, painter);
+    }
+
+    bool QtVectorObject::sceneEventFilter(QGraphicsItem* watched, QEvent* event)
+    {
+        //sceneEvent(event);
+        //return true;
+        return false;
     }
 }

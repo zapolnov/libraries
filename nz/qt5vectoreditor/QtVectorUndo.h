@@ -23,6 +23,7 @@
 #pragma once
 
 class QVariant;
+class QUndoCommand;
 
 namespace Z
 {
@@ -32,6 +33,7 @@ namespace Z
     enum class QtVectorUndo : int
     {
         ItemMove,
+        GroupItemMove,
         ItemRotate,
         ItemScale,
         PropertyChange,
@@ -41,4 +43,6 @@ namespace Z
 
     void addUndoCommandForProperty(QtVectorScene* scene, QtPropertyListItem* property,
         const QVariant& oldValue, const QVariant& newValue, bool allowMerge);
+
+    bool isMergeableUndoCommand(const QUndoCommand* command);
 }

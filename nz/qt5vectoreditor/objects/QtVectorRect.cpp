@@ -336,8 +336,13 @@ namespace Z
     void QtVectorRect::paintObject(const QObject* data, QPainter* painter) const
     {
         auto r = static_cast<const QtVectorRectData*>(data);
-        painter->setPen(Qt::green);
-        painter->setBrush(Qt::blue);
+
+        if (r->object()->isSelectedForUser())
+            painter->setBrush(QColor(255, 255, 128, 85));
+        else
+            painter->setBrush(QColor(196, 196, 196, 85));
+
+        painter->setPen(QColor(255, 255, 255, 255));
         painter->drawRect(boundingRectForObject(data));
     }
 

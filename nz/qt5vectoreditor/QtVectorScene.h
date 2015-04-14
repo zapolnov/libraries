@@ -21,23 +21,49 @@
  */
 
 #pragma once
+#include <functional>
+#include <vector>
 #include <QGraphicsScene>
+#include <QGraphicsRectItem>
 #include <QUndoStack>
 
 namespace Z
 {
+    class QtVectorEditor;
+    class QtVectorSceneItem;
+
     class QtVectorScene : public QGraphicsScene
     {
         Q_OBJECT
 
     public:
-        explicit QtVectorScene(QObject* parent = nullptr);
+        explicit QtVectorScene(QtVectorEditor* parent);
         ~QtVectorScene();
 
+        QtVectorEditor* editor() const;
+
+        QGraphicsItem* canvas() const { return m_Canvas; }
         QUndoStack* undoStack() const { return m_UndoStack; }
 
+        QGraphicsItem* currentControlPoints() const { return m_CurrentControlPoints; }
+        void setCurrentControlPoints(QGraphicsItem* cp);
+
+        Q_SLOT void disallowMergeForLastUndoCommand();
+
+        QtVectorSceneItem* currentSingleSelection() const;
+
+    protected:
+        void mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent) override;
+        void mouseReleaseEvent(QGraphicsSceneMouseEvent* mouseEvent) override;
+
     private:
+        QGraphicsRectItem* m_Canvas;
         QGraphicsRectItem* m_DeletedItems;
+        QGraphicsItem* m_CurrentControlPoints = nullptr;
         QUndoStack* m_UndoStack;
+
+        Q_SLOT void onSelectionChanged();
+
+        friend class QtVectorObject;
     };
 }

@@ -34,7 +34,7 @@ namespace Z
         init();
     }
 
-    QtVectorControlPoint::QtVectorControlPoint(QtVectorSceneItem* parent)
+    QtVectorControlPoint::QtVectorControlPoint(QGraphicsItem* parent)
         : QtVectorSceneItem(parent)
     {
         init();
@@ -42,6 +42,7 @@ namespace Z
 
     void QtVectorControlPoint::init()
     {
+        setFlag(ItemIgnoresTransformations);
         setVisible(true);
         setCursor(Qt::SizeAllCursor);
     }

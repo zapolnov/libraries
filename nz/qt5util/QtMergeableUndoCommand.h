@@ -55,6 +55,7 @@ namespace Z
         bool mergeWith(const QUndoCommand* command) final override;
 
     protected:
+        void onCommandUndone() override { m_AllowMerging = false; }
         virtual bool merge(const QtMergeableUndoCommand* other) = 0;
 
     private:

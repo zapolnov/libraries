@@ -28,6 +28,7 @@ namespace Z
 {
     class QtVectorObjectKind;
     class QtVectorControlPoint;
+    class QtVectorScene;
 
     class QtVectorObject : public QtVectorSceneItem
     {
@@ -44,6 +45,8 @@ namespace Z
         int type() const override { return Type; }
         QString name() const override;
 
+        bool isSelectedForUser() const;
+
         void setNumControlPoints(size_t count);
         QtVectorControlPoint* controlPoint(size_t index);
 
@@ -51,13 +54,22 @@ namespace Z
 
     protected:
         void initPropertyList(QtPropertyList* propertyList) override;
+
+        QVariant itemChange(GraphicsItemChange change, const QVariant& value) override;
         void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
+
+        bool sceneEventFilter(QGraphicsItem* watched, QEvent* event) override;
 
     private:
         QtVectorObjectKind* m_Kind;
+        QGraphicsRectItem* m_ControlPointsContainer;
         QObject* m_SpecificData;
         std::vector<QtVectorControlPoint*> m_ControlPoints;
 
+        void init();
+
         Q_DISABLE_COPY(QtVectorObject);
+
+        friend class QtVectorScene;
     };
 }

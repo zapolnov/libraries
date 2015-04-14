@@ -69,5 +69,6 @@ namespace Z
         Q_ASSERT(!m_SkipRedo);
         m_SkipRedo = false;
         revert();
+        onCommandUndone();
     }
 }

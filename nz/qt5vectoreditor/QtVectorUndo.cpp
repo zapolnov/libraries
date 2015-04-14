@@ -24,6 +24,7 @@
 #include "qt5propertylist/QtPropertyListItem.h"
 #include "qt5util/QtMergeableUndoCommand.h"
 #include <QVariant>
+#include <QUndoCommand>
 
 namespace Z
 {
@@ -63,5 +64,27 @@ namespace Z
 
         undoCommand->setAllowMerging(allowMerge);
         scene->undoStack()->push(undoCommand);
+    }
+
+    bool isMergeableUndoCommand(const QUndoCommand* command)
+    {
+        int id = command->id();
+        if (id < 0)
+            return false;
+
+        switch (static_cast<QtVectorUndo>(id))
+        {
+        case QtVectorUndo::ItemMove:
+        case QtVectorUndo::GroupItemMove:
+        case QtVectorUndo::ItemRotate:
+        case QtVectorUndo::ItemScale:
+            return true;
+
+        case QtVectorUndo::PropertyChange:
+            return false;
+        }
+
+        Q_ASSERT(false);
+        return false;
     }
 }

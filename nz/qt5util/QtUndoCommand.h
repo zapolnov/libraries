@@ -38,6 +38,7 @@ namespace Z
         static QtUndoCommand* create(const QString& text, QUndoCommand* parent, FnRef fnrepeat, FnRef fnrevert);
 
     protected:
+        virtual void onCommandUndone() {}
         virtual void repeat() = 0;
         virtual void revert() = 0;
 

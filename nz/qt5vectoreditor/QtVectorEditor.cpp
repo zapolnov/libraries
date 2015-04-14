@@ -20,6 +20,11 @@
  * THE SOFTWARE.
  */
 #include "QtVectorEditor.h"
+#include "QtVectorSceneItem.h"
+#include "QtVectorObject.h"
+#include "QtVectorControlPoint.h"
+#include <QPalette>
+#include <QApplication>
 #include <QGLWidget>
 
 namespace Z
@@ -29,7 +34,11 @@ namespace Z
         , m_CurrentMode(ClickMode)
     {
         setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
-        setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
+        setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+
+        m_DummyScene = new QGraphicsScene(this);
+        m_DummyScene->setBackgroundBrush(qApp->palette().color(QPalette::Window));
+        QGraphicsView::setScene(m_DummyScene);
     }
 
     QtVectorEditor::~QtVectorEditor()
@@ -42,22 +51,54 @@ namespace Z
         if (oldScene != newScene) {
             if (oldScene) {
                 disconnect(oldScene, SIGNAL(selectionChanged()), this, SLOT(onSceneSelectionChanged()));
+                oldScene->disallowMergeForLastUndoCommand();
+                oldScene->clearSelection();
             }
 
-            QGraphicsView::setScene(newScene);
+            if (newScene)
+                QGraphicsView::setScene(newScene);
+            else
+                QGraphicsView::setScene(m_DummyScene);
+
+            m_CurrentPropertyList = nullptr;
+            emit currentPropertyListChanged(m_CurrentPropertyList);
 
             if (newScene) {
+                newScene->disallowMergeForLastUndoCommand();
+                newScene->clearSelection();
                 connect(newScene, SIGNAL(selectionChanged()), SLOT(onSceneSelectionChanged()));
             }
 
             setCurrentMode(ClickMode);
+
+            if (newScene)
+                newScene->setCurrentControlPoints(newScene->currentControlPoints());
         }
     }
 
     void QtVectorEditor::setCurrentMode(Mode mode)
     {
         if (m_CurrentMode != mode) {
+            auto s = scene();
+
+            if (s)
+                s->disallowMergeForLastUndoCommand();
+
             m_CurrentMode = mode;
+
+            if (s) {
+                if (mode != ClickMode && mode != SelectMode)
+                    s->clearSelection();
+                else {
+                    auto selection = s->currentSingleSelection();
+                    s->clearSelection();
+                    if (selection)
+                        selection->setSelected(true);
+                }
+
+                s->setCurrentControlPoints(s->currentControlPoints());
+            }
+
             setDragMode(mode == SelectMode ? RubberBandDrag : NoDrag);
             emit currentModeChanged(m_CurrentMode);
         }
@@ -65,5 +106,8 @@ namespace Z
 
     void QtVectorEditor::onSceneSelectionChanged()
     {
+        auto selectedItem = scene()->currentSingleSelection();
+        m_CurrentPropertyList = (selectedItem ? selectedItem->propertyList() : nullptr);
+        emit currentPropertyListChanged(m_CurrentPropertyList);
     }
 }

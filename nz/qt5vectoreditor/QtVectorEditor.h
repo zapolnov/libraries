@@ -26,6 +26,9 @@
 
 namespace Z
 {
+    class QtPropertyList;
+    class QtVectorSceneItem;
+
     class QtVectorEditor : public QGraphicsView
     {
         Q_OBJECT
@@ -46,11 +49,16 @@ namespace Z
         Mode currentMode() const { return m_CurrentMode; }
         void setCurrentMode(Mode mode);
 
+        QtPropertyList* currentPropertyList() const { return m_CurrentPropertyList; }
+
     signals:
         void currentModeChanged(Mode mode);
+        void currentPropertyListChanged(Z::QtPropertyList* propertyList);
 
     private:
         Mode m_CurrentMode;
+        QtPropertyList* m_CurrentPropertyList = nullptr;
+        QGraphicsScene* m_DummyScene;
 
         Q_SLOT void onSceneSelectionChanged();
     };

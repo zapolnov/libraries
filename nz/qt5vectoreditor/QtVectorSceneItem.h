@@ -41,7 +41,7 @@ namespace Z
         };
 
         explicit QtVectorSceneItem(QtVectorScene* scene);
-        explicit QtVectorSceneItem(QtVectorSceneItem* parent);
+        explicit QtVectorSceneItem(QGraphicsItem* parent);
         ~QtVectorSceneItem();
 
         int type() const override { return Type; }
@@ -86,6 +86,9 @@ namespace Z
             ChangingY           = 0b0000000010,
             ChangingRotation    = 0b0000000100,
             ChangingScale       = 0b0000001000,
+            PreventUndoPos      = 0b0000010000,
+            PreventUndoRotation = 0b0000100000,
+            PreventUndoScale    = 0b0001000000,
         };
 
         QtVectorScene* m_Scene;

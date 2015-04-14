@@ -26,6 +26,8 @@
 
 namespace Z
 {
+    class QtVectorObject;
+
     class QtVectorControlPoint : public QtVectorSceneItem
     {
         Q_OBJECT
@@ -36,11 +38,13 @@ namespace Z
         std::function<void(qreal& x, qreal& y)> movementValidator;
 
         explicit QtVectorControlPoint(QtVectorScene* scene);
-        explicit QtVectorControlPoint(QtVectorSceneItem* parent);
+        explicit QtVectorControlPoint(QGraphicsItem* parent);
         ~QtVectorControlPoint() = default;
 
         int type() const override { return Type; }
         QString name() const override;
+
+        QtVectorObject* ownerObject() const { return m_OwnerObject; }
 
         QRectF boundingRect() const override;
         void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
@@ -49,6 +53,10 @@ namespace Z
         QVariant itemChange(GraphicsItemChange change, const QVariant& value) override;
 
     private:
+        QtVectorObject* m_OwnerObject = nullptr;
+
         void init();
+
+        friend class QtVectorObject;
     };
 }
