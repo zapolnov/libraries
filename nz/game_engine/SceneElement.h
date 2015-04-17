@@ -41,6 +41,9 @@ namespace Z
         void addChild(SceneElement* child);
         void removeFromParent();
 
+        virtual void setNeedResources(bool flag);
+        virtual bool areAllResourcesResident() const;
+
         const glm::mat4& localMatrix() const;
         const glm::mat4& worldMatrix() const;
 
@@ -50,6 +53,10 @@ namespace Z
 
         virtual void calculateLocalMatrix(glm::mat4& matrix) const;
         virtual void calculateWorldMatrix(glm::mat4& matrix) const;
+
+        template <class T> static bool isResourceResident(const std::shared_ptr<T>& resource) {
+            return resource && resource->isResidentOrFailedToLoad();
+        }
 
         virtual void onAddedToParent(SceneElement* newParent) { (void)newParent; }
         virtual void onRemovedFromParent(SceneElement* oldParent) { (void)oldParent; }

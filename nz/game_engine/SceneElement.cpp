@@ -86,6 +86,21 @@ namespace Z
         }
     }
 
+    void SceneElement::setNeedResources(bool flag)
+    {
+        for (SceneElement* child = m_FirstChild; child; child = child->m_NextSibling)
+            child->setNeedResources(flag);
+    }
+
+    bool SceneElement::areAllResourcesResident() const
+    {
+        for (SceneElement* child = m_FirstChild; child; child = child->m_NextSibling) {
+            if (!child->areAllResourcesResident())
+                return false;
+        }
+        return true;
+    }
+
     const glm::mat4& SceneElement::localMatrix() const
     {
         if (m_Flags & LocalMatrixDirty) {
