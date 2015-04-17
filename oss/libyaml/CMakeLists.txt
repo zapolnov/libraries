@@ -1,6 +1,6 @@
 
 cmake_minimum_required(VERSION 3.1)
-project(yaml C)
+project(libyaml C)
 
 include_directories(win32)
 add_definitions(-DHAVE_CONFIG_H)

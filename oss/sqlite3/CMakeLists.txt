@@ -1,5 +1,6 @@
 
 cmake_minimum_required(VERSION 3.1)
+project(sqlite3)
 
 if(MSVC)
     add_definitions(/wd4456 /wd4459)

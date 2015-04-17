@@ -1,5 +1,6 @@
 
 cmake_minimum_required(VERSION 3.1)
+project(ucpp)
 
 if(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
