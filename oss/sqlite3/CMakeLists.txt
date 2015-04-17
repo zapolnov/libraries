@@ -5,12 +5,10 @@ if(MSVC)
     add_definitions(/wd4456 /wd4459)
 endif()
 
-add_library(libsqlite3 STATIC ${EXCLUDE_FROM_ALL}
-    sqlite3.c
-    sqlite3.h
-    sqlite3ext.h
-)
+file(GLOB root_files *.c *.h)
+source_group("Source Files" FILES ${root_files})
 
+add_library(libsqlite3 STATIC ${EXCLUDE_FROM_ALL} sqlite3.c sqlite3.h sqlite3ext.h)
 set_target_properties(libsqlite3 PROPERTIES OUTPUT_NAME "sqlite3")
 target_include_directories(libsqlite3 BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
 
