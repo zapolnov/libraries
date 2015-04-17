@@ -1,6 +1,12 @@
 
 cmake_minimum_required(VERSION 3.1)
 
+if(MSVC)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+    add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
+    add_definitions(/wd4244 /wd4456 /wd4458)
+endif()
+
 include(CheckTypeSize)
 check_type_size(char SIZEOF_CHAR)
 check_type_size(short SIZEOF_SHORT)

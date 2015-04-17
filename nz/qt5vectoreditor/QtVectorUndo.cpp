@@ -25,6 +25,7 @@
 #include "qt5util/QtMergeableUndoCommand.h"
 #include <QVariant>
 #include <QUndoCommand>
+#include <ctime>
 
 namespace Z
 {

@@ -34,6 +34,7 @@ add_library(main-nz STATIC ${EXCLUDE_FROM_ALL}
 )
 
 z_qt5_sources(${qt5_sources})
+z_target_link_qt5(main-nz)
 
 source_group("Source Files\\qt5" FILES ${qt5_sources})
 source_group("Source Files" FILES ${root_sources})

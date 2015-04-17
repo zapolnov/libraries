@@ -2,14 +2,18 @@
 cmake_minimum_required(VERSION 3.1)
 project(libpng C)
 
+if(MSVC)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+endif()
+
 configure_file(scripts/pnglibconf.h.prebuilt "${CMAKE_CURRENT_BINARY_DIR}/pnglibconf.h" COPYONLY)
 
 set(scripts_files scripts/pnglibconf.h.prebuilt)
 file(GLOB root_files *.c *.h)
 
 add_library(libpng STATIC ${EXCLUDE_FROM_ALL}
-	${script_files}
-	${root_files}
+    ${script_files}
+    ${root_files}
 )
 
 source_group("Source Files\\scripts" FILES ${scripts_files})

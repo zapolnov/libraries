@@ -25,6 +25,10 @@ cmake_minimum_required(VERSION 3.1)
 include(../cmake/Qt5.cmake)
 include(../cmake/TargetPlatform.cmake)
 
+if(MSVC)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+endif()
+
 file(GLOB streams_sources streams/*.cpp streams/*.h)
 file(GLOB root_sources *.cpp *.h)
 

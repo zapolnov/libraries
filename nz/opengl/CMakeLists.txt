@@ -34,6 +34,7 @@ add_library(opengl-nz STATIC ${EXCLUDE_FROM_ALL}
 )
 
 z_qt5_sources(${qt5_sources})
+z_target_link_qt5(opengl-nz)
 
 source_group("Source Files\\qt5" FILES ${qt5_sources})
 source_group("Source Files" FILES ${root_sources})

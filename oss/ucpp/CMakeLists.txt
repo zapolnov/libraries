@@ -1,6 +1,12 @@
 
 cmake_minimum_required(VERSION 3.1)
 
+if(MSVC)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+    add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
+    add_definitions(/wd4068 /wd4141 /wd4146 /wd4244 /wd4456 /wd4459)
+endif()
+
 include(CheckCSourceCompiles)
 check_c_source_compiles("
     #define _POSIX_SOURCE 1

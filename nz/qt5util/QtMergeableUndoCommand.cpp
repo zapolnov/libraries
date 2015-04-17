@@ -20,6 +20,7 @@
  * THE SOFTWARE.
  */
 #include "QtMergeableUndoCommand.h"
+#include <memory>
 
 namespace Z
 {

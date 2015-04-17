@@ -7,7 +7,8 @@ add_definitions(-DHAVE_CONFIG_H)
 
 if(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-    add_definitions(/wd4457)
+    add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
+    add_definitions(/wd4456 /wd4457)
 endif()
 
 file(GLOB include_files include/*)

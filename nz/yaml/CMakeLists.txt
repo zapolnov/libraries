@@ -22,6 +22,10 @@
 
 cmake_minimum_required(VERSION 3.1)
 
+if(MSVC)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+endif()
+
 file(GLOB source_files *.cpp *.h)
 
 add_library(yaml-nz STATIC ${EXCLUDE_FROM_ALL}

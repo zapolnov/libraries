@@ -2,6 +2,10 @@
 cmake_minimum_required(VERSION 3.1)
 project(liquidfun)
 
+if(MSVC)
+    add_definitions(/wd4456 /wd4457 /wd4458)
+endif()
+
 file(GLOB shapes_files Box2D/Box2D/Collision/Shapes/*.cpp Box2D/Box2D/Collision/Shapes/*.h)
 file(GLOB collision_files Box2D/Box2D/Collision/*.cpp Box2D/Box2D/Collision/*.h)
 file(GLOB common_files Box2D/Box2D/Common/*.cpp Box2D/Box2D/Common/*.h)
