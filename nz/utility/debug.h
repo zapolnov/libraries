@@ -29,12 +29,14 @@ namespace Z
     // Assertions
 
     #if !defined(Z_ENABLE_ASSERTIONS) && defined(NDEBUG)
+     #define Z_ASSERTIONS_ENABLED 0
      #define Z_CHECK(X) ((void)0)
      #define Z_CHECK_MSG(X, MSG) ((void)0)
      #define Z_ASSERT(X) ((void)0)
      #define Z_ASSERT_MSG(X, MSG) ((void)0)
      #define Z_DEBUG_FAIL(MSG) ((void)0)
     #else
+     #define Z_ASSERTIONS_ENABLED 1
      #define Z_CHECK(X) ((X) ? (void)0 : ::Z::assertionFailed(__FILE__, __LINE__, "Check failed: " #X, false))
      #define Z_CHECK_MSG(X, MSG) ((X) ? (void)0 : ::Z::assertionFailed(__FILE__, __LINE__, (MSG), false))
      #define Z_ASSERT(X) ((X) ? (void)0 : ::Z::assertionFailed(__FILE__, __LINE__, "Assertion failed: " #X, true))

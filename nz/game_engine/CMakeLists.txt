@@ -22,12 +22,14 @@
 
 cmake_minimum_required(VERSION 3.1)
 
-add_subdirectory(cmake)
-add_subdirectory(yaml)
-add_subdirectory(utility)
-add_subdirectory(opengl)
-add_subdirectory(main)
-add_subdirectory(game_engine)
-add_subdirectory(qt5util)
-add_subdirectory(qt5propertylist)
-add_subdirectory(qt5vectoreditor)
+file(GLOB root_sources *.cpp *.h)
+
+add_library(game_engine-nz STATIC ${EXCLUDE_FROM_ALL}
+    ${root_sources}
+)
+
+source_group("Source Files" FILES ${root_sources})
+
+set_target_properties(game_engine-nz PROPERTIES CXX_STANDARD 11)
+target_include_directories(game_engine-nz BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
+target_link_libraries(game_engine-nz utility-nz glm)
