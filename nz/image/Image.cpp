@@ -59,6 +59,17 @@ namespace Z
         , m_Width(std::max(w, 0))
         , m_Height(std::max(h, 0))
     {
+      #if Z_ASSERTIONS_ENABLED
+        switch (m_Format)
+        {
+        case Unknown: break;
+        case Luminance8: Z_CHECK(dataSize == m_Width * m_Height); break;
+        case LuminanceAlpha8: Z_CHECK(m_DataSize == m_Width * m_Height * 2); break;
+        case RGB8: Z_CHECK(m_DataSize == m_Width * m_Height * 3); break;
+        case RGBA8: Z_CHECK(m_DataSize == m_Width * m_Height * 4); break;
+        }
+      #endif
+
         if (m_DataSize > 0)
             m_Data.reset(new uint8_t[m_DataSize]);
     }
@@ -69,6 +80,17 @@ namespace Z
         , m_Width(std::max(w, 0))
         , m_Height(std::max(h, 0))
     {
+      #if Z_ASSERTIONS_ENABLED
+        switch (m_Format)
+        {
+        case Unknown: break;
+        case Luminance8: Z_CHECK(dataSize == m_Width * m_Height); break;
+        case LuminanceAlpha8: Z_CHECK(m_DataSize == m_Width * m_Height * 2); break;
+        case RGB8: Z_CHECK(m_DataSize == m_Width * m_Height * 3); break;
+        case RGBA8: Z_CHECK(m_DataSize == m_Width * m_Height * 4); break;
+        }
+      #endif
+
         if (m_DataSize > 0) {
             m_Data.reset(new uint8_t[m_DataSize]);
             memcpy(m_Data.get(), data, m_DataSize);
