@@ -44,4 +44,5 @@ source_group("Source Files" FILES ${root_sources})
 
 set_target_properties(utility-nz PROPERTIES CXX_STANDARD 11)
 target_include_directories(utility-nz BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
+target_link_libraries(utility-nz glm)
 z_target_link_qt5(utility-nz)
