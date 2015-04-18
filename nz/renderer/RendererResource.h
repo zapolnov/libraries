@@ -21,9 +21,43 @@
  */
 
 #pragma once
-#include "renderer/RendererCallbacks.h"
+#include <memory>
 
 namespace Z
 {
-    RendererCallbacks* gameInstance();
+    class Renderer;
+
+    class RendererResource
+    {
+    public:
+        class Delegate
+        {
+        public:
+            virtual ~Delegate() = default;
+            virtual void onWillUnload() {}
+            virtual void onShouldReload() {}
+        };
+
+        RendererResource();
+        virtual ~RendererResource();
+
+        Delegate* delegate() const { return m_Delegate; }
+        void setDelegate(Delegate* delegate) { m_Delegate = delegate; }
+
+    protected:
+        virtual void create() = 0;
+        virtual void destroy() = 0;
+
+    private:
+        Renderer* m_Renderer = nullptr;
+        Delegate* m_Delegate = nullptr;
+
+        void unload();
+        void reload();
+        void onRendererDestroyed();
+
+        friend class Renderer;
+    };
+
+    typedef std::shared_ptr<RendererResource> RendererResourcePtr;
 }

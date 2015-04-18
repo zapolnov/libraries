@@ -19,44 +19,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-#pragma once
-#include "utility/FunctionQueue.h"
-#include "../OpenGLWindowDelegate.h"
-#include <atomic>
-#include <future>
-#include <QElapsedTimer>
-#include <QThread>
-#include <QGLWidget>
+#include "GL1Texture.h"
 
 namespace Z
 {
-    class QtRenderThread : public QThread
+    void GL1Texture::create()
     {
-    public:
-        QtRenderThread(QGLWidget* qt, OpenGLWindowDelegate* delegate);
-        ~QtRenderThread();
+        if (m_Handle == 0)
+            glGenTextures(1, &m_Handle);
+    }
 
-        void start(int width, int height);
-        void suspend();
-        void resume();
-
-        void postResize(int width, int height);
-        void postShutdown();
-
-    protected:
-        void run() override;
-
-    private:
-        QGLWidget* m_GL;
-        OpenGLWindowDelegate* m_Delegate;
-        Z::FunctionQueue m_FunctionQueue;
-        QElapsedTimer m_Timer;
-        int m_ViewportWidth = 0;
-        int m_ViewportHeight = 0;
-        bool m_ViewportResized = false;
-        std::promise<void> m_ThreadStartPromise;
-        std::atomic<bool> m_Suspended;
-        std::atomic<bool> m_ShuttingDown;
-    };
+    void GL1Texture::destroy()
+    {
+        if (m_Handle != 0) {
+            glDeleteTextures(1, &m_Handle);
+            m_Handle = 0;
+        }
+    }
 }

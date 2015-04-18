@@ -19,32 +19,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include "QtRenderThread.h"
+#include "QtOpenGLRenderThread.h"
+#include "../gl1/GL1Renderer.h"
 #include "utility/debug.h"
 #include <new>
 
 namespace Z
 {
-    QtRenderThread::QtRenderThread(QGLWidget* gl, OpenGLWindowDelegate* delegate)
+    QtOpenGLRenderThread::QtOpenGLRenderThread(QGLWidget* gl, RendererCallbacks* callbacks)
         : m_GL(gl)
-        , m_Delegate(delegate)
+        , m_Callbacks(callbacks)
     {
-        Z_ASSERT(delegate != nullptr);
+        Z_ASSERT(callbacks != nullptr);
     }
 
-    QtRenderThread::~QtRenderThread()
+    QtOpenGLRenderThread::~QtOpenGLRenderThread()
     {
     }
 
-    void QtRenderThread::start(int width, int height)
+    void QtOpenGLRenderThread::start(int width, int height)
     {
         Z_ASSERT(!isRunning());
 
         m_GL->doneCurrent();
         m_GL->context()->moveToThread(this);
 
-        m_ViewportWidth = width;
-        m_ViewportHeight = height;
+        m_InitialViewportWidth = width;
+        m_InitialViewportHeight = height;
 
         m_ThreadStartPromise = std::promise<void>();
         std::future<void> future = m_ThreadStartPromise.get_future();
@@ -52,58 +53,33 @@ namespace Z
         future.wait();
     }
 
-    void QtRenderThread::suspend()
-    {
-        bool wasSuspended = m_Suspended.exchange(true, std::memory_order_seq_cst);
-        if (!wasSuspended)
-        {
-            std::promise<void> promise;
-            std::future<void> future = promise.get_future();
-            m_FunctionQueue.post([this, &promise]() {
-                m_Delegate->onSuspend();
-                promise.set_value();
-            });
-            future.wait();
-        }
-    }
-
-    void QtRenderThread::resume()
-    {
-        bool wasSuspended = m_Suspended.exchange(false, std::memory_order_seq_cst);
-        if (wasSuspended)
-        {
-            std::promise<void> promise;
-            std::future<void> future = promise.get_future();
-            m_FunctionQueue.post([this, &promise]() {
-                m_Delegate->onResume();
-                promise.set_value();
-            });
-            future.wait();
-        }
-    }
-
-    void QtRenderThread::postResize(int width, int height)
-    {
-        m_FunctionQueue.post([this, width, height]() {
-            m_ViewportResized = true;
-            m_ViewportWidth = width;
-            m_ViewportHeight = height;
-        });
-    }
-
-    void QtRenderThread::postShutdown()
+    void QtOpenGLRenderThread::postShutdown()
     {
         m_ShuttingDown.store(true, std::memory_order_seq_cst);
     }
 
-    void QtRenderThread::run()
+    void QtOpenGLRenderThread::suspend()
+    {
+        bool wasSuspended = m_Suspended.exchange(true, std::memory_order_seq_cst);
+        if (!wasSuspended)
+            m_Renderer->suspend(false);
+    }
+
+    void QtOpenGLRenderThread::resume()
+    {
+        bool wasSuspended = m_Suspended.exchange(false, std::memory_order_seq_cst);
+        if (wasSuspended)
+            m_Renderer->resume();
+    }
+
+    void QtOpenGLRenderThread::run()
     {
         m_ShuttingDown.store(false, std::memory_order_seq_cst);
-        m_ViewportResized = false;
 
-        // Initialize the engine
+        // Initialize the renderer
         m_GL->context()->makeCurrent();
-        m_Delegate->onInitialize(m_ViewportWidth, m_ViewportHeight);
+        m_Renderer = new GL1Renderer();
+        m_Renderer->init(m_Callbacks, m_InitialViewportWidth, m_InitialViewportHeight);
         m_GL->context()->doneCurrent();
 
         // Notify UI thread that we have started
@@ -111,13 +87,11 @@ namespace Z
 
         // Run the main loop
         m_Timer.start();
-        while (!m_ShuttingDown.load(std::memory_order_relaxed))
-        {
+        while (!m_ShuttingDown.load(std::memory_order_relaxed)) {
             bool suspended = false;
 
             // Consume less resources when suspended
-            if (m_Suspended.load(std::memory_order_relaxed))
-            {
+            if (m_Renderer->isSuspended()) {
                 suspended = true;
                 yieldCurrentThread();
                 m_Timer.restart();
@@ -125,22 +99,9 @@ namespace Z
 
             m_GL->context()->makeCurrent();
 
-            // Process pending events
-            m_FunctionQueue.processAll();
-            if (m_ViewportResized)
-            {
-                m_ViewportResized = false;
-                m_Delegate->onResize(m_ViewportWidth, m_ViewportHeight);
-            }
-
-            // Update
-            if (!suspended) {
-                auto time = m_Timer.restart();
-                m_Delegate->update(time);
-            }
-
-            // Render
-            m_Delegate->draw();
+            // Run frame
+            auto time = m_Timer.restart();
+            m_Renderer->runFrame(time);
 
             m_GL->context()->swapBuffers();
             m_GL->context()->doneCurrent();
@@ -148,7 +109,8 @@ namespace Z
 
         // Shutdown the engine
         m_GL->context()->makeCurrent();
-        m_Delegate->onShutdown();
+        m_Renderer->shutdown();
+        delete m_Renderer;
         m_GL->context()->doneCurrent();
     }
 }

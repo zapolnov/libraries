@@ -19,32 +19,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-#pragma once
-#include "QtRenderThread.h"
-#include <QGLWidget>
+#include "RendererResource.h"
+#include "Renderer.h"
+#include "utility/debug.h"
 
 namespace Z
 {
-    class QtOpenGLWindow : public QGLWidget
+    RendererResource::RendererResource()
     {
-    public:
-        explicit QtOpenGLWindow(OpenGLWindowDelegate* delegate, QWidget* parent = nullptr);
-        ~QtOpenGLWindow();
+    }
 
-    protected:
-        void resizeEvent(QResizeEvent* resizeEvent) override;
-        void paintEvent(QPaintEvent* paintEvent) override;
+    RendererResource::~RendererResource()
+    {
+        if (m_Renderer)
+            m_Renderer->onResourceDestroyed(this);
+    }
 
-        void showEvent(QShowEvent* showEvent) override;
-        void hideEvent(QHideEvent* hideEvent) override;
+    void RendererResource::unload()
+    {
+        if (m_Delegate)
+            m_Delegate->onWillUnload();
+        destroy();
+    }
 
-        void mousePressEvent(QMouseEvent* mouseEvent) override;
-        void mouseMoveEvent(QMouseEvent* mouseEvent) override;
-        void mouseReleaseEvent(QMouseEvent* mouseEvent) override;
+    void RendererResource::reload()
+    {
+        create();
+        if (m_Delegate)
+            m_Delegate->onShouldReload();
+    }
 
-    private:
-        QtRenderThread m_RenderThread;
-        bool m_Initialized = false;
-    };
+    void RendererResource::onRendererDestroyed()
+    {
+        Z_ASSERT(m_Renderer != nullptr);
+        destroy();
+        m_Renderer = nullptr;
+    }
 }

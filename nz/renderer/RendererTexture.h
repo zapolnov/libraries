@@ -21,9 +21,13 @@
  */
 
 #pragma once
-#include "renderer/RendererCallbacks.h"
+#include "RendererResource.h"
 
 namespace Z
 {
-    RendererCallbacks* gameInstance();
+    class RendererTexture : public RendererResource
+    {
+    };
+
+    typedef std::shared_ptr<RendererTexture> RendererTexturePtr;
 }

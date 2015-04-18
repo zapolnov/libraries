@@ -21,9 +21,7 @@
  */
 
 #pragma once
-#include "renderer/RendererCallbacks.h"
 
-namespace Z
-{
-    RendererCallbacks* gameInstance();
-}
+#ifdef Z_TARGET_QT5
+ #include <QtOpenGL>
+#endif

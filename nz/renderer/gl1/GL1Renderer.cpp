@@ -19,30 +19,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-#pragma once
+#include "GL1Renderer.h"
+#include "utility/debug.h"
 
 namespace Z
 {
-    class OpenGLWindowDelegate
+    GL1Renderer::GL1Renderer()
     {
-    public:
-        virtual ~OpenGLWindowDelegate() = default;
+    }
 
-        virtual int preferredScreenWidth() const { return 1024; }
-        virtual int preferredScreenHeight() const { return 768; }
-        virtual int preferredDepthBufferBits() const { return 16; }
-        virtual int preferredStencilBufferBits() const { return 0; }
+    GL1Renderer::~GL1Renderer()
+    {
+    }
 
-        virtual void onInitialize(int width, int height) { (void)width; (void)height; }
-        virtual void onShutdown() {}
-
-        virtual void onSuspend() {}
-        virtual void onResume() {}
-
-        virtual void onResize(int width, int height) { (void)width; (void)height; }
-
-        virtual void update(double time) { (void)time; }
-        virtual void draw() {}
-    };
+    RendererTexturePtr GL1Renderer::createTexture()
+    {
+        Z_ASSERT(isCurrentThreadARenderThread());
+        return createResource<GL1Texture>();
+    }
 }

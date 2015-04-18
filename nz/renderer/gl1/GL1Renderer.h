@@ -21,9 +21,17 @@
  */
 
 #pragma once
-#include "renderer/RendererCallbacks.h"
+#include "../Renderer.h"
+#include "GL1Texture.h"
 
 namespace Z
 {
-    RendererCallbacks* gameInstance();
+    class GL1Renderer : public Renderer
+    {
+    public:
+        GL1Renderer();
+        ~GL1Renderer();
+
+        RendererTexturePtr createTexture() override;
+    };
 }

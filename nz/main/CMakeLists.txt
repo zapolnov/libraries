@@ -41,4 +41,4 @@ source_group("Source Files" FILES ${root_sources})
 
 set_target_properties(main-nz PROPERTIES CXX_STANDARD 11)
 target_include_directories(main-nz BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
-target_link_libraries(main-nz opengl-nz utility-nz)
+target_link_libraries(main-nz renderer-nz utility-nz)

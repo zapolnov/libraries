@@ -21,9 +21,42 @@
  */
 
 #pragma once
-#include "renderer/RendererCallbacks.h"
+#include "../Renderer.h"
+#include "../RendererCallbacks.h"
+#include <atomic>
+#include <future>
+#include <QElapsedTimer>
+#include <QThread>
+#include <QGLWidget>
 
 namespace Z
 {
-    RendererCallbacks* gameInstance();
+    class QtOpenGLRenderThread : public QThread
+    {
+    public:
+        QtOpenGLRenderThread(QGLWidget* qt, RendererCallbacks* callbacks);
+        ~QtOpenGLRenderThread();
+
+        Renderer* renderer() const { return m_Renderer; }
+
+        void start(int width, int height);
+        void postShutdown();
+
+        void suspend();
+        void resume();
+
+    protected:
+        void run() override;
+
+    private:
+        QGLWidget* m_GL;
+        Renderer* m_Renderer = nullptr;
+        RendererCallbacks* m_Callbacks;
+        int m_InitialViewportWidth = 0;
+        int m_InitialViewportHeight = 0;
+        QElapsedTimer m_Timer;
+        std::promise<void> m_ThreadStartPromise;
+        std::atomic<bool> m_Suspended;
+        std::atomic<bool> m_ShuttingDown;
+    };
 }

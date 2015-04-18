@@ -21,9 +21,18 @@
  */
 
 #pragma once
-#include "renderer/RendererCallbacks.h"
+#include "../RendererTexture.h"
+#include "opengl.h"
 
 namespace Z
 {
-    RendererCallbacks* gameInstance();
+    class GL1Texture : public RendererTexture
+    {
+    protected:
+        void create() override;
+        void destroy() override;
+
+    private:
+        GLuint m_Handle = 0;
+    };
 }

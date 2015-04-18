@@ -21,9 +21,35 @@
  */
 
 #pragma once
-#include "renderer/RendererCallbacks.h"
 
 namespace Z
 {
-    RendererCallbacks* gameInstance();
+    class Renderer;
+
+    class RendererCallbacks
+    {
+    public:
+        virtual ~RendererCallbacks() = default;
+
+        virtual int preferredScreenWidth() const { return 1024; }
+        virtual int preferredScreenHeight() const { return 768; }
+        virtual int preferredDepthBufferBits() const { return 16; }
+        virtual int preferredStencilBufferBits() const { return 0; }
+
+        virtual void onRendererDidFinishLaunching(Renderer*) {}
+        virtual void onRendererWillTerminate(Renderer*) {}
+
+        virtual void onRendererWillSuspend(Renderer*) {}
+        virtual void onRendererDidResume(Renderer*) {}
+
+        virtual void onRendererWillUnloadResources(Renderer*) {}
+        virtual void onRendererDidUnloadResources(Renderer*) {}
+        virtual void onRendererWillReloadResources(Renderer*) {}
+        virtual void onRendererDidReloadResources(Renderer*) {}
+
+        virtual void onRendererResized(Renderer*) {}
+
+        virtual void update(Renderer*, double time) { (void)time; }
+        virtual void draw(Renderer*) {}
+    };
 }

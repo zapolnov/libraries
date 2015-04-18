@@ -21,9 +21,30 @@
  */
 
 #pragma once
-#include "renderer/RendererCallbacks.h"
+#include "QtOpenGLRenderThread.h"
+#include <QGLWidget>
 
 namespace Z
 {
-    RendererCallbacks* gameInstance();
+    class QtOpenGLWindow : public QGLWidget
+    {
+    public:
+        explicit QtOpenGLWindow(RendererCallbacks* callbacks, QWidget* parent = nullptr);
+        ~QtOpenGLWindow();
+
+    protected:
+        void resizeEvent(QResizeEvent* resizeEvent) override;
+        void paintEvent(QPaintEvent* paintEvent) override;
+
+        void showEvent(QShowEvent* showEvent) override;
+        void hideEvent(QHideEvent* hideEvent) override;
+
+        void mousePressEvent(QMouseEvent* mouseEvent) override;
+        void mouseMoveEvent(QMouseEvent* mouseEvent) override;
+        void mouseReleaseEvent(QMouseEvent* mouseEvent) override;
+
+    private:
+        QtOpenGLRenderThread m_RenderThread;
+        bool m_Initialized = false;
+    };
 }

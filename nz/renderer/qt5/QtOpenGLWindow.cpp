@@ -26,16 +26,20 @@
 
 namespace Z
 {
-    QtOpenGLWindow::QtOpenGLWindow(OpenGLWindowDelegate* delegate, QWidget* parent)
+    QtOpenGLWindow::QtOpenGLWindow(RendererCallbacks* callbacks, QWidget* parent)
         : QGLWidget(parent)
-        , m_RenderThread(this, delegate)
+        , m_RenderThread(this, callbacks)
     {
-        Z_ASSERT(delegate != nullptr);
-        resize(delegate->preferredScreenWidth(), delegate->preferredScreenHeight());
+        Z_ASSERT(callbacks != nullptr);
+        QRect desktopGeometry = QDesktopWidget().availableGeometry();
+
+        int windowWidth = std::min(desktopGeometry.width(), callbacks->preferredScreenWidth());
+        int windowHeight = std::min(desktopGeometry.height(), callbacks->preferredScreenHeight());
+        resize(windowWidth, windowHeight);
 
         if (!parent) {
             QRect position = frameGeometry();
-            position.moveCenter(QDesktopWidget().availableGeometry().center());
+            position.moveCenter(desktopGeometry.center());
             move(position.topLeft());
         }
 
@@ -43,13 +47,13 @@ namespace Z
         openGLFormat.setSwapInterval(1);
         openGLFormat.setDoubleBuffer(true);
 
-        int depthBits = delegate->preferredDepthBufferBits();
+        int depthBits = callbacks->preferredDepthBufferBits();
         if (depthBits <= 0)
             openGLFormat.setDepth(false);
         else
             openGLFormat.setDepthBufferSize(depthBits);
 
-        int stencilBits = delegate->preferredStencilBufferBits();
+        int stencilBits = callbacks->preferredStencilBufferBits();
         if (stencilBits <= 0)
             openGLFormat.setStencil(false);
         else
@@ -66,18 +70,19 @@ namespace Z
 
     void QtOpenGLWindow::resizeEvent(QResizeEvent* resizeEvent)
     {
-        if (m_Initialized)
-        {
+        if (m_Initialized) {
+            auto renderer = m_RenderThread.renderer();
             int width = resizeEvent->size().width();
             int height = resizeEvent->size().height();
-            m_RenderThread.postResize(width, height);
+            renderer->performInRenderThreadLater([renderer, width, height]() {
+                renderer->setViewportDimensions(width, height);
+            });
         }
     }
 
     void QtOpenGLWindow::paintEvent(QPaintEvent*)
     {
-        if (!m_Initialized)
-        {
+        if (!m_Initialized) {
             m_RenderThread.start(width(), height());
             m_Initialized = true;
         }
