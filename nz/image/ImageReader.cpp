@@ -20,7 +20,10 @@
  * THE SOFTWARE.
  */
 #include "ImageReader.h"
+#include "utility/streams/FileInputStream.h"
+#include "utility/debug.h"
 #include <mutex>
+#include <vector>
 #include <memory>
 
 namespace Z
@@ -54,13 +57,13 @@ namespace Z
         g_Readers.emplace_back(std::move(reader));
     }
 
-    Image* ImageReader::read(FileReader* file)
+    Image* ImageReader::read(const std::shared_ptr<FileReader>& file)
     {
         Z_CHECK(file != nullptr);
         if (!file)
             return nullptr;
 
-        std::vector<std::shared_ptr<ImageReader> readers;
+        std::vector<std::shared_ptr<ImageReader>> readers;
         {
             std::lock_guard<decltype(g_Mutex)> lock(g_Mutex);
             readers = g_Readers;
@@ -77,15 +80,5 @@ namespace Z
 
         Z_LOG("There is no reader able to load image \"" << file->name() << "\".");
         return nullptr;
-    }
-
-    Image* ImageReader::read(const std::unique_ptr<FileReader>& file)
-    {
-        return read(file.get());
-    }
-
-    Image* ImageReader::read(const std::shared_ptr<FileReader>& file)
-    {
-        return read(file.get());
     }
 }

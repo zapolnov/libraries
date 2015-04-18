@@ -37,8 +37,6 @@ namespace Z
         static void add(const std::shared_ptr<ImageReader>& reader);
         static void add(std::shared_ptr<ImageReader>&& reader);
 
-        static Image* read(FileReader* file);
-        static Image* read(const std::unique_ptr<FileReader>& file);
         static Image* read(const std::shared_ptr<FileReader>& file);
 
     protected:
