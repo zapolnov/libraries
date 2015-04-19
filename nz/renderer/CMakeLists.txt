@@ -22,6 +22,7 @@
 
 cmake_minimum_required(VERSION 3.1)
 
+include(../cmake/OpenGL.cmake)
 include(../cmake/Qt5.cmake)
 include(../cmake/TargetPlatform.cmake)
 
@@ -37,6 +38,9 @@ add_library(renderer-nz STATIC ${EXCLUDE_FROM_ALL}
 
 z_qt5_sources(${qt5_sources})
 z_target_link_qt5(renderer-nz)
+
+z_opengl_sources(${gl1_sources})
+z_target_link_opengl(renderer-nz)
 
 source_group("Source Files\\platform\\qt5" FILES ${qt5_sources})
 source_group("Source Files\\impl\\gl1" FILES ${gl1_sources})
