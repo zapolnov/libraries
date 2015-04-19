@@ -30,12 +30,19 @@
 #include <memory>
 #include <functional>
 #include <thread>
+#include <glm/glm.hpp>
 
 namespace Z
 {
     class Renderer
     {
     public:
+        enum {
+            ColorBufferBit   = 0b00001,
+            DepthBufferBit   = 0b00010,
+            StencilBufferBit = 0b00100,
+        };
+
         Renderer();
         virtual ~Renderer();
 
@@ -61,6 +68,9 @@ namespace Z
         void performInRenderThreadLater(std::function<void()>&& what);
 
         void runFrame(double time);
+
+        virtual void setClearColor(const glm::vec4& color) = 0;
+        virtual void clearBuffers(int buffers) = 0;
 
         virtual RendererTexturePtr createTexture() = 0;
 

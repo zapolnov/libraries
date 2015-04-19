@@ -21,6 +21,7 @@
  */
 #include "GL1Renderer.h"
 #include "utility/debug.h"
+#include "opengl.h"
 
 namespace Z
 {
@@ -36,5 +37,23 @@ namespace Z
     {
         Z_ASSERT(isCurrentThreadARenderThread());
         return createResource<GL1Texture>();
+    }
+
+    void GL1Renderer::setClearColor(const glm::vec4& color)
+    {
+        glClearColor(color.r, color.g, color.b, color.a);
+    }
+
+    void GL1Renderer::clearBuffers(int buffers)
+    {
+        GLbitfield bits = 0;
+        if (buffers & ColorBufferBit)
+            bits |= GL_COLOR_BUFFER_BIT;
+        if (buffers & DepthBufferBit)
+            bits |= GL_DEPTH_BUFFER_BIT;
+        if (buffers & StencilBufferBit)
+            bits |= GL_STENCIL_BUFFER_BIT;
+        Z_ASSERT(bits != 0);
+        glClear(bits);
     }
 }

@@ -33,5 +33,7 @@ namespace Z
         ~GL1Renderer();
 
         RendererTexturePtr createTexture() override;
+        void setClearColor(const glm::vec4& color) override;
+        void clearBuffers(int buffers) override;
     };
 }
