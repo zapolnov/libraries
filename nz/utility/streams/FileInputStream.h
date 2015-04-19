@@ -29,13 +29,13 @@ namespace Z
     class FileInputStream : public InputStream
     {
     public:
-        FileInputStream(const std::shared_ptr<FileReader>& reader);
-        FileInputStream(std::shared_ptr<FileReader>&& reader);
-        FileInputStream(const std::shared_ptr<FileReader>& reader, uint64_t offset, uint64_t size);
-        FileInputStream(std::shared_ptr<FileReader>&& reader, uint64_t offset, uint64_t size);
+        FileInputStream(const FileReaderPtr& reader);
+        FileInputStream(FileReaderPtr&& reader);
+        FileInputStream(const FileReaderPtr& reader, uint64_t offset, uint64_t size);
+        FileInputStream(FileReaderPtr&& reader, uint64_t offset, uint64_t size);
         ~FileInputStream() = default;
 
-        Utf8String name() const override;
+        const std::string& name() const override;
 
         bool atEnd() const override;
         uint64_t bytesAvailable() const override;
@@ -44,7 +44,7 @@ namespace Z
         bool skip(size_t count) override;
 
     private:
-        std::shared_ptr<FileReader> m_Reader;
+        FileReaderPtr m_Reader;
         uint64_t m_Offset;
         uint64_t m_BytesLeft;
     };

@@ -22,7 +22,7 @@
 
 #pragma once
 #include "FileReader.h"
-#include "../Utf8String.h"
+#include <string>
 #include <mutex>
 #include <cstdio>
 
@@ -31,17 +31,17 @@ namespace Z
     class StdioFileReader : public FileReader
     {
     public:
-        StdioFileReader(const Utf8String& name, FILE* handle);
+        StdioFileReader(const std::string& name, FILE* handle);
         ~StdioFileReader();
 
-        Utf8String name() const override;
+        const std::string& name() const override;
 
         uint64_t size() const override;
         bool read(uint64_t offset, void* buffer, size_t size) override;
 
     private:
         std::mutex m_Mutex;
-        Utf8String m_Name;
+        std::string m_Name;
         FILE* m_Handle;
         uint64_t m_Size;
         uint64_t m_Offset;

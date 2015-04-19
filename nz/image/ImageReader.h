@@ -37,7 +37,7 @@ namespace Z
         static void add(const std::shared_ptr<ImageReader>& reader);
         static void add(std::shared_ptr<ImageReader>&& reader);
 
-        static Image* read(const std::shared_ptr<FileReader>& file);
+        static Image* read(const FileReaderPtr& file);
 
     protected:
         virtual bool canReadImage(InputStream* stream) const = 0;

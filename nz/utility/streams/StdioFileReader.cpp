@@ -26,7 +26,7 @@
 
 namespace Z
 {
-    StdioFileReader::StdioFileReader(const Utf8String& name, FILE* handle)
+    StdioFileReader::StdioFileReader(const std::string& name, FILE* handle)
         : m_Name(name)
         , m_Handle(handle)
         , m_Offset(0)
@@ -43,7 +43,7 @@ namespace Z
         fclose(m_Handle);
     }
 
-    Utf8String StdioFileReader::name() const
+    const std::string& StdioFileReader::name() const
     {
         return m_Name;
     }

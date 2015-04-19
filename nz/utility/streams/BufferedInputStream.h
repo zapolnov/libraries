@@ -37,7 +37,7 @@ namespace Z
         BufferedInputStream(std::shared_ptr<InputStream>&& stream, size_t bufferSize);
         ~BufferedInputStream() = default;
 
-        Utf8String name() const override;
+        const std::string& name() const override;
 
         bool atEnd() const override;
         uint64_t bytesAvailable() const override;

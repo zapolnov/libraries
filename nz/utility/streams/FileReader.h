@@ -21,7 +21,8 @@
  */
 
 #pragma once
-#include "../Utf8String.h"
+#include <string>
+#include <memory>
 #include <cstdint>
 
 namespace Z
@@ -30,8 +31,10 @@ namespace Z
     {
     public:
         virtual ~FileReader() = default;
-        virtual Utf8String name() const = 0;
+        virtual const std::string& name() const = 0;
         virtual uint64_t size() const = 0;
         virtual bool read(uint64_t offset, void* buffer, size_t size) = 0;
     };
+
+    using FileReaderPtr = std::shared_ptr<FileReader>;
 }

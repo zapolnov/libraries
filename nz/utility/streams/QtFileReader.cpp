@@ -27,7 +27,7 @@
 
 namespace Z
 {
-    QtFileReader::QtFileReader(const Utf8String& name, std::unique_ptr<QFile>&& file)
+    QtFileReader::QtFileReader(const std::string& name, std::unique_ptr<QFile>&& file)
         : m_Name(name)
         , m_File(std::move(file))
         , m_Offset(0)
@@ -41,7 +41,7 @@ namespace Z
         m_File->close();
     }
 
-    Utf8String QtFileReader::name() const
+    const std::string& QtFileReader::name() const
     {
         return m_Name;
     }

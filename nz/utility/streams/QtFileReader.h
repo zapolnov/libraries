@@ -23,7 +23,7 @@
 #pragma once
 
 #include "FileReader.h"
-#include "../Utf8String.h"
+#include <string>
 #include <mutex>
 #include <memory>
 #include <QFile>
@@ -33,17 +33,17 @@ namespace Z
     class QtFileReader : public FileReader
     {
     public:
-        QtFileReader(const Utf8String& name, std::unique_ptr<QFile>&& file);
+        QtFileReader(const std::string& name, std::unique_ptr<QFile>&& file);
         ~QtFileReader();
 
-        Utf8String name() const override;
+        const std::string& name() const override;
 
         uint64_t size() const override;
         bool read(uint64_t offset, void* buffer, size_t size) override;
 
     private:
         std::mutex m_Mutex;
-        Utf8String m_Name;
+        std::string m_Name;
         std::unique_ptr<QFile> m_File;
         uint64_t m_Size;
         uint64_t m_Offset;

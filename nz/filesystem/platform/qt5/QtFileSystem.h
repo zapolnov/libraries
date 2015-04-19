@@ -21,14 +21,28 @@
  */
 
 #pragma once
-#include <string>
+#include "../../FileSystem.h"
+#include "utility/streams/QtFileReader.h"
+#include <QDir>
+#include <QStandardPaths>
+#include <memory>
 
 namespace Z
 {
-    class Stream
+    class QtFileSystem : public FileSystem
     {
     public:
-        virtual ~Stream() = default;
-        virtual const std::string& name() const = 0;
+        explicit QtFileSystem(const QDir& baseDir);
+        explicit QtFileSystem(const QString& baseDir);
+
+        QString absoluteFilePath(const std::string& file) const;
+
+        static QString getStandardPath(QStandardPaths::StandardLocation location);
+
+        bool fileExists(const std::string& path) final override;
+        FileReaderPtr openFile(const std::string& path) final override;
+
+    private:
+        QDir m_BaseDir;
     };
 }

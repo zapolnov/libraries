@@ -57,7 +57,7 @@ namespace Z
         g_Readers.emplace_back(std::move(reader));
     }
 
-    Image* ImageReader::read(const std::shared_ptr<FileReader>& file)
+    Image* ImageReader::read(const FileReaderPtr& file)
     {
         Z_CHECK(file != nullptr);
         if (!file)
@@ -69,7 +69,7 @@ namespace Z
             readers = g_Readers;
         }
 
-        for (const auto& reader : g_Readers) {
+        for (const auto& reader : readers) {
             FileInputStream stream(file);
             if (reader->canReadImage(&stream)) {
                 Image* image = reader->readImage(&stream);

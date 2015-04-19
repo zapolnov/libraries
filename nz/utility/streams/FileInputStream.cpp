@@ -23,37 +23,40 @@
 
 namespace Z
 {
-    FileInputStream::FileInputStream(const std::shared_ptr<FileReader>& reader)
+    FileInputStream::FileInputStream(const FileReaderPtr& reader)
         : m_Reader(reader)
         , m_Offset(0)
         , m_BytesLeft(m_Reader ? m_Reader->size() : 0)
     {
     }
 
-    FileInputStream::FileInputStream(std::shared_ptr<FileReader>&& reader)
+    FileInputStream::FileInputStream(FileReaderPtr&& reader)
         : m_Reader(std::move(reader))
         , m_Offset(0)
         , m_BytesLeft(m_Reader ? m_Reader->size() : 0)
     {
     }
 
-    FileInputStream::FileInputStream(const std::shared_ptr<FileReader>& reader, uint64_t offset, uint64_t size)
+    FileInputStream::FileInputStream(const FileReaderPtr& reader, uint64_t offset, uint64_t size)
         : m_Reader(reader)
         , m_Offset(offset)
         , m_BytesLeft(m_Reader ? size : 0)
     {
     }
 
-    FileInputStream::FileInputStream(std::shared_ptr<FileReader>&& reader, uint64_t offset, uint64_t size)
+    FileInputStream::FileInputStream(FileReaderPtr&& reader, uint64_t offset, uint64_t size)
         : m_Reader(std::move(reader))
         , m_Offset(offset)
         , m_BytesLeft(m_Reader ? size : 0)
     {
     }
 
-    Utf8String FileInputStream::name() const
+    const std::string& FileInputStream::name() const
     {
-        return m_Reader ? m_Reader->name() : Utf8String();
+        if (m_Reader)
+            return m_Reader->name();
+        static const std::string empty;
+        return empty;
     }
 
     bool FileInputStream::atEnd() const

@@ -21,14 +21,17 @@
  */
 
 #pragma once
-#include <string>
+#include "utility/streams/FileReader.h"
 
 namespace Z
 {
-    class Stream
+    class FileSystem
     {
     public:
-        virtual ~Stream() = default;
-        virtual const std::string& name() const = 0;
+        FileSystem() = default;
+        virtual ~FileSystem() = default;
+
+        virtual bool fileExists(const std::string& path) = 0;
+        virtual FileReaderPtr openFile(const std::string& path) = 0;
     };
 }

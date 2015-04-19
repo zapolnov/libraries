@@ -64,9 +64,12 @@ namespace Z
             m_Buffer.reset(new uint8_t[m_BufferSize]);
     }
 
-    Utf8String BufferedInputStream::name() const
+    const std::string& BufferedInputStream::name() const
     {
-        return m_Stream ? m_Stream->name() : Utf8String();
+        if (m_Stream)
+            return m_Stream->name();
+        static const std::string empty;
+        return empty;
     }
 
     bool BufferedInputStream::atEnd() const
