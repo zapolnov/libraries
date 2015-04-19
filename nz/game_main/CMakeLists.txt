@@ -28,17 +28,17 @@ include(../cmake/TargetPlatform.cmake)
 file(GLOB qt5_sources qt5/*.cpp qt5/*.h)
 file(GLOB root_sources *.cpp *.h)
 
-add_library(main-nz STATIC ${EXCLUDE_FROM_ALL}
+add_library(game_main-nz STATIC ${EXCLUDE_FROM_ALL}
     ${qt5_sources}
     ${root_sources}
 )
 
 z_qt5_sources(${qt5_sources})
-z_target_link_qt5(main-nz)
+z_target_link_qt5(game_main-nz)
 
 source_group("Source Files\\qt5" FILES ${qt5_sources})
 source_group("Source Files" FILES ${root_sources})
 
-set_target_properties(main-nz PROPERTIES CXX_STANDARD 11)
-target_include_directories(main-nz BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
-target_link_libraries(main-nz renderer-nz utility-nz)
+set_target_properties(game_main-nz PROPERTIES CXX_STANDARD 11)
+target_include_directories(game_main-nz BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
+target_link_libraries(game_main-nz renderer-nz utility-nz)

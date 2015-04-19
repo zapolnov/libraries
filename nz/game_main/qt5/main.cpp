@@ -19,11 +19,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#include "renderer/platform/qt5/QtOpenGLWindow.h"
+#include "../main.h"
+#include <QApplication>
 
-#pragma once
-#include "renderer/RendererCallbacks.h"
-
-namespace Z
+int main(int argc, char** argv)
 {
-    RendererCallbacks* gameInstance();
+    QCoreApplication::setAttribute(Qt::AA_X11InitThreads);
+    QApplication app(argc, argv);
+
+    Z::QtOpenGLWindow window(Z::createGame());
+    window.show();
+
+    return app.exec();
 }
