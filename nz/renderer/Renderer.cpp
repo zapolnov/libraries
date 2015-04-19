@@ -37,6 +37,7 @@ namespace Z
     void Renderer::init(RendererCallbacks* callbacks, int viewportWidth, int viewportHeight)
     {
         Z_ASSERT(callbacks != nullptr);
+        m_Callbacks = callbacks;
         m_RenderThreadId = std::this_thread::get_id();
         m_ViewportWidth = viewportWidth;
         m_ViewportHeight = viewportHeight;
