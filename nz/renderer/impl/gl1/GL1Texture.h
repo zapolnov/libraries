@@ -21,17 +21,18 @@
  */
 
 #pragma once
-#include "../Renderer.h"
-#include "GL1Texture.h"
+#include "../../RendererTexture.h"
+#include "opengl.h"
 
 namespace Z
 {
-    class GL1Renderer : public Renderer
+    class GL1Texture : public RendererTexture
     {
-    public:
-        GL1Renderer();
-        ~GL1Renderer();
+    protected:
+        void create() override;
+        void destroy() override;
 
-        RendererTexturePtr createTexture() override;
+    private:
+        GLuint m_Handle = 0;
     };
 }

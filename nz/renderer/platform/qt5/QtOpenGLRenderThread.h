@@ -21,8 +21,8 @@
  */
 
 #pragma once
-#include "../Renderer.h"
-#include "../RendererCallbacks.h"
+#include "../../Renderer.h"
+#include "../../RendererCallbacks.h"
 #include <atomic>
 #include <future>
 #include <QElapsedTimer>

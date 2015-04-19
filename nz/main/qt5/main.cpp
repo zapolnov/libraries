@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include "renderer/qt5/QtOpenGLWindow.h"
+#include "renderer/platform/qt5/QtOpenGLWindow.h"
 #include "main/main.h"
 #include <QApplication>
 

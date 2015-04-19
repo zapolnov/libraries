@@ -25,8 +25,8 @@ cmake_minimum_required(VERSION 3.1)
 include(../cmake/Qt5.cmake)
 include(../cmake/TargetPlatform.cmake)
 
-file(GLOB qt5_sources qt5/*.cpp qt5/*.h)
-file(GLOB gl1_sources gl1/*.cpp gl1/*.h)
+file(GLOB qt5_sources platform/qt5/*.cpp platform/qt5/*.h)
+file(GLOB gl1_sources impl/gl1/*.cpp impl/gl1/*.h)
 file(GLOB root_sources *.cpp *.h)
 
 add_library(renderer-nz STATIC ${EXCLUDE_FROM_ALL}
@@ -38,8 +38,8 @@ add_library(renderer-nz STATIC ${EXCLUDE_FROM_ALL}
 z_qt5_sources(${qt5_sources})
 z_target_link_qt5(renderer-nz)
 
-source_group("Source Files\\qt5" FILES ${qt5_sources})
-source_group("Source Files\\gl1" FILES ${gl1_sources})
+source_group("Source Files\\platform\\qt5" FILES ${qt5_sources})
+source_group("Source Files\\impl\\gl1" FILES ${gl1_sources})
 source_group("Source Files" FILES ${root_sources})
 
 set_target_properties(renderer-nz PROPERTIES CXX_STANDARD 11)

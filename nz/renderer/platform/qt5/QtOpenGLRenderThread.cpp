@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  */
 #include "QtOpenGLRenderThread.h"
-#include "../gl1/GL1Renderer.h"
+#include "../../impl/gl1/GL1Renderer.h"
 #include "utility/debug.h"
 #include <new>
 
