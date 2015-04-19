@@ -33,7 +33,7 @@ namespace Z
     public:
         enum Kind {
             Empty,
-            NativeAssets,
+            Native,
         };
 
         explicit FileSystemList(Kind kind = Empty);

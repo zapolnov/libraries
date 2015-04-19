@@ -38,7 +38,7 @@ namespace Z
         case Empty:
             break;
 
-        case NativeAssets:
+        case Native:
           #ifdef Z_TARGET_QT5
             add(new QtFileSystem(QCoreApplication::applicationDirPath()));
             add(new QtFileSystem(":/"));

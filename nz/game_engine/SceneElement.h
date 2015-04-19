@@ -44,6 +44,9 @@ namespace Z
         virtual void setNeedResources(bool flag);
         virtual bool areAllResourcesResident() const;
 
+        void update(double time);
+        void draw();
+
         const glm::mat4& localMatrix() const;
         const glm::mat4& worldMatrix() const;
 
@@ -57,6 +60,11 @@ namespace Z
         template <class T> static bool isResourceResident(const std::shared_ptr<T>& resource) {
             return resource && resource->isResidentOrFailedToLoad();
         }
+
+        virtual void onUpdate(double time) { (void)time; }
+        virtual void onAfterUpdate(double time) { (void)time; }
+        virtual void onDraw() {}
+        virtual void onAfterDraw() {}
 
         virtual void onAddedToParent(SceneElement* newParent) { (void)newParent; }
         virtual void onRemovedFromParent(SceneElement* oldParent) { (void)oldParent; }

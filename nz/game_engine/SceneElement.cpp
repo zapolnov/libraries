@@ -101,6 +101,22 @@ namespace Z
         return true;
     }
 
+    void SceneElement::update(double time)
+    {
+        onUpdate(time);
+        for (SceneElement* child = m_FirstChild; child; child = child->m_NextSibling)
+            child->update(time);
+        onAfterUpdate(time);
+    }
+
+    void SceneElement::draw()
+    {
+        onDraw();
+        for (SceneElement* child = m_FirstChild; child; child = child->m_NextSibling)
+            child->draw();
+        onAfterDraw();
+    }
+
     const glm::mat4& SceneElement::localMatrix() const
     {
         if (m_Flags & LocalMatrixDirty) {

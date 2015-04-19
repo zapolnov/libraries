@@ -31,7 +31,7 @@ namespace Z
     {
     public:
         ResourceManager();
-        ~ResourceManager();
+        virtual ~ResourceManager();
 
     private:
         void registerResource(Resource* resource);
