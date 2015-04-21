@@ -21,23 +21,25 @@
  */
 
 #pragma once
-#include "../../Renderer.h"
-#include "../../RendererCallbacks.h"
+#include "utility/FunctionQueue.h"
 #include <atomic>
 #include <future>
+#include <cstdint>
 #include <QElapsedTimer>
 #include <QThread>
 #include <QGLWidget>
 
 namespace Z
 {
-    class QtOpenGLRenderThread : public QThread
-    {
-    public:
-        QtOpenGLRenderThread(QGLWidget* qt, RendererCallbacks* callbacks);
-        ~QtOpenGLRenderThread();
+    class QtOpenGLWindowDelegate;
 
-        Renderer* renderer() const { return m_Renderer; }
+    class QtOpenGLRenderThread : public QThread, protected FunctionQueue
+    {
+        Q_OBJECT
+
+    public:
+        QtOpenGLRenderThread(QGLWidget* qt, QtOpenGLWindowDelegate* delegate);
+        ~QtOpenGLRenderThread();
 
         void start(int width, int height);
         void postShutdown();
@@ -45,16 +47,19 @@ namespace Z
         void suspend();
         void resume();
 
+        void resize(int width, int height);
+
+        QtOpenGLWindowDelegate* delegate() const { return m_Delegate; }
+        using FunctionQueue::post;
+
     protected:
         void run() override;
 
     private:
         QGLWidget* m_GL;
-        Renderer* m_Renderer = nullptr;
-        RendererCallbacks* m_Callbacks;
-        int m_InitialViewportWidth = 0;
-        int m_InitialViewportHeight = 0;
+        QtOpenGLWindowDelegate* m_Delegate;
         QElapsedTimer m_Timer;
+        std::atomic<uint32_t> m_ViewportSize;
         std::promise<void> m_ThreadStartPromise;
         std::atomic<bool> m_Suspended;
         std::atomic<bool> m_ShuttingDown;

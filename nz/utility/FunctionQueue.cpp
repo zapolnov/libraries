@@ -62,16 +62,24 @@ namespace Z
 
     void FunctionQueue::processAll()
     {
-        decltype(m_Queue) queue;
+        typedef decltype(m_Queue) queue_t;
+
+        void* buf[(sizeof(queue_t) + sizeof(void*) - 1) / sizeof(void*)];
+        queue_t* queue;
 
         {
             std::lock_guard<decltype(m_Mutex)> lock(m_Mutex);
-            decltype(m_Queue) q(std::move(m_Queue));
-            m_Queue = std::move(queue);
-            queue = std::move(q);
+
+            if (m_Queue.empty())
+                return;
+
+            queue = new(buf) queue_t;
+            queue_t q(std::move(m_Queue));
+            m_Queue = std::move(*queue);
+            *queue = std::move(q);
         }
 
-        for (const auto& func : queue)
+        for (const auto& func : *queue)
             func();
     }
 }

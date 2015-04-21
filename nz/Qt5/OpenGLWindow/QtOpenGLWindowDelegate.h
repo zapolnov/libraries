@@ -21,30 +21,29 @@
  */
 
 #pragma once
-#include "QtOpenGLRenderThread.h"
-#include <QGLWidget>
+#include <QSize>
 
 namespace Z
 {
-    class QtOpenGLWindow : public QGLWidget
+    class QtOpenGLWindowDelegate
     {
     public:
-        explicit QtOpenGLWindow(RendererCallbacks* callbacks, QWidget* parent = nullptr);
-        ~QtOpenGLWindow();
+        virtual ~QtOpenGLWindowDelegate() = default;
 
-    protected:
-        void resizeEvent(QResizeEvent* resizeEvent) override;
-        void paintEvent(QPaintEvent* paintEvent) override;
+        virtual QSize preferredWindowSize() const { return QSize(1024, 768); }
+        virtual int preferredDepthBufferBits() const { return 16; }
+        virtual int preferredStencilBufferBits() const { return 0; }
 
-        void showEvent(QShowEvent* showEvent) override;
-        void hideEvent(QHideEvent* hideEvent) override;
+        virtual void initializeGL(int width, int height) { (void)width; (void)height; }
+        virtual void shutdownGL() {}
+        virtual void suspendGL() {}
+        virtual void resumeGL() {}
 
-        void mousePressEvent(QMouseEvent* mouseEvent) override;
-        void mouseMoveEvent(QMouseEvent* mouseEvent) override;
-        void mouseReleaseEvent(QMouseEvent* mouseEvent) override;
+        virtual void resizeGL(int width, int height) { (void)width; (void)height; }
+        virtual void renderGL(double time) = 0;
 
-    private:
-        QtOpenGLRenderThread m_RenderThread;
-        bool m_Initialized = false;
+        virtual void onPointerPressed(int id, float x, float y) { (void)id; (void)x; (void)y; }
+        virtual void onPointerMoved(int id, float x, float y) { (void)id; (void)x; (void)y; }
+        virtual void onPointerReleased(int id, float x, float y) { (void)id; (void)x; (void)y; }
     };
 }
