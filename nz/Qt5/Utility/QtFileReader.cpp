@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  */
 #include "QtFileReader.h"
-#include "utility/macros.h"
+#include "QtMacros.h"
 #include "utility/debug.h"
 #include <cerrno>
 #include <cstring>

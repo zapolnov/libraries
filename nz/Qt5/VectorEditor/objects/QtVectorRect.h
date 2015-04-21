@@ -21,7 +21,7 @@
  */
 
 #pragma once
-#include "../QtVectorObjectKind.h"
+#include "QtVectorObjectKind.h"
 
 namespace Z
 {

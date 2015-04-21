@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.1)
 
-include(../cmake/Qt5.cmake)
+include(../../cmake/Qt5.cmake)
 
 if(Z_QT5_FOUND)
     set(CMAKE_AUTOMOC TRUE)
@@ -31,7 +31,7 @@ if(Z_QT5_FOUND)
     file(GLOB objects_sources objects/*.cpp objects/*.h)
     file(GLOB root_sources *.cpp *.h)
 
-    add_library(qt5vectoreditor-nz STATIC ${EXCLUDE_FROM_ALL}
+    add_library(NZQt5VectorEditor STATIC ${EXCLUDE_FROM_ALL}
         ${objects_sources}
         ${root_sources}
     )
@@ -39,8 +39,8 @@ if(Z_QT5_FOUND)
     source_group("Source Files\\objects" FILES ${objects_sources})
     source_group("Source Files" FILES ${root_sources})
 
-    set_target_properties(qt5vectoreditor-nz PROPERTIES CXX_STANDARD 11)
-    target_include_directories(qt5vectoreditor-nz BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
-    target_link_libraries(qt5vectoreditor-nz qt5util-nz qt5propertylist-nz)
-    z_target_link_qt5(qt5vectoreditor-nz)
+    set_target_properties(NZQt5VectorEditor PROPERTIES CXX_STANDARD 11)
+    target_include_directories(NZQt5VectorEditor BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
+    target_link_libraries(NZQt5VectorEditor NZQt5Utility NZQt5PropertyList)
+    z_target_link_qt5(NZQt5VectorEditor)
 endif()

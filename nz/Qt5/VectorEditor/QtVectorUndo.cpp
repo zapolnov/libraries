@@ -21,8 +21,8 @@
  */
 #include "QtVectorUndo.h"
 #include "QtVectorScene.h"
-#include "qt5propertylist/QtPropertyListItem.h"
-#include "qt5util/QtMergeableUndoCommand.h"
+#include "QtPropertyListItem.h"
+#include "QtMergeableUndoCommand.h"
 #include <QVariant>
 #include <QUndoCommand>
 #include <ctime>

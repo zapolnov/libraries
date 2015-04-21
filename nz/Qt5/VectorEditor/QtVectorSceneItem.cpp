@@ -23,9 +23,9 @@
 #include "QtVectorScene.h"
 #include "QtVectorUndo.h"
 #include "QtVectorControlPoint.h"
-#include "qt5util/QtMergeableUndoCommand.h"
-#include "qt5propertylist/QtPropertyDataType.h"
-#include "qt5propertylist/QtPropertyList.h"
+#include "QtMergeableUndoCommand.h"
+#include "QtPropertyDataType.h"
+#include "QtPropertyList.h"
 #include <ctime>
 
 namespace Z

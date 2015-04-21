@@ -22,17 +22,6 @@
 
 cmake_minimum_required(VERSION 3.1)
 
-include(../cmake/Qt5.cmake)
-
-if(Z_QT5_FOUND)
-    set(CMAKE_AUTOMOC TRUE)
-    set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
-
-    file(GLOB root_sources *.cpp *.h)
-    add_library(qt5propertylist-nz STATIC ${EXCLUDE_FROM_ALL} ${root_sources})
-    source_group("Source Files" FILES ${root_sources})
-
-    set_target_properties(qt5propertylist-nz PROPERTIES CXX_STANDARD 11)
-    target_include_directories(qt5propertylist-nz BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
-    z_target_link_qt5(qt5propertylist-nz)
-endif()
+add_subdirectory(utility)
+add_subdirectory(PropertyList)
+add_subdirectory(VectorEditor)

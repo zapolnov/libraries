@@ -21,28 +21,6 @@
  */
 
 #pragma once
-#include "../../FileSystem.h"
-#include "QtFileReader.h"
-#include <QDir>
-#include <QStandardPaths>
-#include <memory>
+#include <QString>
 
-namespace Z
-{
-    class QtFileSystem : public FileSystem
-    {
-    public:
-        explicit QtFileSystem(const QDir& baseDir);
-        explicit QtFileSystem(const QString& baseDir);
-
-        QString absoluteFilePath(const std::string& file) const;
-
-        static QString getStandardPath(QStandardPaths::StandardLocation location);
-
-        bool fileExists(const std::string& path) final override;
-        FileReaderPtr openFile(const std::string& path) final override;
-
-    private:
-        QDir m_BaseDir;
-    };
-}
+#define zqUtf8Printable(str) ((str).toUtf8().constData())

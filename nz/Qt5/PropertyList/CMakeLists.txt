@@ -22,21 +22,17 @@
 
 cmake_minimum_required(VERSION 3.1)
 
-if(MSVC)
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+include(../../cmake/Qt5.cmake)
+
+if(Z_QT5_FOUND)
+    set(CMAKE_AUTOMOC TRUE)
+    set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
+
+    file(GLOB root_sources *.cpp *.h)
+    add_library(NZQt5PropertyList STATIC ${EXCLUDE_FROM_ALL} ${root_sources})
+    source_group("Source Files" FILES ${root_sources})
+
+    set_target_properties(NZQt5PropertyList PROPERTIES CXX_STANDARD 11)
+    target_include_directories(NZQt5PropertyList BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
+    z_target_link_qt5(NZQt5PropertyList)
 endif()
-
-file(GLOB streams_sources streams/*.cpp streams/*.h)
-file(GLOB root_sources *.cpp *.h)
-
-add_library(utility-nz STATIC ${EXCLUDE_FROM_ALL}
-    ${streams_sources}
-    ${root_sources}
-)
-
-source_group("Source Files\\streams" FILES ${streams_sources})
-source_group("Source Files" FILES ${root_sources})
-
-set_target_properties(utility-nz PROPERTIES CXX_STANDARD 11)
-target_include_directories(utility-nz BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
-target_link_libraries(utility-nz glm)

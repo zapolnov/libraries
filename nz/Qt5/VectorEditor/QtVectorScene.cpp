@@ -24,7 +24,7 @@
 #include "QtVectorEditor.h"
 #include "QtVectorObject.h"
 #include "QtVectorUndo.h"
-#include "qt5util/QtMergeableUndoCommand.h"
+#include "QtMergeableUndoCommand.h"
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsRectItem>
 

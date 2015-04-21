@@ -21,11 +21,11 @@
  */
 #include "QtVectorRect.h"
 #include "QtVectorObject.h"
-#include "../QtVectorControlPoint.h"
-#include "../QtVectorUndo.h"
-#include "qt5propertylist/QtPropertyDataType.h"
-#include "qt5propertylist/QtPropertyListItem.h"
-#include "qt5propertylist/QtPropertyList.h"
+#include "QtVectorControlPoint.h"
+#include "QtVectorUndo.h"
+#include "QtPropertyDataType.h"
+#include "QtPropertyListItem.h"
+#include "QtPropertyList.h"
 #include <QPainter>
 
 namespace Z
