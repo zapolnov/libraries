@@ -63,4 +63,6 @@ namespace Z
         void initiateLoad();
         void initiateUnload();
     };
+
+    using ResourcePtr = std::shared_ptr<Resource>;
 }

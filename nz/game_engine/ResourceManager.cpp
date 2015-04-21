@@ -41,12 +41,12 @@ namespace Z
         (void)resource;
     }
 
-    void ResourceManager::handleResourceLoad(const std::shared_ptr<Resource>& resource)
+    void ResourceManager::handleResourceLoad(const ResourcePtr& resource)
     {
         (void)resource;
     }
 
-    void ResourceManager::handleResourceUnload(const std::shared_ptr<Resource>& resource)
+    void ResourceManager::handleResourceUnload(const ResourcePtr& resource)
     {
         (void)resource;
     }

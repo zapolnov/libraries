@@ -21,6 +21,7 @@
  */
 
 #pragma once
+#include "Resource.h"
 #include <memory>
 
 namespace Z
@@ -36,8 +37,8 @@ namespace Z
     private:
         void registerResource(Resource* resource);
         void unregisterResource(Resource* resource);
-        void handleResourceLoad(const std::shared_ptr<Resource>& resource);
-        void handleResourceUnload(const std::shared_ptr<Resource>& resource);
+        void handleResourceLoad(const ResourcePtr& resource);
+        void handleResourceUnload(const ResourcePtr& resource);
 
         friend class Resource;
     };
