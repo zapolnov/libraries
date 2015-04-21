@@ -34,4 +34,6 @@ namespace Z
         virtual size_t read(void* buffer, size_t size) = 0;
         virtual bool skip(size_t count) = 0;
     };
+
+    using InputStreamPtr = std::shared_ptr<InputStream>;
 }

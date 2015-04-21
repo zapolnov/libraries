@@ -31,10 +31,10 @@ namespace Z
     public:
         static constexpr size_t DEFAULT_BUFFER_SIZE = 65536;
 
-        BufferedInputStream(const std::shared_ptr<InputStream>& stream);
-        BufferedInputStream(std::shared_ptr<InputStream>&& stream);
-        BufferedInputStream(const std::shared_ptr<InputStream>& stream, size_t bufferSize);
-        BufferedInputStream(std::shared_ptr<InputStream>&& stream, size_t bufferSize);
+        BufferedInputStream(const InputStreamPtr& stream);
+        BufferedInputStream(InputStreamPtr&& stream);
+        BufferedInputStream(const InputStreamPtr& stream, size_t bufferSize);
+        BufferedInputStream(InputStreamPtr&& stream, size_t bufferSize);
         ~BufferedInputStream() = default;
 
         const std::string& name() const override;
@@ -46,7 +46,7 @@ namespace Z
         bool skip(size_t count) override;
 
     private:
-        std::shared_ptr<InputStream> m_Stream;
+        InputStreamPtr m_Stream;
         std::unique_ptr<uint8_t[]> m_Buffer;
         size_t m_BufferSize;
         size_t m_BufferStart = 0;

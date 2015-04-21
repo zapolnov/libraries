@@ -26,7 +26,7 @@
 
 namespace Z
 {
-    BufferedInputStream::BufferedInputStream(const std::shared_ptr<InputStream>& stream)
+    BufferedInputStream::BufferedInputStream(const InputStreamPtr& stream)
         : m_Stream(stream)
         , m_BufferSize(DEFAULT_BUFFER_SIZE)
     {
@@ -34,7 +34,7 @@ namespace Z
             m_Buffer.reset(new uint8_t[m_BufferSize]);
     }
 
-    BufferedInputStream::BufferedInputStream(std::shared_ptr<InputStream>&& stream)
+    BufferedInputStream::BufferedInputStream(InputStreamPtr&& stream)
         : m_Stream(std::move(stream))
         , m_BufferSize(DEFAULT_BUFFER_SIZE)
     {
@@ -42,7 +42,7 @@ namespace Z
             m_Buffer.reset(new uint8_t[m_BufferSize]);
     }
 
-    BufferedInputStream::BufferedInputStream(const std::shared_ptr<InputStream>& stream, size_t bufferSize)
+    BufferedInputStream::BufferedInputStream(const InputStreamPtr& stream, size_t bufferSize)
         : m_Stream(stream)
         , m_BufferSize(bufferSize)
     {
@@ -53,7 +53,7 @@ namespace Z
             m_Buffer.reset(new uint8_t[m_BufferSize]);
     }
 
-    BufferedInputStream::BufferedInputStream(std::shared_ptr<InputStream>&& stream, size_t bufferSize)
+    BufferedInputStream::BufferedInputStream(InputStreamPtr&& stream, size_t bufferSize)
         : m_Stream(std::move(stream)),
           m_BufferSize(bufferSize)
     {
