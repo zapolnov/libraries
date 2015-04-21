@@ -41,4 +41,4 @@ source_group("Source Files" FILES ${root_sources})
 
 set_target_properties(NZGameMain PROPERTIES CXX_STANDARD 11)
 target_include_directories(NZGameMain BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
-target_link_libraries(NZGameMain NZRenderer NZUtility)
+target_link_libraries(NZGameMain NZEngineRenderer NZUtility)
