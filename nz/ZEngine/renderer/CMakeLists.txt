@@ -22,23 +22,30 @@
 
 cmake_minimum_required(VERSION 3.1)
 
+include(../cmake/OpenGL.cmake)
 include(../cmake/Qt5.cmake)
 include(../cmake/TargetPlatform.cmake)
 
 file(GLOB qt5_sources platform/qt5/*.cpp platform/qt5/*.h)
+file(GLOB gl1_sources impl/gl1/*.cpp impl/gl1/*.h)
 file(GLOB root_sources *.cpp *.h)
 
-add_library(NZFileSystem STATIC ${EXCLUDE_FROM_ALL}
+add_library(NZEngineRenderer STATIC ${EXCLUDE_FROM_ALL}
     ${qt5_sources}
+    ${gl1_sources}
     ${root_sources}
 )
 
 z_qt5_sources(${qt5_sources})
-z_target_link_qt5(NZFileSystem)
+z_target_link_qt5(NZEngineRenderer)
+
+z_opengl_sources(${gl1_sources})
+z_target_link_opengl(NZEngineRenderer)
 
 source_group("Source Files\\platform\\qt5" FILES ${qt5_sources})
+source_group("Source Files\\impl\\gl1" FILES ${gl1_sources})
 source_group("Source Files" FILES ${root_sources})
 
-set_target_properties(NZFileSystem PROPERTIES CXX_STANDARD 11)
-target_include_directories(NZFileSystem BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
-target_link_libraries(NZFileSystem NZUtility NZQt5Utility)
+set_target_properties(NZEngineRenderer PROPERTIES CXX_STANDARD 11)
+target_include_directories(NZEngineRenderer BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/../..")
+target_link_libraries(NZEngineRenderer NZUtility glm)
