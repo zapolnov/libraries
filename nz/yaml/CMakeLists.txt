@@ -28,12 +28,12 @@ endif()
 
 file(GLOB source_files *.cpp *.h)
 
-add_library(yaml-nz STATIC ${EXCLUDE_FROM_ALL}
+add_library(NZYaml STATIC ${EXCLUDE_FROM_ALL}
     ${source_files}
 )
 
 source_group("Source Files" FILES ${source_files})
 
-set_target_properties(yaml-nz PROPERTIES CXX_STANDARD 11)
-target_link_libraries(yaml-nz libyaml)
-target_include_directories(yaml-nz BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
+set_target_properties(NZYaml PROPERTIES CXX_STANDARD 11)
+target_link_libraries(NZYaml libyaml)
+target_include_directories(NZYaml BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")

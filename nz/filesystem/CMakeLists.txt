@@ -28,17 +28,17 @@ include(../cmake/TargetPlatform.cmake)
 file(GLOB qt5_sources platform/qt5/*.cpp platform/qt5/*.h)
 file(GLOB root_sources *.cpp *.h)
 
-add_library(filesystem-nz STATIC ${EXCLUDE_FROM_ALL}
+add_library(NZFileSystem STATIC ${EXCLUDE_FROM_ALL}
     ${qt5_sources}
     ${root_sources}
 )
 
 z_qt5_sources(${qt5_sources})
-z_target_link_qt5(filesystem-nz)
+z_target_link_qt5(NZFileSystem)
 
 source_group("Source Files\\platform\\qt5" FILES ${qt5_sources})
 source_group("Source Files" FILES ${root_sources})
 
-set_target_properties(filesystem-nz PROPERTIES CXX_STANDARD 11)
-target_include_directories(filesystem-nz BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
-target_link_libraries(filesystem-nz utility-nz NZQt5Utility)
+set_target_properties(NZFileSystem PROPERTIES CXX_STANDARD 11)
+target_include_directories(NZFileSystem BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
+target_link_libraries(NZFileSystem NZUtility NZQt5Utility)

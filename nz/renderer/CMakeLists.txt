@@ -30,22 +30,22 @@ file(GLOB qt5_sources platform/qt5/*.cpp platform/qt5/*.h)
 file(GLOB gl1_sources impl/gl1/*.cpp impl/gl1/*.h)
 file(GLOB root_sources *.cpp *.h)
 
-add_library(renderer-nz STATIC ${EXCLUDE_FROM_ALL}
+add_library(NZRenderer STATIC ${EXCLUDE_FROM_ALL}
     ${qt5_sources}
     ${gl1_sources}
     ${root_sources}
 )
 
 z_qt5_sources(${qt5_sources})
-z_target_link_qt5(renderer-nz)
+z_target_link_qt5(NZRenderer)
 
 z_opengl_sources(${gl1_sources})
-z_target_link_opengl(renderer-nz)
+z_target_link_opengl(NZRenderer)
 
 source_group("Source Files\\platform\\qt5" FILES ${qt5_sources})
 source_group("Source Files\\impl\\gl1" FILES ${gl1_sources})
 source_group("Source Files" FILES ${root_sources})
 
-set_target_properties(renderer-nz PROPERTIES CXX_STANDARD 11)
-target_include_directories(renderer-nz BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
-target_link_libraries(renderer-nz utility-nz glm)
+set_target_properties(NZRenderer PROPERTIES CXX_STANDARD 11)
+target_include_directories(NZRenderer BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
+target_link_libraries(NZRenderer NZUtility glm)

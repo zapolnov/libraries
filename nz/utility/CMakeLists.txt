@@ -29,7 +29,7 @@ endif()
 file(GLOB streams_sources streams/*.cpp streams/*.h)
 file(GLOB root_sources *.cpp *.h)
 
-add_library(utility-nz STATIC ${EXCLUDE_FROM_ALL}
+add_library(NZUtility STATIC ${EXCLUDE_FROM_ALL}
     ${streams_sources}
     ${root_sources}
 )
@@ -37,6 +37,6 @@ add_library(utility-nz STATIC ${EXCLUDE_FROM_ALL}
 source_group("Source Files\\streams" FILES ${streams_sources})
 source_group("Source Files" FILES ${root_sources})
 
-set_target_properties(utility-nz PROPERTIES CXX_STANDARD 11)
-target_include_directories(utility-nz BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
-target_link_libraries(utility-nz glm)
+set_target_properties(NZUtility PROPERTIES CXX_STANDARD 11)
+target_include_directories(NZUtility BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
+target_link_libraries(NZUtility glm)

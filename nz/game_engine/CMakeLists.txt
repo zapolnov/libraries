@@ -24,12 +24,12 @@ cmake_minimum_required(VERSION 3.1)
 
 file(GLOB root_sources *.cpp *.h)
 
-add_library(game_engine-nz STATIC ${EXCLUDE_FROM_ALL}
+add_library(NZGameEngine STATIC ${EXCLUDE_FROM_ALL}
     ${root_sources}
 )
 
 source_group("Source Files" FILES ${root_sources})
 
-set_target_properties(game_engine-nz PROPERTIES CXX_STANDARD 11)
-target_include_directories(game_engine-nz BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
-target_link_libraries(game_engine-nz filesystem-nz renderer-nz utility-nz glm)
+set_target_properties(NZGameEngine PROPERTIES CXX_STANDARD 11)
+target_include_directories(NZGameEngine BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
+target_link_libraries(NZGameEngine NZFileSystem NZImage NZRenderer NZUtility glm)

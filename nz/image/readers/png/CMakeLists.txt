@@ -24,12 +24,12 @@ cmake_minimum_required(VERSION 3.1)
 
 file(GLOB root_sources *.cpp *.h)
 
-add_library(imagereader_png-nz STATIC ${EXCLUDE_FROM_ALL}
+add_library(NZPNGReader STATIC ${EXCLUDE_FROM_ALL}
     ${root_sources}
 )
 
 source_group("Source Files" FILES ${root_sources})
 
-set_target_properties(imagereader_png-nz PROPERTIES CXX_STANDARD 11)
-target_include_directories(imagereader_png-nz BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
-target_link_libraries(imagereader_png-nz image-nz libpng)
+set_target_properties(NZPNGReader PROPERTIES CXX_STANDARD 11)
+target_include_directories(NZPNGReader BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
+target_link_libraries(NZPNGReader NZImage libpng)

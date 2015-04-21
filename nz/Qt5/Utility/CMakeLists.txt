@@ -34,6 +34,6 @@ if(Z_QT5_FOUND)
 
     set_target_properties(NZQt5Utility PROPERTIES CXX_STANDARD 11)
     target_include_directories(NZQt5Utility BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
-    target_link_libraries(NZQt5Utility utility-nz)
+    target_link_libraries(NZQt5Utility NZUtility)
     z_target_link_qt5(NZQt5Utility)
 endif()
