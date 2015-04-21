@@ -22,8 +22,8 @@
 
 cmake_minimum_required(VERSION 3.1)
 
-include(../cmake/Qt5.cmake)
-include(../cmake/TargetPlatform.cmake)
+include(../../cmake/Qt5.cmake)
+include(../../cmake/TargetPlatform.cmake)
 
 file(GLOB qt5_sources platform/qt5/*.cpp platform/qt5/*.h)
 file(GLOB root_sources *.cpp *.h)

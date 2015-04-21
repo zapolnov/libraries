@@ -21,9 +21,9 @@
  */
 
 #pragma once
-#include "renderer/Renderer.h"
-#include "renderer/RendererCallbacks.h"
-#include "filesystem/FileSystem.h"
+#include "ZEngine/renderer/Renderer.h"
+#include "ZEngine/renderer/RendererCallbacks.h"
+#include "ZEngine/filesystem/FileSystem.h"
 #include "SceneElement.h"
 #include "ResourceManager.h"
 #include <memory>
