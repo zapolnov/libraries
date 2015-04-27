@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.1)
 
-add_subdirectory(utility)
+add_subdirectory(Utility)
 add_subdirectory(PropertyList)
 add_subdirectory(VectorEditor)
 add_subdirectory(OpenGLWindow)
