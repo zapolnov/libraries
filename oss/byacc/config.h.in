@@ -1,0 +1,4 @@
+
+#cmakedefine HAVE_FCNTL_H 1
+#cmakedefine HAVE_MKSTEMP 1
+#cmakedefine HAVE_VSNPRINTF 1
