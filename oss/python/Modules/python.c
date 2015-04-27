@@ -6,6 +6,12 @@
 #include <floatingpoint.h>
 #endif
 
+void python_exit_hook(int code)
+{
+	Py_Finalize();
+	exit(code);
+}
+
 int
 main(int argc, char **argv)
 {
