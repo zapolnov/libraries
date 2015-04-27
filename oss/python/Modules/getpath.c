@@ -129,7 +129,7 @@ static char prefix[MAXPATHLEN+1];
 static char exec_prefix[MAXPATHLEN+1];
 static char progpath[MAXPATHLEN+1];
 static char *module_search_path = NULL;
-static char lib_python[] = "lib/python" VERSION;
+static char lib_python[] = "Lib";
 
 static void
 reduce(char *dir)
@@ -277,6 +277,7 @@ search_for_prefix(char *argv0_path, char *home)
     }
 
     /* Check to see if argv[0] is in the build directory */
+#if 0
     strcpy(prefix, argv0_path);
     joinpath(prefix, "Modules/Setup");
     if (isfile(prefix)) {
@@ -301,6 +302,7 @@ search_for_prefix(char *argv0_path, char *home)
         prefix[n] = '\0';
         reduce(prefix);
     } while (prefix[0]);
+#endif
 
     /* Look at configure's PREFIX */
     strncpy(prefix, PREFIX, MAXPATHLEN);
@@ -335,6 +337,7 @@ search_for_exec_prefix(char *argv0_path, char *home)
         return 1;
     }
 
+#if 0
     /* Check to see if argv[0] is in the build directory. "pybuilddir.txt"
        is written by setup.py and contains the relative path to the location
        of shared library modules. */
@@ -369,6 +372,7 @@ search_for_exec_prefix(char *argv0_path, char *home)
         exec_prefix[n] = '\0';
         reduce(exec_prefix);
     } while (exec_prefix[0]);
+#endif
 
     /* Look at configure's EXEC_PREFIX */
     strncpy(exec_prefix, EXEC_PREFIX, MAXPATHLEN);
@@ -537,6 +541,7 @@ calculate_path(void)
 
     strncpy(zip_path, prefix, MAXPATHLEN);
     zip_path[MAXPATHLEN] = '\0';
+#if 0
     if (pfound > 0) { /* Use the reduced prefix returned by Py_GetPrefix() */
         reduce(zip_path);
         reduce(zip_path);
@@ -560,6 +565,7 @@ calculate_path(void)
     if ((!pfound || !efound) && !Py_FrozenFlag)
         fprintf(stderr,
                 "Consider setting $PYTHONHOME to <prefix>[:<exec_prefix>]\n");
+#endif
 
     /* Calculate size of return buffer.
      */
@@ -569,7 +575,9 @@ calculate_path(void)
         bufsz += strlen(rtpypath) + 1;
 
     prefixsz = strlen(prefix) + 1;
+    memcpy(exec_prefix, prefix, prefixsz);
 
+#if 0
     while (1) {
         char *delim = strchr(defpath, DELIM);
 
@@ -585,6 +593,7 @@ calculate_path(void)
         }
         defpath = delim + 1;
     }
+#endif
 
     bufsz += strlen(zip_path) + 1;
     bufsz += strlen(exec_prefix) + 1;
@@ -614,6 +623,7 @@ calculate_path(void)
         /* Next goes merge of compile-time $PYTHONPATH with
          * dynamically located prefix.
          */
+#if 0
         defpath = pythonpath;
         while (1) {
             char *delim = strchr(defpath, DELIM);
@@ -636,6 +646,7 @@ calculate_path(void)
             defpath = delim + 1;
         }
         strcat(buf, delimiter);
+#endif
 
         /* Finally, on goes the directory for dynamic-load modules */
         strcat(buf, exec_prefix);
@@ -660,6 +671,7 @@ calculate_path(void)
     else
         strncpy(prefix, PREFIX, MAXPATHLEN);
 
+#if 0
     if (efound > 0) {
         reduce(exec_prefix);
         reduce(exec_prefix);
@@ -669,6 +681,7 @@ calculate_path(void)
     }
     else
         strncpy(exec_prefix, EXEC_PREFIX, MAXPATHLEN);
+#endif
 }
 
 
