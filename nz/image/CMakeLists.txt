@@ -33,5 +33,3 @@ source_group("Source Files" FILES ${root_sources})
 set_target_properties(NZImage PROPERTIES CXX_STANDARD 11)
 target_include_directories(NZImage BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
 target_link_libraries(NZImage NZUtility)
-
-add_subdirectory(readers)
