@@ -97,7 +97,7 @@ static const struct dbcs_map *mapping_list;
     return 1;
 #else
 #define UCS4INVALID(code)       \
-    if (0) ;
+    if (0) {}
 #endif
 
 #define NEXT_IN(i)                              \
