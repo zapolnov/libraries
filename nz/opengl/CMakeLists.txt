@@ -22,10 +22,41 @@
 
 cmake_minimum_required(VERSION 3.1)
 
-add_subdirectory(cmake)
-add_subdirectory(yaml)
-add_subdirectory(utility)
-add_subdirectory(image)
-add_subdirectory(image/readers/png)
-add_subdirectory(opengl)
-add_subdirectory(Qt5)
+include(../cmake/OpenGL.cmake)
+include(../cmake/Qt5.cmake)
+include(../cmake/TargetPlatform.cmake)
+
+file(GLOB root_sources *.cpp *.h)
+file(GLOB qt5_sources qt5/*.cpp qt5/*.h)
+file(GLOB normal_sources normal/*.cpp normal/*.h)
+file(GLOB dummy_sources dummy/*.cpp dummy/*.h)
+
+if(Z_OPENGL_FOUND)
+    add_definitions(-DZ_OPENGL_FOUND)
+endif()
+
+add_library(NZOpenGL STATIC ${EXCLUDE_FROM_ALL}
+    ${root_sources}
+    ${qt5_sources}
+    ${normal_sources}
+    ${dummy_sources}
+)
+
+source_group("Source Files" FILES ${root_sources})
+source_group("Source Files\\qt5" FILES ${qt5_sources})
+source_group("Source Files\\normal" FILES ${normal_sources})
+source_group("Source Files\\dummy" FILES ${dummy_sources})
+
+set_target_properties(NZOpenGL PROPERTIES CXX_STANDARD 11)
+target_include_directories(NZOpenGL BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
+target_link_libraries(NZOpenGL NZUtility)
+
+if(Z_TARGET_QT5)
+    z_target_link_qt5(NZOpenGL)
+else()
+    z_target_link_opengl(NZOpenGL)
+endif()
+
+if(Z_OPENGL_FOUND)
+    target_link_libraries(NZOpenGL glew)
+endif()

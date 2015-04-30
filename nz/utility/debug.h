@@ -48,8 +48,10 @@ namespace Z
     // Logging
 
     #if !defined(Z_ENABLE_LOGGING) && defined(NDEBUG)
+     #define Z_LOGGING_ENABLED 0
      #define Z_LOG(X) ((void)0)
     #else
+     #define Z_LOGGING_ENABLED 1
      #define Z_LOG(X) (::Z::debugPrint(static_cast<const std::stringstream&>(std::stringstream() << X)))
     #endif
 
