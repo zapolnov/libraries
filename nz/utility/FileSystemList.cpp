@@ -20,31 +20,14 @@
  * THE SOFTWARE.
  */
 #include "FileSystemList.h"
-#include "utility/debug.h"
+#include "debug.h"
 #include <mutex>
 #include <vector>
 
-#ifdef Z_TARGET_QT5
- #include "platform/qt5/QtFileSystem.h"
- #include <QCoreApplication>
-#endif
-
 namespace Z
 {
-    FileSystemList::FileSystemList(Kind kind)
+    FileSystemList::FileSystemList()
     {
-        switch (kind)
-        {
-        case Empty:
-            break;
-
-        case Native:
-          #ifdef Z_TARGET_QT5
-            add(new QtFileSystem(QCoreApplication::applicationDirPath()));
-            add(new QtFileSystem(":/"));
-          #endif
-            break;
-        }
     }
 
     FileSystemList::~FileSystemList()
@@ -75,17 +58,17 @@ namespace Z
                 return reader;
         }
 
-        Z_LOG("Asset not found: \"" << path << "\".");
+        Z_LOG("File not found: \"" << path << "\".");
         return nullptr;
     }
 
     void FileSystemList::add(FileSystem* fileSystem)
     {
-        std::shared_ptr<FileSystem> ptr(fileSystem);
+        FileSystemPtr ptr(fileSystem);
         add(std::move(ptr));
     }
 
-    void FileSystemList::add(const std::shared_ptr<FileSystem>& fileSystem)
+    void FileSystemList::add(const FileSystemPtr& fileSystem)
     {
         Z_CHECK(fileSystem != nullptr);
         if (!fileSystem)
@@ -96,7 +79,7 @@ namespace Z
         invalidateCache();
     }
 
-    void FileSystemList::add(std::shared_ptr<FileSystem>&& fileSystem)
+    void FileSystemList::add(FileSystemPtr&& fileSystem)
     {
         Z_CHECK(fileSystem != nullptr);
         if (!fileSystem)

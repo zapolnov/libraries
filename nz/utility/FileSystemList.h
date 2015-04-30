@@ -21,17 +21,34 @@
  */
 
 #pragma once
-#include "utility/streams/FileReader.h"
+#include "FileSystem.h"
+#include <mutex>
+#include <vector>
+#include <memory>
 
 namespace Z
 {
-    class FileSystem
+    class FileSystemList : public FileSystem
     {
     public:
-        FileSystem() = default;
-        virtual ~FileSystem() = default;
+        FileSystemList();
+        virtual ~FileSystemList();
 
-        virtual bool fileExists(const std::string& path) = 0;
-        virtual FileReaderPtr openFile(const std::string& path) = 0;
+        bool fileExists(const std::string& path) override;
+        FileReaderPtr openFile(const std::string& path) override;
+
+        void add(FileSystem* fileSystem);
+        void add(const FileSystemPtr& fileSystem);
+        void add(FileSystemPtr&& fileSystem);
+
+    private:
+        using Array = std::vector<FileSystemPtr>;
+
+        std::mutex m_Mutex;
+        std::shared_ptr<Array> m_CachedFileSystems;
+        Array m_FileSystems;
+
+        std::shared_ptr<Array> cachedFileSystems();
+        void invalidateCache();
     };
 }
