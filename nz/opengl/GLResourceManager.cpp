@@ -25,7 +25,8 @@
 
 namespace Z
 {
-    GLResourceManager::GLResourceManager()
+    GLResourceManager::GLResourceManager(const FileSystemPtr& fileSystem)
+        : m_FileSystem(fileSystem)
     {
     }
 

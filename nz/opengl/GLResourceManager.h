@@ -21,8 +21,9 @@
  */
 
 #pragma once
-#include <unordered_set>
+#include "utility/FileSystem.h"
 #include <mutex>
+#include <unordered_set>
 
 namespace Z
 {
@@ -31,7 +32,7 @@ namespace Z
     class GLResourceManager
     {
     public:
-        GLResourceManager();
+        explicit GLResourceManager(const FileSystemPtr& fileSystem);
         virtual ~GLResourceManager();
 
         void unloadAllResources();
@@ -42,6 +43,7 @@ namespace Z
         virtual void onResourceDestroyed(GLResource* resource);
 
     private:
+        FileSystemPtr m_FileSystem;
         std::mutex m_Mutex;
         std::unordered_set<GLResource*> m_Resources;
 
