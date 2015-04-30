@@ -23,6 +23,7 @@
 cmake_minimum_required(VERSION 3.1)
 project(python)
 
+include(../../nz/CMake/WriteFile.cmake)
 include(CMake/Configure.cmake)
 include_directories(Include "${CMAKE_CURRENT_BINARY_DIR}")
 
@@ -70,7 +71,7 @@ foreach(name ${enabled_modules})
     list(APPEND module_files ${module_c_files_${name}})
     set(data "${data}#define PYTHON_MODULE_${name} 1\n")
 endforeach()
-file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/python_additional_module_list.h" "${data}")
+z_write_file("${CMAKE_CURRENT_BINARY_DIR}/python_additional_module_list.h" "${data}")
 
 #############################################################################
 
