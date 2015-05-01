@@ -21,36 +21,28 @@
  */
 
 #pragma once
-#include "FileSystem.h"
-#include <mutex>
-#include <vector>
+#include "utility/FileSystem.h"
+#include "QtFileReader.h"
+#include <QDir>
+#include <QStandardPaths>
 #include <memory>
 
 namespace Z
 {
-    class FileSystemList : public FileSystem
+    class QtFileSystem : public FileSystem
     {
     public:
-        FileSystemList();
-        virtual ~FileSystemList();
+        explicit QtFileSystem(const QDir& baseDir);
+        explicit QtFileSystem(const QString& baseDir);
 
-        bool fileExists(const std::string& path) override;
-        FileReaderPtr openFile(const std::string& path) override;
+        QString absoluteFilePath(const std::string& file) const;
 
-        void add(FileSystem* fileSystem);
-        void add(const FileSystemPtr& fileSystem);
-        void add(FileSystemPtr&& fileSystem);
+        static QString getStandardPath(QStandardPaths::StandardLocation location);
+
+        bool fileExists(const std::string& path) final override;
+        FileReaderPtr openFile(const std::string& path) final override;
 
     private:
-        using Array = std::vector<FileSystemPtr>;
-
-        std::mutex m_Mutex;
-        std::shared_ptr<Array> m_CachedFileSystems;
-        Array m_FileSystems;
-
-        std::shared_ptr<Array> cachedFileSystems();
-        void invalidateCache();
+        QDir m_BaseDir;
     };
-
-    using FileSystemListPtr = std::shared_ptr<FileSystemList>;
 }

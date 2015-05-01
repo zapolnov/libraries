@@ -19,38 +19,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#include "../GLApplication.h"
 
-#pragma once
-#include "FileSystem.h"
-#include <mutex>
-#include <vector>
-#include <memory>
-
-namespace Z
+int main(int argc, char** argv)
 {
-    class FileSystemList : public FileSystem
-    {
-    public:
-        FileSystemList();
-        virtual ~FileSystemList();
+    Z::GLApplicationPtr application = Z::GLApplication::create();
 
-        bool fileExists(const std::string& path) override;
-        FileReaderPtr openFile(const std::string& path) override;
+    application->initializeGL(1, 1);
+    application->renderGL(1.0f / 60.0f);
+    application->shutdownGL();
 
-        void add(FileSystem* fileSystem);
-        void add(const FileSystemPtr& fileSystem);
-        void add(FileSystemPtr&& fileSystem);
-
-    private:
-        using Array = std::vector<FileSystemPtr>;
-
-        std::mutex m_Mutex;
-        std::shared_ptr<Array> m_CachedFileSystems;
-        Array m_FileSystems;
-
-        std::shared_ptr<Array> cachedFileSystems();
-        void invalidateCache();
-    };
-
-    using FileSystemListPtr = std::shared_ptr<FileSystemList>;
+    return 0;
 }

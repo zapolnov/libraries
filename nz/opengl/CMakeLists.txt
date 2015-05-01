@@ -53,6 +53,7 @@ target_link_libraries(NZOpenGL NZUtility)
 
 if(Z_TARGET_QT5)
     z_target_link_qt5(NZOpenGL)
+    target_link_libraries(NZOpenGL NZQt5Utility NZQt5OpenGLWindow)
 else()
     z_target_link_opengl(NZOpenGL)
 endif()

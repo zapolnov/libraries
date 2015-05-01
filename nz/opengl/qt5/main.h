@@ -19,8 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include "ZEngine/renderer/platform/qt5/QtOpenGLWindow.h"
-#include "../main.h"
+#include "../GLApplication.h"
+#include "GLWindowDelegate.h"
+#include "QtFileSystem.h"
+#include "QtOpenGLWindow.h"
 #include <QApplication>
 
 int main(int argc, char** argv)
@@ -28,7 +30,12 @@ int main(int argc, char** argv)
     QCoreApplication::setAttribute(Qt::AA_X11InitThreads);
     QApplication app(argc, argv);
 
-    Z::QtOpenGLWindow window(Z::createGame());
+    Z::GLApplicationPtr application = Z::GLApplication::create();
+    application->fileSystems().add(std::make_shared<Z::QtFileSystem>(app.applicationDirPath()));
+    application->fileSystems().add(std::make_shared<Z::QtFileSystem>(":/"));
+
+    Z::GLWindowDelegate delegate(application);
+    Z::QtOpenGLWindow window(&delegate);
     window.show();
 
     return app.exec();

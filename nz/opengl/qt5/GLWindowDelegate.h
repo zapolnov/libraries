@@ -21,9 +21,34 @@
  */
 
 #pragma once
-#include "ZEngine/renderer/RendererCallbacks.h"
+#include "../GLApplication.h"
+#include "QtOpenGLWindowDelegate.h"
+#include <memory>
 
 namespace Z
 {
-    RendererCallbacks* createGame();
+    class GLWindowDelegate : public QtOpenGLWindowDelegate
+    {
+    public:
+        explicit GLWindowDelegate(const GLApplicationPtr& app);
+
+        QSize preferredWindowSize() const override;
+        int preferredDepthBufferBits() const override;
+        int preferredStencilBufferBits() const override;
+
+        void initializeGL(int width, int height) override;
+        void shutdownGL() override;
+        void suspendGL() override;
+        void resumeGL() override;
+
+        void resizeGL(int width, int height) override;
+        void renderGL(double time) override;
+
+        void onPointerPressed(int id, float x, float y) override;
+        void onPointerMoved(int id, float x, float y) override;
+        void onPointerReleased(int id, float x, float y) override;
+
+    private:
+        GLApplicationPtr m_App;
+    };
 }

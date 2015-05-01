@@ -90,6 +90,13 @@ namespace Z
         m_Suspended.store(false);
     }
 
+    void QtOpenGLRenderThread::resize(int width, int height)
+    {
+        ViewportSize size;
+        size.set(width, height);
+        m_ViewportSize.store(size.packed);
+    }
+
     void QtOpenGLRenderThread::run()
     {
         ViewportSize viewportSize;

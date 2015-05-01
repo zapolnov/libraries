@@ -22,8 +22,10 @@
 
 #pragma once
 #include "utility/FileSystem.h"
+#include <atomic>
 #include <mutex>
 #include <unordered_set>
+#include <vector>
 
 namespace Z
 {
@@ -36,7 +38,11 @@ namespace Z
         virtual ~GLResourceManager();
 
         void unloadAllResources();
-        void reloadAllResources();
+        void shutdown();
+
+        void beginReloadResources();
+        bool continueReloadResources(float* progress = nullptr);
+        bool isReloadingResources() const { return m_ReloadingResources.load(); }
 
     protected:
         virtual void onResourceCreated(GLResource* resource);
@@ -46,6 +52,14 @@ namespace Z
         FileSystemPtr m_FileSystem;
         std::mutex m_Mutex;
         std::unordered_set<GLResource*> m_Resources;
+        std::vector<GLResource*> m_ReloadingResourcesList;
+        size_t m_ReloadingResourceIndex = 0;
+        std::atomic<bool> m_ReloadingResources;
+        bool m_HaveErasedResources = false;
+        bool m_Shutdown = false;
+
+        GLResourceManager(const GLResourceManager&);
+        GLResourceManager& operator=(const GLResourceManager&);
 
         friend class GLResource;
     };
