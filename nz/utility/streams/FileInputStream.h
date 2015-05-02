@@ -48,4 +48,6 @@ namespace Z
         uint64_t m_Offset;
         uint64_t m_BytesLeft;
     };
+
+    using FileInputStreamPtr = std::shared_ptr<FileInputStream>;
 }

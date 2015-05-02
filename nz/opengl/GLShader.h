@@ -19,44 +19,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include "GLTexture.h"
+
+#pragma once
+#include "opengl.h"
+#include <string>
+#include <vector>
 
 namespace Z
 {
-    GLTexture::GLTexture(GLResourceManager* manager, GL::Enum type)
-        : GLResource(manager)
-        , m_Type(type)
+    class GLShader
     {
-    }
+    public:
+        explicit GLShader(GL::Enum type);
+        ~GLShader();
 
-    GLTexture::~GLTexture()
-    {
-    }
+        GL::UInt handle() const { return m_Handle; }
+        GL::Enum type() const { return m_Type; }
 
-    void GLTexture::bind()
-    {
-        gl::BindTexture(m_Type, m_Handle);
-        if (m_Dirty) {
-            gl::TexParameteri(m_Type, GL::TEXTURE_MIN_FILTER, m_MinFilter);
-            gl::TexParameteri(m_Type, GL::TEXTURE_MAG_FILTER, m_MagFilter);
-            gl::TexParameteri(m_Type, GL::TEXTURE_WRAP_S, m_WrapS);
-            gl::TexParameteri(m_Type, GL::TEXTURE_WRAP_T, m_WrapT);
-            m_Dirty = false;
-        }
-    }
+        void setSource(const std::vector<std::string>& source);
+        bool compile();
 
-    void GLTexture::reload()
-    {
-        unload();
-        gl::GenTextures(1, &m_Handle);
-        m_Dirty = true;
-    }
-
-    void GLTexture::unload()
-    {
-        if (m_Handle != 0) {
-            gl::DeleteTextures(1, &m_Handle);
-            m_Handle = 0;
-        }
-    }
+    private:
+        GL::UInt m_Handle;
+        GL::Enum m_Type;
+    };
 }

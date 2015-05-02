@@ -84,6 +84,7 @@ namespace Z
         }
 
         m_Offset += uint64_t(size);
+        m_BytesLeft -= uint64_t(size);
 
         return size;
     }

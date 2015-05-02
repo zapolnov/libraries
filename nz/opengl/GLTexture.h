@@ -23,6 +23,7 @@
 #pragma once
 #include "GLResource.h"
 #include "opengl.h"
+#include <memory>
 
 namespace Z
 {
@@ -30,7 +31,7 @@ namespace Z
     {
     public:
         GLTexture(GLResourceManager* manager, GL::Enum type = GL::TEXTURE_2D);
-        virtual ~GLTexture();
+        ~GLTexture();
 
         void bind();
 
@@ -56,4 +57,6 @@ namespace Z
         GL::Enum m_WrapT = GL::CLAMP_TO_EDGE;
         bool m_Dirty = true;
     };
+
+    using GLTexturePtr = std::shared_ptr<GLTexture>;
 }

@@ -19,44 +19,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include "GLTexture.h"
+
+#pragma once
+#include "GLResource.h"
+#include "opengl.h"
+#include "utility/streams/InputStream.h"
+#include <memory>
 
 namespace Z
 {
-    GLTexture::GLTexture(GLResourceManager* manager, GL::Enum type)
-        : GLResource(manager)
-        , m_Type(type)
+    class GLProgram : public GLResource
     {
-    }
+    public:
+        explicit GLProgram(GLResourceManager* manager);
+        ~GLProgram();
 
-    GLTexture::~GLTexture()
-    {
-    }
+        void use();
 
-    void GLTexture::bind()
-    {
-        gl::BindTexture(m_Type, m_Handle);
-        if (m_Dirty) {
-            gl::TexParameteri(m_Type, GL::TEXTURE_MIN_FILTER, m_MinFilter);
-            gl::TexParameteri(m_Type, GL::TEXTURE_MAG_FILTER, m_MagFilter);
-            gl::TexParameteri(m_Type, GL::TEXTURE_WRAP_S, m_WrapS);
-            gl::TexParameteri(m_Type, GL::TEXTURE_WRAP_T, m_WrapT);
-            m_Dirty = false;
-        }
-    }
+        void reload() override;
+        void unload() override;
 
-    void GLTexture::reload()
-    {
-        unload();
-        gl::GenTextures(1, &m_Handle);
-        m_Dirty = true;
-    }
+    protected:
+        GL::UInt handle() const { return m_Handle; }
 
-    void GLTexture::unload()
-    {
-        if (m_Handle != 0) {
-            gl::DeleteTextures(1, &m_Handle);
-            m_Handle = 0;
-        }
-    }
+        bool load(InputStream* input);
+        bool link();
+
+    private:
+        GL::UInt m_Handle = 0;
+    };
+
+    using GLProgramPtr = std::shared_ptr<GLProgram>;
 }

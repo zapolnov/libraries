@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Nikolay Zapolnov (zapolnov@gmail.com).
+ * Copyright (c) 2015 Nikolay Zapolnov (zapolnov@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,44 +19,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include "GLTexture.h"
+#include "InputStream.h"
+#include <sstream>
 
 namespace Z
 {
-    GLTexture::GLTexture(GLResourceManager* manager, GL::Enum type)
-        : GLResource(manager)
-        , m_Type(type)
+    std::string InputStream::readLine(bool includeEolMarker)
     {
-    }
+        std::stringstream ss;
 
-    GLTexture::~GLTexture()
-    {
-    }
-
-    void GLTexture::bind()
-    {
-        gl::BindTexture(m_Type, m_Handle);
-        if (m_Dirty) {
-            gl::TexParameteri(m_Type, GL::TEXTURE_MIN_FILTER, m_MinFilter);
-            gl::TexParameteri(m_Type, GL::TEXTURE_MAG_FILTER, m_MagFilter);
-            gl::TexParameteri(m_Type, GL::TEXTURE_WRAP_S, m_WrapS);
-            gl::TexParameteri(m_Type, GL::TEXTURE_WRAP_T, m_WrapT);
-            m_Dirty = false;
+        while (!atEnd()) {
+            char ch = 0;
+            read(&ch, 1);
+            if (ch == '\n') {
+                if (includeEolMarker)
+                    ss << ch;
+                break;
+            }
+            ss << ch;
         }
-    }
 
-    void GLTexture::reload()
-    {
-        unload();
-        gl::GenTextures(1, &m_Handle);
-        m_Dirty = true;
-    }
+        std::string str = ss.str();
+        size_t length = str.length();
 
-    void GLTexture::unload()
-    {
-        if (m_Handle != 0) {
-            gl::DeleteTextures(1, &m_Handle);
-            m_Handle = 0;
+        if (!includeEolMarker) {
+            if (length > 0 && str[length - 1] == '\r')
+                str.resize(length - 1);
+        } else {
+            if (length > 1 && str[length - 2] == '\r' && str[length - 1] == '\n') {
+                str[length - 2] = '\n';
+                str.resize(length - 1);
+            }
         }
+
+        return str;
     }
 }

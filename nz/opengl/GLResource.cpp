@@ -21,6 +21,7 @@
  */
 #include "GLResource.h"
 #include "GLResourceManager.h"
+#include "utility/debug.h"
 
 namespace Z
 {

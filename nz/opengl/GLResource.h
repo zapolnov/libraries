@@ -32,6 +32,8 @@ namespace Z
         explicit GLResource(GLResourceManager* manager);
         virtual ~GLResource();
 
+        GLResourceManager* resourceManager() const { return m_Manager; }
+
         virtual void reload() = 0;
         virtual void unload() = 0;
 

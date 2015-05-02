@@ -22,6 +22,7 @@
 
 #pragma once
 #include "Stream.h"
+#include <string>
 #include <cstdint>
 
 namespace Z
@@ -33,6 +34,8 @@ namespace Z
         virtual uint64_t bytesAvailable() const = 0;
         virtual size_t read(void* buffer, size_t size) = 0;
         virtual bool skip(size_t count) = 0;
+
+        std::string readLine(bool includeEolMarker);
     };
 
     using InputStreamPtr = std::shared_ptr<InputStream>;

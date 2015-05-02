@@ -21,11 +21,14 @@
  */
 
 #pragma once
+#include "GLProgram.h"
 #include "utility/FileSystem.h"
 #include <atomic>
 #include <mutex>
+#include <unordered_map>
 #include <unordered_set>
 #include <vector>
+#include <memory>
 
 namespace Z
 {
@@ -37,6 +40,8 @@ namespace Z
         explicit GLResourceManager(const FileSystemPtr& fileSystem);
         virtual ~GLResourceManager();
 
+        const FileSystemPtr& fileSystem() const { return m_FileSystem; }
+
         void unloadAllResources();
         void shutdown();
 
@@ -44,13 +49,18 @@ namespace Z
         bool continueReloadResources(float* progress = nullptr);
         bool isReloadingResources() const { return m_ReloadingResources.load(); }
 
+        GLProgramPtr loadProgram(const std::string& fileName);
+
     protected:
         virtual void onResourceCreated(GLResource* resource);
         virtual void onResourceDestroyed(GLResource* resource);
 
     private:
+        class Program;
+
         FileSystemPtr m_FileSystem;
-        std::mutex m_Mutex;
+        std::recursive_mutex m_Mutex;
+        std::unordered_map<std::string, std::weak_ptr<Program>> m_Programs;
         std::unordered_set<GLResource*> m_Resources;
         std::vector<GLResource*> m_ReloadingResourcesList;
         size_t m_ReloadingResourceIndex = 0;
@@ -58,8 +68,8 @@ namespace Z
         bool m_HaveErasedResources = false;
         bool m_Shutdown = false;
 
-        GLResourceManager(const GLResourceManager&);
-        GLResourceManager& operator=(const GLResourceManager&);
+        GLResourceManager(const GLResourceManager&) = delete;
+        GLResourceManager& operator=(const GLResourceManager&) = delete;
 
         friend class GLResource;
     };

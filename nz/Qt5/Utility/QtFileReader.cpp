@@ -32,7 +32,7 @@ namespace Z
         , m_File(std::move(file))
         , m_Offset(0)
     {
-        qint64 size = file->size();
+        qint64 size = m_File->size();
         m_Size = (size >= 0 ? uint64_t(size) : 0);
     }
 

@@ -24,18 +24,21 @@
 
 #if Z_ASSERTIONS_ENABLED && Z_LOGGING_ENABLED
 
-std::ostream& operator<<(std::ostream& s, GL::Enum value)
+namespace std
 {
-    switch (value)
+    ostream& operator<<(ostream& s, GL::Enum value)
     {
-    case GL::FALSE: break;
-    case GL::TRUE: break;
-    #define Z_GL_CONSTANT_(X, Y) case Y: s << "GL_" << #X; return s;
-    #include "constants.h"
-    #undef Z_GL_CONSTANT_
+        switch (value)
+        {
+        case GL::FALSE: break;
+        case GL::TRUE: break;
+        #define Z_GL_CONSTANT_(X, Y) case Y: s << "GL_" << #X; return s;
+        #include "constants.h"
+        #undef Z_GL_CONSTANT_
+        }
+        s << static_cast<int>(value);
+        return s;
     }
-    s << static_cast<int>(value);
-    return s;
 }
 
 std::string gl::DecodeGLClearMask_(GL::Bitfield mask)

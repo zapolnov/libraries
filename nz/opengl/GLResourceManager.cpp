@@ -21,12 +21,42 @@
  */
 #include "GLResourceManager.h"
 #include "GLResource.h"
+#include "utility/streams/FileInputStream.h"
+#include "utility/streams/BufferedInputStream.h"
 #include "utility/debug.h"
 #include <chrono>
 #include <vector>
 
 namespace Z
 {
+    class GLResourceManager::Program : public GLProgram
+    {
+    public:
+        Program(const std::string& fileName, GLResourceManager* resourceManager)
+            : GLProgram(resourceManager)
+            , m_FileName(fileName)
+        {
+            reload();
+        }
+
+        void reload() override
+        {
+            GLProgram::reload();
+
+            FileReaderPtr reader = resourceManager()->fileSystem()->openFile(m_FileName);
+            if (reader) {
+                FileInputStreamPtr stream = std::make_shared<FileInputStream>(reader);
+                BufferedInputStream buffer(std::move(stream));
+                load(&buffer);
+            }
+        }
+
+    private:
+        std::string m_FileName;
+    };
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     GLResourceManager::GLResourceManager(const FileSystemPtr& fileSystem)
         : m_FileSystem(fileSystem)
     {
@@ -39,13 +69,12 @@ namespace Z
 
     void GLResourceManager::unloadAllResources()
     {
+        std::lock_guard<decltype(m_Mutex)> lock(m_Mutex);
+
         std::vector<GLResource*> resources;
-        {
-            std::lock_guard<decltype(m_Mutex)> lock(m_Mutex);
-            resources.reserve(m_Resources.size());
-            for (auto resource : m_Resources)
-                resources.push_back(resource);
-        }
+        resources.reserve(m_Resources.size());
+        for (auto resource : m_Resources)
+             resources.push_back(resource);
 
         for (auto resource : resources)
             resource->unload();
@@ -53,16 +82,15 @@ namespace Z
 
     void GLResourceManager::shutdown()
     {
-        {
-            std::lock_guard<decltype(m_Mutex)> lock(m_Mutex);
-            m_Shutdown = true;
-        }
+        std::lock_guard<decltype(m_Mutex)> lock(m_Mutex);
 
+        m_Shutdown = true;
         unloadAllResources();
 
-        std::lock_guard<decltype(m_Mutex)> lock(m_Mutex);
         for (auto resource : m_Resources)
             resource->m_Manager = nullptr;
+
+        m_Resources.clear();
     }
 
     void GLResourceManager::beginReloadResources()
@@ -112,6 +140,25 @@ namespace Z
             m_ReloadingResourcesList.clear();
 
         return stillReloading;
+    }
+
+    GLProgramPtr GLResourceManager::loadProgram(const std::string& fileName)
+    {
+        std::lock_guard<decltype(m_Mutex)> lock(m_Mutex);
+
+        auto it = m_Programs.find(fileName);
+        if (it == m_Programs.end())
+            it = m_Programs.insert(std::make_pair(fileName, std::weak_ptr<Program>())).first;
+        else {
+            std::shared_ptr<Program> program = it->second.lock();
+            if (program)
+                return program;
+        }
+
+        std::shared_ptr<Program> program = std::make_shared<Program>(fileName, this);
+        it->second = program;
+
+        return program;
     }
 
     void GLResourceManager::onResourceCreated(GLResource* resource)
