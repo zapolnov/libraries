@@ -36,6 +36,13 @@ namespace Z
         gl::DeleteShader(m_Handle);
     }
 
+    void GLShader::setSource(const std::string& source)
+    {
+        GL::Int lengths = GL::Int(source.length());
+        const GL::Char* lines = reinterpret_cast<const GL::Char*>(source.c_str());
+        gl::ShaderSource(m_Handle, 1, &lines, &lengths);
+    }
+
     void GLShader::setSource(const std::vector<std::string>& source)
     {
         std::vector<const GL::Char*> lines;

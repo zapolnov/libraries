@@ -116,6 +116,23 @@ namespace Z
         return success && link();
     }
 
+    bool GLProgram::loadSource(const std::string& vertex, const std::string& fragment)
+    {
+        bool success = true;
+
+        GLShader vertexShader(GL::VERTEX_SHADER);
+        vertexShader.setSource(vertex);
+        success = vertexShader.compile() && success;
+        gl::AttachShader(m_Handle, vertexShader.handle());
+
+        GLShader fragmentShader(GL::FRAGMENT_SHADER);
+        fragmentShader.setSource(fragment);
+        success = fragmentShader.compile() && success;
+        gl::AttachShader(m_Handle, fragmentShader.handle());
+
+        return success && link();
+    }
+
     bool GLProgram::link()
     {
         gl::LinkProgram(m_Handle);

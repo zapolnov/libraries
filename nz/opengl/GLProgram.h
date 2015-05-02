@@ -43,6 +43,8 @@ namespace Z
         GL::UInt handle() const { return m_Handle; }
 
         bool load(InputStream* input);
+        bool loadSource(const std::string& vertex, const std::string& fragment);
+
         bool link();
 
     private:

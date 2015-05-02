@@ -36,7 +36,9 @@ namespace Z
         GL::UInt handle() const { return m_Handle; }
         GL::Enum type() const { return m_Type; }
 
+        void setSource(const std::string& source);
         void setSource(const std::vector<std::string>& source);
+
         bool compile();
 
     private:

@@ -57,6 +57,30 @@ namespace Z
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    class GLResourceManager::StaticProgram : public GLProgram
+    {
+    public:
+        StaticProgram(const std::string& vertex, const std::string& fragment, GLResourceManager* resourceManager)
+            : GLProgram(resourceManager)
+            , m_Vertex(vertex)
+            , m_Fragment(fragment)
+        {
+            reload();
+        }
+
+        void reload() override
+        {
+            GLProgram::reload();
+            loadSource(m_Vertex, m_Fragment);
+        }
+
+    private:
+        std::string m_Vertex;
+        std::string m_Fragment;
+    };
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     GLResourceManager::GLResourceManager(const FileSystemPtr& fileSystem)
         : m_FileSystem(fileSystem)
     {
@@ -140,6 +164,11 @@ namespace Z
             m_ReloadingResourcesList.clear();
 
         return stillReloading;
+    }
+
+    GLProgramPtr GLResourceManager::createProgram(const std::string& vertex, const std::string& fragment)
+    {
+        return std::make_shared<StaticProgram>(vertex, fragment, this);
     }
 
     GLProgramPtr GLResourceManager::loadProgram(const std::string& fileName)

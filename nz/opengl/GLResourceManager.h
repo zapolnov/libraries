@@ -49,6 +49,7 @@ namespace Z
         bool continueReloadResources(float* progress = nullptr);
         bool isReloadingResources() const { return m_ReloadingResources.load(); }
 
+        GLProgramPtr createProgram(const std::string& vertex, const std::string& fragment);
         GLProgramPtr loadProgram(const std::string& fileName);
 
     protected:
@@ -57,6 +58,7 @@ namespace Z
 
     private:
         class Program;
+        class StaticProgram;
 
         FileSystemPtr m_FileSystem;
         std::recursive_mutex m_Mutex;
