@@ -39,6 +39,9 @@ namespace Z
         void reload() override;
         void unload() override;
 
+        int getAttribLocation(const char* name) const { return gl::GetAttribLocation(m_Handle, name); }
+        int getUniformLocation(const char* name) const { return gl::GetUniformLocation(m_Handle, name); }
+
     protected:
         GL::UInt handle() const { return m_Handle; }
 

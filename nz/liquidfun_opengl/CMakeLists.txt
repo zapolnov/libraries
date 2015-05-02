@@ -22,11 +22,17 @@
 
 cmake_minimum_required(VERSION 3.1)
 
-add_subdirectory(cmake)
-add_subdirectory(yaml)
-add_subdirectory(utility)
-add_subdirectory(image)
-add_subdirectory(image/readers/png)
-add_subdirectory(opengl)
-add_subdirectory(liquidfun_opengl)
-add_subdirectory(Qt5)
+include(../cmake/OpenGL.cmake)
+include(../cmake/TargetPlatform.cmake)
+
+file(GLOB root_sources *.cpp *.h)
+
+add_library(NZLiquidFunOpenGL STATIC ${EXCLUDE_FROM_ALL}
+    ${root_sources}
+)
+
+source_group("Source Files" FILES ${root_sources})
+
+set_target_properties(NZLiquidFunOpenGL PROPERTIES CXX_STANDARD 11)
+target_include_directories(NZLiquidFunOpenGL BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
+target_link_libraries(NZLiquidFunOpenGL NZOpenGL liquidfun glm)
