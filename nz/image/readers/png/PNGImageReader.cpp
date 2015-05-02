@@ -61,7 +61,7 @@ namespace Z
         return png_sig_cmp(buf, 0, 8) == 0;
     }
 
-    Image* PNGImageReader::readImage(InputStream* stream) const
+    ImagePtr PNGImageReader::readImage(InputStream* stream) const
     {
         struct Context
         {
@@ -152,7 +152,7 @@ namespace Z
             return nullptr;
         }
 
-        std::unique_ptr<Image> image(new Image(int(width), int(height), format, rowLength * height));
+        ImagePtr image(new Image(int(width), int(height), format, rowLength * height));
         if (rowLength >= rowbytes) {
             for (int i = 0; i < numPasses; i++) {
                 for (png_uint_32 y = 0; y < height; y++) {
@@ -173,6 +173,6 @@ namespace Z
 
         png_read_end(pngp, NULL);
 
-        return image.release();
+        return image;
     }
 }

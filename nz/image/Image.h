@@ -67,4 +67,6 @@ namespace Z
         Image(const Image&) = delete;
         Image& operator=(const Image&) = delete;
     };
+
+    using ImagePtr = std::shared_ptr<Image>;
 }

@@ -28,19 +28,22 @@
 
 namespace Z
 {
+    class ImageReader;
+    using ImageReaderPtr = std::shared_ptr<ImageReader>;
+
     class ImageReader
     {
     public:
         virtual ~ImageReader() = default;
 
         static void add(ImageReader* reader);
-        static void add(const std::shared_ptr<ImageReader>& reader);
-        static void add(std::shared_ptr<ImageReader>&& reader);
+        static void add(const ImageReaderPtr& reader);
+        static void add(ImageReaderPtr&& reader);
 
-        static Image* read(const FileReaderPtr& file);
+        static ImagePtr read(const FileReaderPtr& file);
 
     protected:
         virtual bool canReadImage(InputStream* stream) const = 0;
-        virtual Image* readImage(InputStream* stream) const = 0;
+        virtual ImagePtr readImage(InputStream* stream) const = 0;
     };
 }

@@ -29,6 +29,6 @@ namespace Z
     {
     public:
         bool canReadImage(InputStream* stream) const override;
-        Image* readImage(InputStream* stream) const override;
+        ImagePtr readImage(InputStream* stream) const override;
     };
 }

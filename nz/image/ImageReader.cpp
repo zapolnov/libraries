@@ -29,15 +29,15 @@
 namespace Z
 {
     static std::mutex g_Mutex;
-    static std::vector<std::shared_ptr<ImageReader>> g_Readers;
+    static std::vector<ImageReaderPtr> g_Readers;
 
     void ImageReader::add(ImageReader* reader)
     {
-        std::shared_ptr<ImageReader> ptr(reader);
+        ImageReaderPtr ptr(reader);
         add(std::move(ptr));
     }
 
-    void ImageReader::add(const std::shared_ptr<ImageReader>& reader)
+    void ImageReader::add(const ImageReaderPtr& reader)
     {
         Z_CHECK(reader != nullptr);
         if (!reader)
@@ -47,7 +47,7 @@ namespace Z
         g_Readers.emplace_back(reader);
     }
 
-    void ImageReader::add(std::shared_ptr<ImageReader>&& reader)
+    void ImageReader::add(ImageReaderPtr&& reader)
     {
         Z_CHECK(reader != nullptr);
         if (!reader)
@@ -57,13 +57,13 @@ namespace Z
         g_Readers.emplace_back(std::move(reader));
     }
 
-    Image* ImageReader::read(const FileReaderPtr& file)
+    ImagePtr ImageReader::read(const FileReaderPtr& file)
     {
         Z_CHECK(file != nullptr);
         if (!file)
             return nullptr;
 
-        std::vector<std::shared_ptr<ImageReader>> readers;
+        std::vector<ImageReaderPtr> readers;
         {
             std::lock_guard<decltype(g_Mutex)> lock(g_Mutex);
             readers = g_Readers;
@@ -72,7 +72,7 @@ namespace Z
         for (const auto& reader : readers) {
             FileInputStream stream(file);
             if (reader->canReadImage(&stream)) {
-                Image* image = reader->readImage(&stream);
+                ImagePtr image = reader->readImage(&stream);
                 if (image)
                     return image;
             }
