@@ -24,6 +24,7 @@
 #include "utility/streams/FileInputStream.h"
 #include "utility/streams/BufferedInputStream.h"
 #include "utility/debug.h"
+#include "image/ImageReader.h"
 #include <chrono>
 #include <vector>
 
@@ -77,6 +78,31 @@ namespace Z
     private:
         std::string m_Vertex;
         std::string m_Fragment;
+    };
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    class GLResourceManager::Texture : public GLTexture
+    {
+    public:
+        Texture(const std::string& fileName, GLResourceManager* resourceManager)
+            : GLTexture(resourceManager)
+            , m_FileName(fileName)
+        {
+            reload();
+        }
+
+        void reload() override
+        {
+            GLTexture::reload();
+
+            FileReaderPtr reader = resourceManager()->fileSystem()->openFile(m_FileName);
+            ImagePtr image = ImageReader::read(reader);
+            upload(0, image);
+        }
+
+    private:
+        std::string m_FileName;
     };
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -188,6 +214,25 @@ namespace Z
         it->second = program;
 
         return program;
+    }
+
+    GLTexturePtr GLResourceManager::loadTexture(const std::string& fileName)
+    {
+        std::lock_guard<decltype(m_Mutex)> lock(m_Mutex);
+
+        auto it = m_Textures.find(fileName);
+        if (it == m_Textures.end())
+            it = m_Textures.insert(std::make_pair(fileName, std::weak_ptr<Texture>())).first;
+        else {
+            std::shared_ptr<Texture> texture = it->second.lock();
+            if (texture)
+                return texture;
+        }
+
+        std::shared_ptr<Texture> texture = std::make_shared<Texture>(fileName, this);
+        it->second = texture;
+
+        return texture;
     }
 
     void GLResourceManager::onResourceCreated(GLResource* resource)

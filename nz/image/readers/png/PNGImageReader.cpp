@@ -120,7 +120,7 @@ namespace Z
         if (png_get_gAMA(pngp, infop, &gamma))
             png_set_gamma(pngp, 2.2, gamma);
 
-        int numPasses = 0;
+        int numPasses = 1;
         if (png_get_interlace_type(pngp, infop) != PNG_INTERLACE_NONE)
             numPasses = png_set_interlace_handling(pngp);
 

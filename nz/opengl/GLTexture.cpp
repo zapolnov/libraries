@@ -20,6 +20,7 @@
  * THE SOFTWARE.
  */
 #include "GLTexture.h"
+#include "utility/debug.h"
 
 namespace Z
 {
@@ -57,6 +58,62 @@ namespace Z
         if (m_Handle != 0) {
             gl::DeleteTextures(1, &m_Handle);
             m_Handle = 0;
+        }
+    }
+
+    void GLTexture::upload(GL::Int level, const ImagePtr& image)
+    {
+        bind();
+        gl::PixelStorei(GL::UNPACK_ALIGNMENT, 1);
+
+        if (!image) {
+            static const uint8_t pixel[4] = { 0xFF, 0x00, 0x00, 0xFF };
+            gl::TexImage2D(m_Type, level, GL::LUMINANCE, 2, 2, 0, GL::LUMINANCE, GL::UNSIGNED_BYTE, &pixel);
+            return;
+        }
+
+        bool isCompressed = false;
+        GL::Enum type = GL::NONE;
+        GL::Enum internalFormat = GL::NONE;
+        GL::Enum format = GL::NONE;
+        switch (image->format())
+        {
+        case Image::Unknown:
+            break;
+
+        case Image::Luminance8:
+            type = GL::UNSIGNED_BYTE;
+            internalFormat = GL::LUMINANCE;
+            format = GL::LUMINANCE;
+            break;
+
+        case Image::LuminanceAlpha8:
+            type = GL::UNSIGNED_BYTE;
+            internalFormat = GL::LUMINANCE_ALPHA;
+            format = GL::LUMINANCE_ALPHA;
+            break;
+
+        case Image::RGB8:
+            type = GL::UNSIGNED_BYTE;
+            internalFormat = GL::RGB;
+            format = GL::RGB;
+            break;
+
+        case Image::RGBA8:
+            type = GL::UNSIGNED_BYTE;
+            internalFormat = GL::RGBA;
+            format = GL::RGBA;
+            break;
+        }
+
+        Z_ASSERT_MSG(type != GL::NONE, "Invalid image format.");
+
+        if (!isCompressed) {
+            gl::TexImage2D(m_Type, level, internalFormat, image->width(), image->height(),
+                0, format, type, image->data());
+        } else {
+            gl::CompressedTexImage2D(m_Type, level, internalFormat, image->width(), image->height(),
+                0, GL::Sizei(image->dataSize()), image->data());
         }
     }
 }

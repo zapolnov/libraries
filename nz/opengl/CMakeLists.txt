@@ -49,7 +49,7 @@ source_group("Source Files\\dummy" FILES ${dummy_sources})
 
 set_target_properties(NZOpenGL PROPERTIES CXX_STANDARD 11)
 target_include_directories(NZOpenGL BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
-target_link_libraries(NZOpenGL NZUtility)
+target_link_libraries(NZOpenGL NZUtility NZImage)
 
 if(Z_TARGET_QT5)
     z_target_link_qt5(NZOpenGL)

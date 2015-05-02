@@ -71,11 +71,13 @@ namespace Z
 
         for (const auto& reader : readers) {
             FileInputStream stream(file);
-            if (reader->canReadImage(&stream)) {
-                ImagePtr image = reader->readImage(&stream);
-                if (image)
-                    return image;
-            }
+            if (!reader->canReadImage(&stream))
+                continue;
+
+            FileInputStream stream2(file);
+            ImagePtr image = reader->readImage(&stream2);
+            if (image)
+                return image;
         }
 
         Z_LOG("There is no reader able to load image \"" << file->name() << "\".");

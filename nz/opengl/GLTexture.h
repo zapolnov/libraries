@@ -23,6 +23,7 @@
 #pragma once
 #include "GLResource.h"
 #include "opengl.h"
+#include "image/Image.h"
 #include <memory>
 
 namespace Z
@@ -47,6 +48,8 @@ namespace Z
 
     protected:
         GL::UInt handle() const { return m_Handle; }
+
+        void upload(GL::Int level, const ImagePtr& image);
 
     private:
         GL::UInt m_Handle = 0;
