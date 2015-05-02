@@ -85,6 +85,18 @@ namespace Z
         DebugRenderer::render(DebugRenderer::Lines, n, color);
     }
 
+    void LiquidFunDebugRenderer::DrawParticles(const b2Vec2* centers, float32 radius, const b2ParticleColor* colors,
+        int32 count)
+    {
+        (void)colors;
+        if (count == 0)
+            return;
+
+        size_t n = rescaleVertices(centers, count, m_PixelsPerMeter);
+        const float particle_size_multiplier = 3;  // because of falloff
+        DebugRenderer::render(DebugRenderer::Points, n, b2Color(1.0f, 1.0f, 1.0f), radius * particle_size_multiplier);
+    }
+
     void LiquidFunDebugRenderer::DrawTransform(const b2Transform& transform)
     {
         const float32 AXIS_SCALE = 0.4f;

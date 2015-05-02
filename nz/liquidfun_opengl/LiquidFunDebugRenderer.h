@@ -29,7 +29,7 @@ namespace Z
     class LiquidFunDebugRenderer : public b2Draw, public DebugRenderer
     {
     public:
-        LiquidFunDebugRenderer(GLResourceManager& resourceManager, unsigned flags =
+        LiquidFunDebugRenderer(GLResourceManager& resourceManager, unsigned flags = b2Draw::e_particleBit |
             b2Draw::e_shapeBit | b2Draw::e_jointBit | b2Draw::e_pairBit | b2Draw::e_centerOfMassBit);
         ~LiquidFunDebugRenderer();
 
@@ -44,6 +44,7 @@ namespace Z
         void DrawCircle(const b2Vec2& center, float32 radius, const b2Color& color) override;
         void DrawSolidCircle(const b2Vec2& center, float32 r, const b2Vec2& axis, const b2Color& color) override;
         void DrawSegment(const b2Vec2& p1, const b2Vec2& p2, const b2Color& color) override;
+        void DrawParticles(const b2Vec2* centers, float32 radius, const b2ParticleColor* colors, int32 count) override;
         void DrawTransform(const b2Transform& transform) override;
 
         inline void setupForRendering() { DebugRenderer::setupForRendering(m_ProjectionMatrix); }
