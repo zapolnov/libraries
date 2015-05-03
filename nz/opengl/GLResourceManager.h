@@ -23,6 +23,7 @@
 #pragma once
 #include "GLProgram.h"
 #include "GLTexture.h"
+#include "GLMesh.h"
 #include "utility/FileSystem.h"
 #include <atomic>
 #include <mutex>
@@ -55,6 +56,8 @@ namespace Z
 
         GLTexturePtr loadTexture(const std::string& fileName);
 
+        GLMeshPtr loadMesh(const std::string& fileName);
+
     protected:
         virtual void onResourceCreated(GLResource* resource);
         virtual void onResourceDestroyed(GLResource* resource);
@@ -63,11 +66,13 @@ namespace Z
         class Program;
         class StaticProgram;
         class Texture;
+        class Mesh;
 
         FileSystemPtr m_FileSystem;
         std::recursive_mutex m_Mutex;
         std::unordered_map<std::string, std::weak_ptr<Program>> m_Programs;
         std::unordered_map<std::string, std::weak_ptr<Texture>> m_Textures;
+        std::unordered_map<std::string, std::weak_ptr<Mesh>> m_Meshes;
         std::unordered_set<GLResource*> m_Resources;
         std::vector<GLResource*> m_ReloadingResourcesList;
         size_t m_ReloadingResourceIndex = 0;

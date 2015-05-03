@@ -23,10 +23,13 @@
 #pragma once
 #include "Stream.h"
 #include <string>
+#include <vector>
 #include <cstdint>
 
 namespace Z
 {
+    class FileReader;
+
     class InputStream : public Stream
     {
     public:
@@ -35,7 +38,10 @@ namespace Z
         virtual size_t read(void* buffer, size_t size) = 0;
         virtual bool skip(size_t count) = 0;
 
+        virtual FileReader* associatedFile() const { return nullptr; }
+
         std::string readLine(bool includeEolMarker);
+        std::vector<char> readAll();
     };
 
     using InputStreamPtr = std::shared_ptr<InputStream>;

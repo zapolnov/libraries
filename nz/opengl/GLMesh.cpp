@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Nikolay Zapolnov (zapolnov@gmail.com)
+ * Copyright (c) 2015 Nikolay Zapolnov (zapolnov@gmail.com).
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,18 +19,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-#pragma once
-#include "mesh/MeshReader.h"
+#include "GLMesh.h"
+#include "utility/debug.h"
 
 namespace Z
 {
-    class AssImpMeshReader : public MeshReader
+    GLMesh::GLMesh(GLResourceManager* manager)
+        : GLResource(manager)
     {
-    public:
-        AssImpMeshReader();
+    }
 
-        bool canReadMesh(InputStream* stream) const override;
-        MeshPtr readMesh(InputStream* stream) const override;
-    };
+    GLMesh::~GLMesh()
+    {
+    }
+
+    void GLMesh::reload()
+    {
+        unload();
+    }
+
+    void GLMesh::unload()
+    {
+    }
 }

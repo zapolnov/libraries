@@ -31,7 +31,7 @@ namespace Z
     class GLTexture : public GLResource
     {
     public:
-        GLTexture(GLResourceManager* manager, GL::Enum type = GL::TEXTURE_2D);
+        explicit GLTexture(GLResourceManager* manager, GL::Enum type = GL::TEXTURE_2D);
         ~GLTexture();
 
         void bind();

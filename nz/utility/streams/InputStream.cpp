@@ -54,4 +54,28 @@ namespace Z
 
         return str;
     }
+
+    std::vector<char> InputStream::readAll()
+    {
+        std::vector<char> result;
+
+        while (!atEnd()) {
+            uint64_t size = bytesAvailable();
+            if (size == 0) {
+                char ch = 0;
+                size_t bytesRead = read(&ch, 1);
+                if (bytesRead > 0)
+                    result.push_back(ch);
+            } else {
+                size_t offset = result.size();
+                size_t bytesToRead = size_t(size);
+                result.resize(offset + bytesToRead);
+                size_t bytesRead = read(result.data() + offset, bytesToRead);
+                if (bytesRead != bytesToRead)
+                    result.resize(offset + bytesRead);
+            }
+        }
+
+        return result;
+    }
 }

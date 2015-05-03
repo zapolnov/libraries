@@ -30,7 +30,7 @@ namespace Z
     class GLBuffer : public GLResource
     {
     public:
-        GLBuffer(GLResourceManager* manager, GL::Enum type = GL::ARRAY_BUFFER);
+        explicit GLBuffer(GLResourceManager* manager, GL::Enum type = GL::ARRAY_BUFFER);
         ~GLBuffer();
 
         void bind();

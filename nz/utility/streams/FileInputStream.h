@@ -36,6 +36,7 @@ namespace Z
         ~FileInputStream() = default;
 
         const std::string& name() const override;
+        FileReader* associatedFile() const override { return m_Reader.get(); }
 
         bool atEnd() const override;
         uint64_t bytesAvailable() const override;

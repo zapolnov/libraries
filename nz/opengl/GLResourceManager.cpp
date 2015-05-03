@@ -25,6 +25,7 @@
 #include "utility/streams/BufferedInputStream.h"
 #include "utility/debug.h"
 #include "image/ImageReader.h"
+#include "mesh/MeshReader.h"
 #include <chrono>
 #include <vector>
 
@@ -99,6 +100,31 @@ namespace Z
             FileReaderPtr reader = resourceManager()->fileSystem()->openFile(m_FileName);
             ImagePtr image = ImageReader::read(reader);
             upload(0, image);
+        }
+
+    private:
+        std::string m_FileName;
+    };
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    class GLResourceManager::Mesh : public GLMesh
+    {
+    public:
+        Mesh(const std::string& fileName, GLResourceManager* resourceManager)
+            : GLMesh(resourceManager)
+            , m_FileName(fileName)
+        {
+            reload();
+        }
+
+        void reload() override
+        {
+            GLMesh::reload();
+
+            FileReaderPtr reader = resourceManager()->fileSystem()->openFile(m_FileName);
+            MeshPtr mesh = MeshReader::read(reader);
+            // FIXME
         }
 
     private:
@@ -233,6 +259,25 @@ namespace Z
         it->second = texture;
 
         return texture;
+    }
+
+    GLMeshPtr GLResourceManager::loadMesh(const std::string& fileName)
+    {
+        std::lock_guard<decltype(m_Mutex)> lock(m_Mutex);
+
+        auto it = m_Meshes.find(fileName);
+        if (it == m_Meshes.end())
+            it = m_Meshes.insert(std::make_pair(fileName, std::weak_ptr<Mesh>())).first;
+        else {
+            std::shared_ptr<Mesh> mesh = it->second.lock();
+            if (mesh)
+                return mesh;
+        }
+
+        std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(fileName, this);
+        it->second = mesh;
+
+        return mesh;
     }
 
     void GLResourceManager::onResourceCreated(GLResource* resource)
