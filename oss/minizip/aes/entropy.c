@@ -1,5 +1,8 @@
 #ifdef _WIN32
 #include <windows.h>
+#else
+#include <unistd.h>
+#include <fcntl.h>
 #endif
 
 #if defined(__cplusplus)

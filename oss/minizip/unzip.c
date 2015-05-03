@@ -706,7 +706,7 @@ local int unz64local_GetCurrentFileInfoInternal(unzFile file, unz_file_info64 *p
     unz_file_info64 file_info;
     unz_file_info64_internal file_info_internal;
     ZPOS64_T bytes_to_read;
-    int err = UNZ_OK;
+    int i, err = UNZ_OK;
     uLong uMagic;
     long lSeek = 0;
     ZPOS64_T current_pos = 0;
@@ -891,18 +891,18 @@ local int unz64local_GetCurrentFileInfoInternal(unzFile file, unz_file_info64 *p
                 if (uL != 1 && uL != 2)
                     err = UNZ_ERRNO;
                 file_info_internal.aes_version = uL;
-                if (unz64local_getByte(&s->z_filefunc, s->filestream_with_CD, &uL) != UNZ_OK)
+                if (unz64local_getByte(&s->z_filefunc, s->filestream_with_CD, &i) != UNZ_OK)
                     err = UNZ_ERRNO;
-                if ((char)uL != 'A')
+                if ((char)i != 'A')
                     err = UNZ_ERRNO;
-                if (unz64local_getByte(&s->z_filefunc, s->filestream_with_CD, &uL) != UNZ_OK)
+                if (unz64local_getByte(&s->z_filefunc, s->filestream_with_CD, &i) != UNZ_OK)
                     err = UNZ_ERRNO;
-                if ((char)uL != 'E')
+                if ((char)i != 'E')
                     err = UNZ_ERRNO;
                 /* Get AES encryption strength and actual compression method */
-                if (unz64local_getByte(&s->z_filefunc, s->filestream_with_CD, &uL) != UNZ_OK)
+                if (unz64local_getByte(&s->z_filefunc, s->filestream_with_CD, &i) != UNZ_OK)
                     err = UNZ_ERRNO;
-                file_info_internal.aes_encryption_mode = uL;
+                file_info_internal.aes_encryption_mode = i;
                 if (unz64local_getShort(&s->z_filefunc, s->filestream_with_CD, &uL) != UNZ_OK)
                     err = UNZ_ERRNO;
                 file_info_internal.aes_compression_method = uL;
@@ -1259,8 +1259,8 @@ extern int ZEXPORT unzOpenCurrentFile3(unzFile file, int* method, int* level, in
             if (ZREAD64(s->z_filefunc, s->filestream, passverify, AES_PWVERIFYSIZE) != AES_PWVERIFYSIZE)
                 return UNZ_INTERNALERROR;
 
-            fcrypt_init(s->cur_file_info_internal.aes_encryption_mode, password, strlen(password), saltvalue,
-                passverify, &s->pfile_in_zip_read->aes_ctx);
+            fcrypt_init(s->cur_file_info_internal.aes_encryption_mode, (const unsigned char*)password,
+                strlen(password), saltvalue, passverify, &s->pfile_in_zip_read->aes_ctx);
 
             pfile_in_zip_read_info->rest_read_compressed -= saltlength + AES_PWVERIFYSIZE;
             pfile_in_zip_read_info->rest_read_compressed -= AES_AUTHCODESIZE;
