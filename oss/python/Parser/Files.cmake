@@ -15,3 +15,5 @@ set(parser_files
     Parser/tokenizer.c
     Parser/tokenizer.h
 )
+
+source_group("Source Files\\Parser" FILES ${parser_files})

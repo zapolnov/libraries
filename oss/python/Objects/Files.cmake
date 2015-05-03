@@ -53,3 +53,5 @@ set(objects_files
     Objects/unicodetype_db.h
     Objects/weakrefobject.c
 )
+
+source_group("Source Files\\Objects" FILES ${objects_files})

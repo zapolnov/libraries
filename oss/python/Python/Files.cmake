@@ -73,3 +73,5 @@ endif()
 if(WIN32 OR HAVE_GETCWD)
     set_source_files_properties(Python/getcwd.c PROPERTIES HEADER_FILE_ONLY YES)
 endif()
+
+source_group("Source Files\\Python" FILES ${python_files})

@@ -89,6 +89,8 @@ add_library(pythoncore STATIC ${EXCLUDE_FROM_ALL}
     ${module_files}
 )
 
+source_group("Source Files\\PC" FILES PC/config.c)
+
 target_link_libraries(pythoncore zlib ${CMAKE_THREAD_LIBS_INIT})
 if(LIBM)
     target_link_libraries(pythoncore ${LIBM})
@@ -102,7 +104,7 @@ if(WIN32)
     #python_module(_winreg PC/_winreg.c)
 endif()
 
-add_library(pythonmodules STATIC ${EXCLUDE_FROM_ALL}
+set(pythonmodules_io_files
     Modules/_io/_iomodule.c
     Modules/_io/_iomodule.h
     Modules/_io/bufferedio.c
@@ -111,6 +113,9 @@ add_library(pythonmodules STATIC ${EXCLUDE_FROM_ALL}
     Modules/_io/iobase.c
     Modules/_io/stringio.c
     Modules/_io/textio.c
+)
+
+set(pythonmodules_cjkcodecs_files
     Modules/cjkcodecs/_codecs_cn.c
     Modules/cjkcodecs/_codecs_hk.c
     Modules/cjkcodecs/_codecs_iso2022.c
@@ -128,6 +133,9 @@ add_library(pythonmodules STATIC ${EXCLUDE_FROM_ALL}
     Modules/cjkcodecs/mappings_tw.h
     Modules/cjkcodecs/multibytecodec.c
     Modules/cjkcodecs/multibytecodec.h
+)
+
+set(pythonmodules_files
     Modules/_bisectmodule.c
     Modules/_collectionsmodule.c
     Modules/_csv.c
@@ -150,5 +158,16 @@ add_library(pythonmodules STATIC ${EXCLUDE_FROM_ALL}
     Modules/symtablemodule.c
 )
 
+source_group("Source Files\\_io" FILES ${pythonmodules_io_files})
+source_group("Source Files\\_cjkcodecs" FILES ${pythonmodules_cjkcodecs_files})
+source_group("Source Files" FILES ${pythonmodules_files})
+
+add_library(pythonmodules STATIC ${EXCLUDE_FROM_ALL}
+    ${pythonmodules_io_files}
+    ${pythonmodules_cjkcodecs_files}
+    ${pythonmodules_files}
+)
+
 add_executable(python ${EXCLUDE_FROM_ALL} Modules/python.c)
+source_group("Source Files" FILES Modules/python.c)
 target_link_libraries(python pythoncore)

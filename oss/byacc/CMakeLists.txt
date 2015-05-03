@@ -14,7 +14,7 @@ include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
 add_definitions(-DHAVE_CONFIG_H)
 
-add_executable(byacc ${EXCLUDE_FROM_ALL}
+set(source_files
     closure.c
     defs.h
     error.c
@@ -31,3 +31,6 @@ add_executable(byacc ${EXCLUDE_FROM_ALL}
     warshall.c
     yaccpar.c
 )
+
+add_executable(byacc ${EXCLUDE_FROM_ALL} ${source_files})
+source_group("Source Files" FILES ${source_files})
