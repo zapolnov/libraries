@@ -21,6 +21,7 @@
  */
 #include "GLProgram.h"
 #include "GLShader.h"
+#include "GLAttribute.h"
 #include "utility/debug.h"
 #include <vector>
 
@@ -33,6 +34,7 @@ namespace Z
 
     GLProgram::~GLProgram()
     {
+        unload();
     }
 
     void GLProgram::use()
@@ -52,6 +54,15 @@ namespace Z
             gl::DeleteProgram(m_Handle);
             m_Handle = 0;
         }
+    }
+
+    void GLProgram::bindAttribLocations()
+    {
+        bindAttribLocation(GLAttribute::Position, "a_position");
+        bindAttribLocation(GLAttribute::TexCoord, "a_texcoord");
+        bindAttribLocation(GLAttribute::Normal, "a_normal");
+        bindAttribLocation(GLAttribute::Tangent, "a_tangent");
+        bindAttribLocation(GLAttribute::Bitangent, "a_bitangent");
     }
 
     bool GLProgram::load(InputStream* input)
@@ -113,6 +124,8 @@ namespace Z
         success = fragmentShader.compile() && success;
         gl::AttachShader(m_Handle, fragmentShader.handle());
 
+        bindAttribLocations();
+
         return success && link();
     }
 
@@ -129,6 +142,8 @@ namespace Z
         fragmentShader.setSource(fragment);
         success = fragmentShader.compile() && success;
         gl::AttachShader(m_Handle, fragmentShader.handle());
+
+        bindAttribLocations();
 
         return success && link();
     }

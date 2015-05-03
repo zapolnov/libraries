@@ -21,36 +21,16 @@
  */
 
 #pragma once
-#include "GLResource.h"
 #include "opengl.h"
-#include <memory>
 
 namespace Z
 {
-    class GLMesh;
-
-    class GLBuffer : public GLResource
+    namespace GLAttribute
     {
-    public:
-        explicit GLBuffer(GLResourceManager* manager, GL::Enum type = GL::ARRAY_BUFFER);
-        ~GLBuffer();
-
-        bool bind();
-
-        void reload() override;
-        void unload() override;
-
-    protected:
-        GL::UInt handle() const { return m_Handle; }
-
-        void setData(const void* data, size_t size, GL::Enum usage);
-
-    private:
-        GL::UInt m_Handle = 0;
-        GL::Enum m_Type;
-
-        friend class GLMesh;
+        static constexpr int Position = 0;
+        static constexpr int TexCoord = 1;
+        static constexpr int Normal = 2;
+        static constexpr int Tangent = 3;
+        static constexpr int Bitangent = 4;
     };
-
-    using GLBufferPtr = std::shared_ptr<GLBuffer>;
 }

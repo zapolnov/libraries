@@ -22,6 +22,8 @@
 
 #pragma once
 #include "GLResource.h"
+#include "GLBuffer.h"
+#include "GLAttribute.h"
 #include "opengl.h"
 #include "mesh/Mesh.h"
 #include <memory>
@@ -36,6 +38,32 @@ namespace Z
 
         void reload() override;
         void unload() override;
+
+        void render() const;
+
+    protected:
+        struct Vertex
+        {
+            GL::Float position[3];
+            GL::Float texCoord[2];
+            GL::Float normal[3];
+            GL::Float tangent[3];
+            GL::Float bitangent[3];
+        };
+
+        struct Element
+        {
+            size_t vertexBuffer;
+            size_t indexBuffer;
+            size_t indexBufferOffset;
+            size_t indexBufferLength;
+        };
+
+        std::vector<Element> m_Elements;
+        std::vector<GLBufferPtr> m_VertexBuffers;
+        std::vector<GLBufferPtr> m_IndexBuffers;
+
+        void initFromMesh(const MeshPtr& mesh);
     };
 
     using GLMeshPtr = std::shared_ptr<GLMesh>;

@@ -124,7 +124,7 @@ namespace Z
 
             FileReaderPtr reader = resourceManager()->fileSystem()->openFile(m_FileName);
             MeshPtr mesh = MeshReader::read(reader);
-            // FIXME
+            initFromMesh(mesh);
         }
 
     private:

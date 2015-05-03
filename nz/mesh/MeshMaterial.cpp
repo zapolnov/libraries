@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Nikolay Zapolnov (zapolnov@gmail.com).
+ * Copyright (c) 2015 Nikolay Zapolnov (zapolnov@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,38 +19,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-#pragma once
-#include "GLResource.h"
-#include "opengl.h"
-#include <memory>
+#include "MeshMaterial.h"
 
 namespace Z
 {
-    class GLMesh;
-
-    class GLBuffer : public GLResource
+    MeshMaterial::MeshMaterial()
     {
-    public:
-        explicit GLBuffer(GLResourceManager* manager, GL::Enum type = GL::ARRAY_BUFFER);
-        ~GLBuffer();
+    }
 
-        bool bind();
-
-        void reload() override;
-        void unload() override;
-
-    protected:
-        GL::UInt handle() const { return m_Handle; }
-
-        void setData(const void* data, size_t size, GL::Enum usage);
-
-    private:
-        GL::UInt m_Handle = 0;
-        GL::Enum m_Type;
-
-        friend class GLMesh;
-    };
-
-    using GLBufferPtr = std::shared_ptr<GLBuffer>;
+    MeshMaterial::~MeshMaterial()
+    {
+    }
 }

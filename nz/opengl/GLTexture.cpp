@@ -32,6 +32,7 @@ namespace Z
 
     GLTexture::~GLTexture()
     {
+        unload();
     }
 
     void GLTexture::bind()

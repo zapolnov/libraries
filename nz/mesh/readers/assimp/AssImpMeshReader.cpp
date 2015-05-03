@@ -25,6 +25,7 @@
 #include <assimp/IOStream.hpp>
 #include <assimp/IOSystem.hpp>
 #include <assimp/DefaultLogger.hpp>
+#include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <png.h>
 #include <cstring>
@@ -113,6 +114,17 @@ namespace Z
     }
 
 
+    static inline void appendVec2(std::vector<glm::vec2>& out, const aiVector3D& in)
+    {
+        out.emplace_back(in.x, in.y);
+    }
+
+    static inline void appendVec3(std::vector<glm::vec3>& out, const aiVector3D& in)
+    {
+        out.emplace_back(in.x, in.y, in.z);
+    }
+
+
   #if Z_LOGGING_ENABLED
     static std::once_flag g_InitOnce;
   #endif
@@ -151,6 +163,7 @@ namespace Z
         const aiScene* scene = nullptr;
         const unsigned flags =
             aiProcess_Triangulate |
+            aiProcess_CalcTangentSpace |
             aiProcess_GenSmoothNormals |
             aiProcess_FlipUVs;
 
@@ -166,6 +179,65 @@ namespace Z
 //            importer.SetIOHandler(new AssImpIOSystem);
 //        }
 
-        return nullptr;
+        if (!scene) {
+            Z_LOG("Unable to load file \"" << stream->name() << "\": " << importer.GetErrorString());
+            return nullptr;
+        }
+
+        if (scene->mNumMeshes == 0) {
+            Z_LOG("File \"" << stream->name() << "\" does not have meshes.");
+            return nullptr;
+        }
+
+        MeshPtr mesh = std::make_shared<Mesh>();
+        mesh->elements().reserve(scene->mNumMeshes);
+
+        for (int i = 0; i < scene->mNumMeshes; i++) {
+            const aiMesh* sceneMesh = scene->mMeshes[i];
+
+            if (sceneMesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE) {
+                if (sceneMesh->mName.length == 0)
+                    Z_LOG("In \"" << stream->name() << "\": ignoring non-triangulated mesh #" << i << ".");
+                else {
+                    Z_LOG("In \"" << stream->name() << "\": ignoring non-triangulated mesh #" << i
+                        << " (\"" << sceneMesh->mName.C_Str() << "\").");
+                }
+                continue;
+            }
+
+            Mesh::ElementPtr element = std::make_shared<Mesh::Element>();
+            element->name.assign(sceneMesh->mName.data, sceneMesh->mName.length);
+
+            element->positions.reserve(sceneMesh->mNumVertices);
+            element->normals.reserve(sceneMesh->mNumVertices);
+            element->tangents.reserve(sceneMesh->mNumVertices);
+            element->bitangents.reserve(sceneMesh->mNumVertices);
+
+            for (int j = 0; j < sceneMesh->mNumVertices; j++) {
+                appendVec3(element->positions, sceneMesh->mVertices[j]);
+                appendVec3(element->normals, sceneMesh->mNormals[j]);
+                appendVec3(element->tangents, sceneMesh->mTangents[j]);
+                appendVec3(element->bitangents, sceneMesh->mBitangents[j]);
+            }
+
+            if (sceneMesh->mTextureCoords[0]) {
+                element->texCoords.reserve(sceneMesh->mNumVertices);
+                for (int j = 0; j < sceneMesh->mNumVertices; j++)
+                    appendVec2(element->texCoords, sceneMesh->mTextureCoords[0][j]);
+            }
+
+            element->indices.reserve(sceneMesh->mNumFaces * 3);
+            for (int j = 0; j < sceneMesh->mNumFaces; j++) {
+                if (sceneMesh->mFaces[j].mNumIndices != 3)
+                    continue;
+                element->indices.emplace_back(sceneMesh->mFaces[j].mIndices[0]);
+                element->indices.emplace_back(sceneMesh->mFaces[j].mIndices[1]);
+                element->indices.emplace_back(sceneMesh->mFaces[j].mIndices[2]);
+            }
+
+            mesh->elements().push_back(std::move(element));
+        }
+
+        return mesh;
     }
 }

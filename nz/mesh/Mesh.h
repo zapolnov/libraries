@@ -21,17 +21,41 @@
  */
 
 #pragma once
+#include "MeshMaterial.h"
+#include <glm/glm.hpp>
+#include <string>
 #include <memory>
+#include <vector>
 
 namespace Z
 {
     class Mesh
     {
     public:
+        struct Element
+        {
+            std::string name;
+            MeshMaterialPtr material;
+            std::vector<glm::vec3> positions;
+            std::vector<glm::vec3> normals;
+            std::vector<glm::vec3> tangents;
+            std::vector<glm::vec3> bitangents;
+            std::vector<glm::vec2> texCoords;
+            std::vector<uint16_t> indices;
+        };
+
+        using ElementPtr = std::shared_ptr<Element>;
+        using ElementList = std::vector<ElementPtr>;
+
         Mesh();
         ~Mesh();
 
+        ElementList& elements() { return m_Elements; }
+        const ElementList& elements() const { return m_Elements; }
+
     private:
+        ElementList m_Elements;
+
         Mesh(const Mesh&) = delete;
         Mesh& operator=(const Mesh&) = delete;
     };

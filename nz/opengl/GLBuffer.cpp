@@ -20,6 +20,7 @@
  * THE SOFTWARE.
  */
 #include "GLBuffer.h"
+#include "utility/debug.h"
 
 namespace Z
 {
@@ -31,11 +32,13 @@ namespace Z
 
     GLBuffer::~GLBuffer()
     {
+        unload();
     }
 
-    void GLBuffer::bind()
+    bool GLBuffer::bind()
     {
         gl::BindBuffer(m_Type, m_Handle);
+        return m_Handle != 0;
     }
 
     void GLBuffer::reload()
@@ -54,7 +57,7 @@ namespace Z
 
     void GLBuffer::setData(const void* data, size_t size, GL::Enum usage)
     {
-        bind();
-        gl::BufferData(m_Type, GL::Sizeiptr(size), data, usage);
+        if (bind())
+            gl::BufferData(m_Type, GL::Sizeiptr(size), data, usage);
     }
 }

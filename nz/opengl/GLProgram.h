@@ -45,6 +45,9 @@ namespace Z
     protected:
         GL::UInt handle() const { return m_Handle; }
 
+        void bindAttribLocation(int index, const char* name) { gl::BindAttribLocation(m_Handle, index, name); }
+        void bindAttribLocations();
+
         bool load(InputStream* input);
         bool loadSource(const std::string& vertex, const std::string& fragment);
 
