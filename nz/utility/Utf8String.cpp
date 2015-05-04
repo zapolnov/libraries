@@ -116,6 +116,21 @@ namespace Z
         return m_Data->text;
     }
 
+    bool Utf8String::operator==(const Utf8String& other) const
+    {
+        return m_Data == other.m_Data || m_Data->text == other.m_Data->text;
+    }
+
+    bool Utf8String::operator!=(const Utf8String& other) const
+    {
+        return m_Data != other.m_Data && m_Data->text != other.m_Data->text;
+    }
+
+    bool Utf8String::operator<(const Utf8String& other) const
+    {
+        return m_Data != other.m_Data && m_Data->text < other.m_Data->text;
+    }
+
     std::ostream& operator<<(std::ostream& stream, const Utf8String& string)
     {
         stream.write(string.rawBytes(), std::streamsize(string.size()));

@@ -22,16 +22,26 @@
 
 #pragma once
 #include "MeshMaterial.h"
+#include "Skeleton.h"
 #include <glm/glm.hpp>
 #include <string>
 #include <memory>
 #include <vector>
+#include <cstdint>
 
 namespace Z
 {
     class Mesh
     {
     public:
+        static constexpr size_t MAX_BONES_PER_VERTEX = 4;
+
+        struct BoneWeights
+        {
+            float boneWeight[MAX_BONES_PER_VERTEX];
+            size_t boneIndex[MAX_BONES_PER_VERTEX];
+        };
+
         struct Element
         {
             std::string name;
@@ -41,6 +51,7 @@ namespace Z
             std::vector<glm::vec3> tangents;
             std::vector<glm::vec3> bitangents;
             std::vector<glm::vec2> texCoords;
+            std::vector<BoneWeights> boneWeights;
             std::vector<uint16_t> indices;
         };
 
@@ -53,8 +64,13 @@ namespace Z
         ElementList& elements() { return m_Elements; }
         const ElementList& elements() const { return m_Elements; }
 
+        const SkeletonPtr& skeleton() const { return m_Skeleton; }
+        void setSkeleton(const SkeletonPtr& skeleton) { m_Skeleton = skeleton; }
+        void setSkeleton(SkeletonPtr&& skeleton) { m_Skeleton = std::move(skeleton); }
+
     private:
         ElementList m_Elements;
+        SkeletonPtr m_Skeleton;
 
         Mesh(const Mesh&) = delete;
         Mesh& operator=(const Mesh&) = delete;

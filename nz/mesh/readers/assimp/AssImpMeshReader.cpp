@@ -124,6 +124,29 @@ namespace Z
         out.emplace_back(in.x, in.y, in.z);
     }
 
+    static inline void convertMatrix(glm::mat4& out, const aiMatrix4x4& in)
+    {
+        out[0][0] = in.a1; out[1][0] = in.a2; out[2][0] = in.a3; out[3][0] = in.a4;
+        out[0][1] = in.b1; out[1][1] = in.b2; out[2][1] = in.b3; out[3][1] = in.b4;
+        out[0][2] = in.c1; out[1][2] = in.c2; out[2][2] = in.c3; out[3][2] = in.c4;
+        out[0][3] = in.d1; out[1][3] = in.d2; out[2][3] = in.d3; out[3][3] = in.d4;
+    }
+
+
+    static void readNodeHierarchy(SkeletonPtr& skeleton, const aiNode* rootNode, size_t parentBoneIndex)
+    {
+        std::string nodeName(rootNode->mName.data, rootNode->mName.length);
+        Skeleton::Bone& bone = skeleton->getOrAddBone(nodeName);
+
+        Z_CHECK(bone.index != parentBoneIndex);
+        Z_CHECK(bone.parentIndex == size_t(-1) || bone.parentIndex == parentBoneIndex);
+        if (bone.index != parentBoneIndex)
+            bone.parentIndex = parentBoneIndex;
+
+        for (int i = 0; i < rootNode->mNumChildren; i++)
+            readNodeHierarchy(skeleton, rootNode->mChildren[i], bone.index);
+    }
+
 
   #if Z_LOGGING_ENABLED
     static std::once_flag g_InitOnce;
@@ -155,17 +178,22 @@ namespace Z
         return true;
     }
 
-    MeshPtr AssImpMeshReader::readMesh(InputStream* stream) const
+    MeshPtr AssImpMeshReader::readMesh(InputStream* stream, unsigned readFlags) const
     {
         if (!stream)
             return nullptr;
 
+        bool readNormals = (readFlags & DontReadNormals) == 0;
+        bool readTangents = readNormals && (readFlags & DontReadTangents) == 0;
+        bool readTexCoords = (readFlags & DontReadTexCoords) == 0;
+        bool readSkeleton = (readFlags & DontReadSkeleton) == 0;
+
         const aiScene* scene = nullptr;
         const unsigned flags =
             aiProcess_Triangulate |
-            aiProcess_CalcTangentSpace |
-            aiProcess_GenSmoothNormals |
-            aiProcess_FlipUVs;
+            (!readNormals ? 0 : aiProcess_GenSmoothNormals) |
+            (!readTangents ? 0 : aiProcess_CalcTangentSpace) |
+            (!readTexCoords ? 0 : aiProcess_FlipUVs);
 
         Assimp::Importer importer;
 
@@ -192,6 +220,13 @@ namespace Z
         MeshPtr mesh = std::make_shared<Mesh>();
         mesh->elements().reserve(scene->mNumMeshes);
 
+        SkeletonPtr skeleton;
+        if (readSkeleton) {
+            skeleton = std::make_shared<Skeleton>();
+            readNodeHierarchy(skeleton, scene->mRootNode, size_t(-1));
+            mesh->setSkeleton(skeleton);
+        }
+
         for (int i = 0; i < scene->mNumMeshes; i++) {
             const aiMesh* sceneMesh = scene->mMeshes[i];
 
@@ -209,21 +244,50 @@ namespace Z
             element->name.assign(sceneMesh->mName.data, sceneMesh->mName.length);
 
             element->positions.reserve(sceneMesh->mNumVertices);
-            element->normals.reserve(sceneMesh->mNumVertices);
-            element->tangents.reserve(sceneMesh->mNumVertices);
-            element->bitangents.reserve(sceneMesh->mNumVertices);
-
-            for (int j = 0; j < sceneMesh->mNumVertices; j++) {
+            for (int j = 0; j < sceneMesh->mNumVertices; j++)
                 appendVec3(element->positions, sceneMesh->mVertices[j]);
-                appendVec3(element->normals, sceneMesh->mNormals[j]);
-                appendVec3(element->tangents, sceneMesh->mTangents[j]);
-                appendVec3(element->bitangents, sceneMesh->mBitangents[j]);
+
+            if (readNormals) {
+                element->normals.reserve(sceneMesh->mNumVertices);
+                for (int j = 0; j < sceneMesh->mNumVertices; j++)
+                    appendVec3(element->normals, sceneMesh->mNormals[j]);
             }
 
-            if (sceneMesh->mTextureCoords[0]) {
+            if (readTangents) {
+                element->tangents.reserve(sceneMesh->mNumVertices);
+                element->bitangents.reserve(sceneMesh->mNumVertices);
+                for (int j = 0; j < sceneMesh->mNumVertices; j++) {
+                    appendVec3(element->tangents, sceneMesh->mTangents[j]);
+                    appendVec3(element->bitangents, sceneMesh->mBitangents[j]);
+                }
+            }
+
+            if (readTexCoords && sceneMesh->HasTextureCoords(0)) {
                 element->texCoords.reserve(sceneMesh->mNumVertices);
                 for (int j = 0; j < sceneMesh->mNumVertices; j++)
                     appendVec2(element->texCoords, sceneMesh->mTextureCoords[0][j]);
+            }
+
+            if (readSkeleton && sceneMesh->HasBones()) {
+                element->boneWeights.resize(sceneMesh->mNumVertices);
+                for (int j = 0; j < sceneMesh->mNumBones; j++) {
+                    const aiBone* sceneMeshBone = sceneMesh->mBones[j];
+                    std::string boneName(sceneMeshBone->mName.data, sceneMeshBone->mName.length);
+
+                    Skeleton::Bone& bone = skeleton->getOrAddBone(boneName);
+                    convertMatrix(bone.matrix(), sceneMeshBone->mOffsetMatrix);
+
+                    for (int k = 0; k < sceneMeshBone->mNumWeights; k++) {
+                        Mesh::BoneWeights& weights = element->boneWeights[sceneMeshBone->mWeights[k].mVertexId];
+                        for (int index = 0; index < Mesh::MAX_BONES_PER_VERTEX; index++) {
+                            if (weights.boneWeight[index] == 0.0f) {
+                                weights.boneWeight[index] = sceneMeshBone->mWeights[k].mWeight;
+                                weights.boneIndex[index] = bone.index;
+                                break;
+                            }
+                        }
+                    }
+                }
             }
 
             element->indices.reserve(sceneMesh->mNumFaces * 3);

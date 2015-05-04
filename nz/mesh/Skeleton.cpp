@@ -19,18 +19,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-#pragma once
-#include "mesh/MeshReader.h"
+#include "Skeleton.h"
 
 namespace Z
 {
-    class AssImpMeshReader : public MeshReader
+    Skeleton::Skeleton()
     {
-    public:
-        AssImpMeshReader();
+    }
 
-        bool canReadMesh(InputStream* stream) const override;
-        MeshPtr readMesh(InputStream* stream, unsigned flags) const override;
-    };
+    Skeleton::~Skeleton()
+    {
+    }
+
+    const Skeleton::Bone* Skeleton::getBone(const Utf8String& name) const
+    {
+        auto it = m_BonesByName.find(name);
+        return (it != m_BonesByName.end() ? &m_Bones[it->second] : nullptr);
+    }
+
+    Skeleton::Bone& Skeleton::getOrAddBone(const Utf8String& name)
+    {
+        auto it = m_BonesByName.lower_bound(name);
+        if (it == m_BonesByName.end() || it->first != name) {
+            size_t boneIndex = m_Bones.size();
+
+            m_Bones.emplace_back(this, name, boneIndex);
+            m_BoneMatrices.emplace_back(1.0f);
+
+            it = m_BonesByName.insert(it, std::make_pair(name, boneIndex));
+        }
+        return m_Bones[it->second];
+    }
 }

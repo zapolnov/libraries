@@ -48,6 +48,10 @@ namespace Z
 
         const std::string& asStdString() const;
 
+        bool operator==(const Utf8String& other) const;
+        bool operator!=(const Utf8String& other) const;
+        bool operator<(const Utf8String& other) const;
+
     private:
         struct Data;
 

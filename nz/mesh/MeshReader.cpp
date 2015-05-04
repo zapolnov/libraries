@@ -57,7 +57,7 @@ namespace Z
         g_Readers.emplace_back(std::move(reader));
     }
 
-    MeshPtr MeshReader::read(const FileReaderPtr& file)
+    MeshPtr MeshReader::read(const FileReaderPtr& file, unsigned readFlags)
     {
         Z_CHECK(file != nullptr);
         if (!file)
@@ -75,7 +75,7 @@ namespace Z
                 continue;
 
             FileInputStream stream2(file);
-            MeshPtr mesh = reader->readMesh(&stream2);
+            MeshPtr mesh = reader->readMesh(&stream2, readFlags);
             if (mesh)
                 return mesh;
         }
