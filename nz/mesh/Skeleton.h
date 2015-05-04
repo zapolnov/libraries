@@ -24,7 +24,7 @@
 #include "utility/Utf8String.h"
 #include <glm/glm.hpp>
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <vector>
 #include <memory>
 
@@ -49,10 +49,13 @@ namespace Z
         Skeleton();
         ~Skeleton();
 
-        const Bone* getBone(const char* name) const { return getBone(Utf8String::fromRawBytes(name)); }
-        const Bone* getBone(const std::string& name) const { return getBone(Utf8String::fromRawBytes(name)); }
-        const Bone* getBone(std::string&& name) const { return getBone(Utf8String::fromRawBytes(std::move(name))); }
-        const Bone* getBone(const Utf8String& name) const;
+        size_t numBones() const { return m_Bones.size(); }
+
+        const Bone& bone(size_t index) const;
+        const Bone* bone(const char* name) const { return bone(Utf8String::fromRawBytes(name)); }
+        const Bone* bone(const std::string& name) const { return bone(Utf8String::fromRawBytes(name)); }
+        const Bone* bone(std::string&& name) const { return bone(Utf8String::fromRawBytes(std::move(name))); }
+        const Bone* bone(const Utf8String& name) const;
 
         Bone& getOrAddBone(const char* name) { return getOrAddBone(Utf8String::fromRawBytes(name)); }
         Bone& getOrAddBone(const std::string& name) { return getOrAddBone(Utf8String::fromRawBytes(name)); }
@@ -61,7 +64,7 @@ namespace Z
 
     private:
         std::vector<Bone> m_Bones;
-        std::map<Utf8String, size_t> m_BonesByName;
+        std::unordered_map<Utf8String, size_t> m_BonesByName;
         std::vector<glm::mat4> m_BoneMatrices;
 
         Skeleton(const Skeleton&) = delete;

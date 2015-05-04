@@ -43,7 +43,7 @@ namespace Z
                 size_t length = strlen(message);
                 if (length > 0 && message[length - 1] == '\n')
                     --length;
-                Z_LOG("ASSIMP: " << std::string(message, length));
+                Z_LOG(" - AssImp: " << std::string(message, length));
             }
         };
       #endif
@@ -124,6 +124,21 @@ namespace Z
         out.emplace_back(in.x, in.y, in.z);
     }
 
+    static inline void convertVec3(glm::vec3& out, const aiVector3D& in)
+    {
+        out.x = in.x;
+        out.y = in.y;
+        out.z = in.z;
+    }
+
+    static inline void convertQuat(glm::quat& out, const aiQuaternion& in)
+    {
+        out.x = in.x;
+        out.y = in.y;
+        out.z = in.z;
+        out.w = in.w;
+    }
+
     static inline void convertMatrix(glm::mat4& out, const aiMatrix4x4& in)
     {
         out[0][0] = in.a1; out[1][0] = in.a2; out[2][0] = in.a3; out[3][0] = in.a4;
@@ -135,13 +150,20 @@ namespace Z
 
     static void readNodeHierarchy(SkeletonPtr& skeleton, const aiNode* rootNode, size_t parentBoneIndex)
     {
-        std::string nodeName(rootNode->mName.data, rootNode->mName.length);
+        auto nodeName = Utf8String::fromRawBytes(rootNode->mName.data, rootNode->mName.length);
         Skeleton::Bone& bone = skeleton->getOrAddBone(nodeName);
 
         Z_CHECK(bone.index != parentBoneIndex);
         Z_CHECK(bone.parentIndex == size_t(-1) || bone.parentIndex == parentBoneIndex);
         if (bone.index != parentBoneIndex)
             bone.parentIndex = parentBoneIndex;
+
+        convertMatrix(bone.matrix(), rootNode->mTransformation);
+
+        if (nodeName.empty())
+            Z_LOG(" - Bone #" << bone.index << '.');
+        else
+            Z_LOG(" - Bone #" << bone.index << " (\"" << nodeName << "\").");
 
         for (int i = 0; i < rootNode->mNumChildren; i++)
             readNodeHierarchy(skeleton, rootNode->mChildren[i], bone.index);
@@ -182,6 +204,8 @@ namespace Z
     {
         if (!stream)
             return nullptr;
+
+        Z_LOG("Loading mesh \"" << stream->name() << "\".");
 
         bool readNormals = (readFlags & DontReadNormals) == 0;
         bool readTangents = readNormals && (readFlags & DontReadTangents) == 0;
@@ -225,6 +249,11 @@ namespace Z
             skeleton = std::make_shared<Skeleton>();
             readNodeHierarchy(skeleton, scene->mRootNode, size_t(-1));
             mesh->setSkeleton(skeleton);
+            Z_LOG(" - Total " << skeleton->numBones() << " bone" << (skeleton->numBones() == 1 ? "" : "s") << '.');
+
+            aiMatrix4x4 globalInverseTransform = scene->mRootNode->mTransformation;
+            globalInverseTransform.Inverse();
+            convertMatrix(mesh->globalInverseTransform(), globalInverseTransform);
         }
 
         for (int i = 0; i < scene->mNumMeshes; i++) {
@@ -299,7 +328,74 @@ namespace Z
                 element->indices.emplace_back(sceneMesh->mFaces[j].mIndices[2]);
             }
 
+            if (element->name.empty()) {
+                Z_LOG(" - Element #" << i << ": "
+                    << sceneMesh->mNumVertices << " vertices, " << sceneMesh->mNumFaces << " faces.");
+            } else {
+                Z_LOG(" - Element #" << i << " (\"" << element->name << "\"): "
+                    << sceneMesh->mNumVertices << " vertices, " << sceneMesh->mNumFaces << " faces.");
+            }
+
             mesh->elements().push_back(std::move(element));
+        }
+
+        Z_LOG(" - Total " << mesh->elements().size() << " element"
+            << (mesh->elements().size() == 1 ? "" : "s") << '.');
+
+        if (readSkeleton) {
+            for (int i = 0; i < scene->mNumAnimations; i++) {
+                const aiAnimation* sceneAnimation = scene->mAnimations[i];
+                auto animationName = Utf8String::fromRawBytes(sceneAnimation->mName.data, sceneAnimation->mName.length);
+
+                auto animation = mesh->addAnimation(animationName);
+                animation->setDurationInTicks(sceneAnimation->mDuration);
+                animation->setTicksPerSecond(sceneAnimation->mTicksPerSecond);
+
+                if (animationName.empty()) {
+                    Z_LOG(" - Animation #" << i << ": affects "
+                        << sceneAnimation->mNumChannels << " bone" << (sceneAnimation->mNumChannels == 1 ? "" : "s")
+                        << ", " << animation->durationInTicks() << " ticks (with " << animation->ticksPerSecond()
+                        << " ticks/sec).");
+                } else {
+                    Z_LOG(" - Animation #" << i << " (\"" << animationName << "\"): affects "
+                        << sceneAnimation->mNumChannels << " bone" << (sceneAnimation->mNumChannels == 1 ? "" : "s")
+                        << ", " << animation->durationInTicks() << " ticks (with " << animation->ticksPerSecond()
+                        << " ticks/sec).");
+                }
+
+                for (int j = 0; j < sceneAnimation->mNumChannels; j++) {
+                    const aiNodeAnim* channel = sceneAnimation->mChannels[j];
+                    auto boneName = Utf8String::fromRawBytes(channel->mNodeName.data, channel->mNodeName.length);
+
+                    Skeleton::Bone& bone = skeleton->getOrAddBone(boneName);
+                    SkeletonAnimation::Channel& keys = animation->addChannel(bone.index,
+                        channel->mNumPositionKeys, channel->mNumScalingKeys, channel->mNumRotationKeys);
+
+                    for (size_t k = 0; k < channel->mNumPositionKeys; k++) {
+                        const aiVectorKey& key = channel->mPositionKeys[k];
+                        auto& ref = animation->positionKeys()[keys.positionKeysOffset + k];
+                        ref.time = key.mTime;
+                        convertVec3(ref.position, key.mValue);
+                    }
+
+                    for (size_t k = 0; k < channel->mNumScalingKeys; k++) {
+                        const aiVectorKey& key = channel->mScalingKeys[k];
+                        auto& ref = animation->scaleKeys()[keys.scaleKeysOffset + k];
+                        ref.time = key.mTime;
+                        convertVec3(ref.scale, key.mValue);
+                    }
+
+                    for (size_t k = 0; k < channel->mNumRotationKeys; k++) {
+                        const aiQuatKey& key = channel->mRotationKeys[k];
+                        auto& ref = animation->rotationKeys()[keys.rotationKeysOffset + k];
+                        ref.time = key.mTime;
+                        convertQuat(ref.rotation, key.mValue);
+                    }
+                }
+            }
+
+            Z_LOG(" - Total " << mesh->numAnimations() << " animation"
+                << (mesh->numAnimations() == 1 ? "" : "s") << '.');
         }
 
         return mesh;

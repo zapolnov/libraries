@@ -20,6 +20,7 @@
  * THE SOFTWARE.
  */
 #include "Skeleton.h"
+#include "utility/debug.h"
 
 namespace Z
 {
@@ -31,7 +32,13 @@ namespace Z
     {
     }
 
-    const Skeleton::Bone* Skeleton::getBone(const Utf8String& name) const
+    const Skeleton::Bone& Skeleton::bone(size_t index) const
+    {
+        Z_ASSERT(index < m_Bones.size());
+        return m_Bones[index];
+    }
+
+    const Skeleton::Bone* Skeleton::bone(const Utf8String& name) const
     {
         auto it = m_BonesByName.find(name);
         return (it != m_BonesByName.end() ? &m_Bones[it->second] : nullptr);
@@ -39,14 +46,14 @@ namespace Z
 
     Skeleton::Bone& Skeleton::getOrAddBone(const Utf8String& name)
     {
-        auto it = m_BonesByName.lower_bound(name);
-        if (it == m_BonesByName.end() || it->first != name) {
+        auto it = m_BonesByName.find(name);
+        if (it == m_BonesByName.end()) {
             size_t boneIndex = m_Bones.size();
 
             m_Bones.emplace_back(this, name, boneIndex);
             m_BoneMatrices.emplace_back(1.0f);
 
-            it = m_BonesByName.insert(it, std::make_pair(name, boneIndex));
+            it = m_BonesByName.insert(std::make_pair(name, boneIndex)).first;
         }
         return m_Bones[it->second];
     }

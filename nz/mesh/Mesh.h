@@ -23,10 +23,12 @@
 #pragma once
 #include "MeshMaterial.h"
 #include "Skeleton.h"
+#include "SkeletonAnimation.h"
 #include <glm/glm.hpp>
 #include <string>
 #include <memory>
 #include <vector>
+#include <unordered_map>
 #include <cstdint>
 
 namespace Z
@@ -64,13 +66,27 @@ namespace Z
         ElementList& elements() { return m_Elements; }
         const ElementList& elements() const { return m_Elements; }
 
+        glm::mat4& globalInverseTransform() { return m_GlobalInverseTransform; }
+        const glm::mat4& globalInverseTransform() const { return m_GlobalInverseTransform; }
+
         const SkeletonPtr& skeleton() const { return m_Skeleton; }
         void setSkeleton(const SkeletonPtr& skeleton) { m_Skeleton = skeleton; }
         void setSkeleton(SkeletonPtr&& skeleton) { m_Skeleton = std::move(skeleton); }
 
+        size_t numAnimations() const { return m_Animations.size(); }
+        const SkeletonAnimationPtr& animation(size_t index) const;
+        const SkeletonAnimationPtr& animation(const char* name) const;
+        const SkeletonAnimationPtr& animation(const std::string& name) const;
+        const SkeletonAnimationPtr& animation(std::string&& name) const;
+        const SkeletonAnimationPtr& animation(const Utf8String& name) const;
+        SkeletonAnimationPtr addAnimation(const Utf8String& name);
+
     private:
+        std::vector<SkeletonAnimationPtr> m_Animations;
+        std::unordered_map<Utf8String, SkeletonAnimationPtr> m_AnimationsByName;
         ElementList m_Elements;
         SkeletonPtr m_Skeleton;
+        glm::mat4 m_GlobalInverseTransform;
 
         Mesh(const Mesh&) = delete;
         Mesh& operator=(const Mesh&) = delete;

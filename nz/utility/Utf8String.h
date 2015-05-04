@@ -24,6 +24,7 @@
 #include <string>
 #include <ostream>
 #include <memory>
+#include <functional>
 
 namespace Z
 {
@@ -45,6 +46,7 @@ namespace Z
 
         const char* rawBytes() const;
         size_t size() const;
+        bool empty() const { return size() == 0; }
 
         const std::string& asStdString() const;
 
@@ -62,4 +64,13 @@ namespace Z
     };
 
     std::ostream& operator<<(std::ostream& stream, const Utf8String& string);
+}
+
+namespace std
+{
+    template <> struct hash<::Z::Utf8String> {
+        size_t operator()(const ::Z::Utf8String& s) const {
+            return hash<string>()(s.asStdString());
+        }
+    };
 }

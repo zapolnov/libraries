@@ -20,14 +20,58 @@
  * THE SOFTWARE.
  */
 #include "Mesh.h"
+#include "utility/debug.h"
 
 namespace Z
 {
+    static SkeletonAnimationPtr g_NullAnimation;
+
     Mesh::Mesh()
     {
     }
 
     Mesh::~Mesh()
     {
+    }
+
+    const SkeletonAnimationPtr& Mesh::animation(size_t index) const
+    {
+        if (index >= m_Animations.size())
+            return g_NullAnimation;
+        return m_Animations[index];
+    }
+
+    const SkeletonAnimationPtr& Mesh::animation(const char* name) const
+    {
+        return animation(Utf8String::fromRawBytes(name));
+    }
+
+    const SkeletonAnimationPtr& Mesh::animation(const std::string& name) const
+    {
+        return animation(Utf8String::fromRawBytes(name));
+    }
+
+    const SkeletonAnimationPtr& Mesh::animation(std::string&& name) const
+    {
+        return animation(Utf8String::fromRawBytes(std::move(name)));
+    }
+
+    const SkeletonAnimationPtr& Mesh::animation(const Utf8String& name) const
+    {
+        auto it = m_AnimationsByName.find(name);
+        if (it == m_AnimationsByName.end())
+            return g_NullAnimation;
+        return it->second;
+    }
+
+    SkeletonAnimationPtr Mesh::addAnimation(const Utf8String& name)
+    {
+        Z_ASSERT(m_Skeleton != nullptr);
+
+        SkeletonAnimationPtr animation = std::make_shared<SkeletonAnimation>(m_Skeleton, name);
+        m_Animations.push_back(animation);
+        m_AnimationsByName.insert(std::make_pair(name, animation));
+
+        return animation;
     }
 }
