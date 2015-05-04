@@ -49,6 +49,9 @@ namespace Z
         Skeleton();
         ~Skeleton();
 
+        glm::mat4& globalInverseTransform() { return m_GlobalInverseTransform; }
+        const glm::mat4& globalInverseTransform() const { return m_GlobalInverseTransform; }
+
         size_t numBones() const { return m_Bones.size(); }
 
         const Bone& bone(size_t index) const;
@@ -66,6 +69,7 @@ namespace Z
         std::vector<Bone> m_Bones;
         std::unordered_map<Utf8String, size_t> m_BonesByName;
         std::vector<glm::mat4> m_BoneMatrices;
+        glm::mat4 m_GlobalInverseTransform;
 
         Skeleton(const Skeleton&) = delete;
         Skeleton& operator=(const Skeleton&) = delete;

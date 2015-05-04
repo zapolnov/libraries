@@ -25,6 +25,7 @@
 namespace Z
 {
     Skeleton::Skeleton()
+        : m_GlobalInverseTransform(1.0f)
     {
     }
 
@@ -49,6 +50,7 @@ namespace Z
         auto it = m_BonesByName.find(name);
         if (it == m_BonesByName.end()) {
             size_t boneIndex = m_Bones.size();
+            Z_CHECK(boneIndex == m_BoneMatrices.size());
 
             m_Bones.emplace_back(this, name, boneIndex);
             m_BoneMatrices.emplace_back(1.0f);

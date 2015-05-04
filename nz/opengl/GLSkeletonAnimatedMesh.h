@@ -22,36 +22,49 @@
 
 #pragma once
 #include "GLResource.h"
+#include "GLBuffer.h"
+#include "GLAttribute.h"
 #include "opengl.h"
+#include "mesh/Mesh.h"
 #include <memory>
 
 namespace Z
 {
-    class GLMesh;
-
-    class GLBuffer : public GLResource
+    class GLSkeletonAnimatedMesh : public GLResource
     {
     public:
-        explicit GLBuffer(GLResourceManager* manager, GL::Enum type = GL::ARRAY_BUFFER);
-        ~GLBuffer();
-
-        bool bind();
+        explicit GLSkeletonAnimatedMesh(GLResourceManager* manager);
+        ~GLSkeletonAnimatedMesh();
 
         void reload() override;
         void unload() override;
 
+        void render() const;
+
     protected:
-        GL::UInt handle() const { return m_Handle; }
+        struct Vertex
+        {
+            GL::Float position[3];
+            GL::Float texCoord[2];
+            GL::Float normal[3];
+            GL::Float tangent[3];
+            GL::Float bitangent[3];
+        };
 
-        void setData(const void* data, size_t size, GL::Enum usage);
+        struct Element
+        {
+            size_t vertexBuffer;
+            size_t indexBuffer;
+            size_t indexBufferOffset;
+            size_t indexBufferLength;
+        };
 
-    private:
-        GL::UInt m_Handle = 0;
-        GL::Enum m_Type;
+        std::vector<Element> m_Elements;
+        std::vector<GLBufferPtr> m_VertexBuffers;
+        std::vector<GLBufferPtr> m_IndexBuffers;
 
-        friend class GLMesh;
-        friend class GLSkeletonAnimatedMesh;
+        void initFromMesh(const MeshPtr& mesh);
     };
 
-    using GLBufferPtr = std::shared_ptr<GLBuffer>;
+    using GLSkeletonAnimatedMeshPtr = std::shared_ptr<GLSkeletonAnimatedMesh>;
 }

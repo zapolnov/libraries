@@ -84,8 +84,7 @@ namespace Z
         const std::vector<RotationKey>& rotationKeys() const { return m_RotationKeys; }
         std::vector<RotationKey>& rotationKeys() { return m_RotationKeys; }
 
-        void getPoseForTime(float time, const glm::mat4& globalInverseTransform,
-            std::vector<glm::mat4>& boneMatrices) const;
+        void getPoseForTime(float time, std::vector<glm::mat4>& boneMatrices) const;
 
     private:
         SkeletonPtr m_Skeleton;

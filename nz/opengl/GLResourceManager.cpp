@@ -123,6 +123,31 @@ namespace Z
             GLMesh::reload();
 
             FileReaderPtr reader = resourceManager()->fileSystem()->openFile(m_FileName);
+            MeshPtr mesh = MeshReader::read(reader, MeshReader::DontReadSkeleton);
+            initFromMesh(mesh);
+        }
+
+    private:
+        std::string m_FileName;
+    };
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    class GLResourceManager::SkeletonAnimatedMesh : public GLSkeletonAnimatedMesh
+    {
+    public:
+        SkeletonAnimatedMesh(const std::string& fileName, GLResourceManager* resourceManager)
+            : GLSkeletonAnimatedMesh(resourceManager)
+            , m_FileName(fileName)
+        {
+            reload();
+        }
+
+        void reload() override
+        {
+            GLSkeletonAnimatedMesh::reload();
+
+            FileReaderPtr reader = resourceManager()->fileSystem()->openFile(m_FileName);
             MeshPtr mesh = MeshReader::read(reader);
             initFromMesh(mesh);
         }
@@ -275,6 +300,25 @@ namespace Z
         }
 
         std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(fileName, this);
+        it->second = mesh;
+
+        return mesh;
+    }
+
+    GLSkeletonAnimatedMeshPtr GLResourceManager::loadSkeletonAnimatedMesh(const std::string& fileName)
+    {
+        std::lock_guard<decltype(m_Mutex)> lock(m_Mutex);
+
+        auto it = m_SkeletonAnimatedMeshes.find(fileName);
+        if (it == m_SkeletonAnimatedMeshes.end())
+            it = m_SkeletonAnimatedMeshes.insert(std::make_pair(fileName, std::weak_ptr<SkeletonAnimatedMesh>())).first;
+        else {
+            std::shared_ptr<SkeletonAnimatedMesh> mesh = it->second.lock();
+            if (mesh)
+                return mesh;
+        }
+
+        std::shared_ptr<SkeletonAnimatedMesh> mesh = std::make_shared<SkeletonAnimatedMesh>(fileName, this);
         it->second = mesh;
 
         return mesh;

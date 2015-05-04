@@ -66,9 +66,6 @@ namespace Z
         ElementList& elements() { return m_Elements; }
         const ElementList& elements() const { return m_Elements; }
 
-        glm::mat4& globalInverseTransform() { return m_GlobalInverseTransform; }
-        const glm::mat4& globalInverseTransform() const { return m_GlobalInverseTransform; }
-
         const SkeletonPtr& skeleton() const { return m_Skeleton; }
         void setSkeleton(const SkeletonPtr& skeleton) { m_Skeleton = skeleton; }
         void setSkeleton(SkeletonPtr&& skeleton) { m_Skeleton = std::move(skeleton); }
@@ -86,7 +83,6 @@ namespace Z
         std::unordered_map<Utf8String, SkeletonAnimationPtr> m_AnimationsByName;
         ElementList m_Elements;
         SkeletonPtr m_Skeleton;
-        glm::mat4 m_GlobalInverseTransform;
 
         Mesh(const Mesh&) = delete;
         Mesh& operator=(const Mesh&) = delete;

@@ -91,8 +91,7 @@ namespace Z
         return channel;
     }
 
-    void SkeletonAnimation::getPoseForTime(float time, const glm::mat4& globalInverseTransform,
-        std::vector<glm::mat4>& boneMatrices) const
+    void SkeletonAnimation::getPoseForTime(float time, std::vector<glm::mat4>& boneMatrices) const
     {
         Z_CHECK(m_Duration > 0.0);
         if (m_Duration <= 0.0) {
@@ -144,7 +143,7 @@ namespace Z
 
             size_t parentBoneIndex = m_Skeleton->bone(boneIndex).parentIndex;
             if (parentBoneIndex == size_t(-1)) {
-                transform = globalInverseTransform * transform;
+                transform = m_Skeleton->globalInverseTransform() * transform;
             } else {
                 Z_CHECK(parentBoneIndex < boneIndex);
                 transform = boneMatrices[parentBoneIndex] * transform;

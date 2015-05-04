@@ -165,8 +165,9 @@ namespace Z
         else
             Z_LOG(" - Bone #" << bone.index << " (\"" << nodeName << "\").");
 
+        size_t boneIndex = bone.index;
         for (int i = 0; i < rootNode->mNumChildren; i++)
-            readNodeHierarchy(skeleton, rootNode->mChildren[i], bone.index);
+            readNodeHierarchy(skeleton, rootNode->mChildren[i], boneIndex);
     }
 
 
@@ -253,7 +254,7 @@ namespace Z
 
             aiMatrix4x4 globalInverseTransform = scene->mRootNode->mTransformation;
             globalInverseTransform.Inverse();
-            convertMatrix(mesh->globalInverseTransform(), globalInverseTransform);
+            convertMatrix(skeleton->globalInverseTransform(), globalInverseTransform);
         }
 
         for (int i = 0; i < scene->mNumMeshes; i++) {
