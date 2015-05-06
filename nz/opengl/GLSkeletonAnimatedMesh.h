@@ -54,14 +54,13 @@ namespace Z
         struct Element
         {
             size_t vertexBuffer;
-            size_t indexBuffer;
             size_t indexBufferOffset;
             size_t indexBufferLength;
         };
 
         std::vector<Element> m_Elements;
         std::vector<GLBufferPtr> m_VertexBuffers;
-        std::vector<GLBufferPtr> m_IndexBuffers;
+        GLBufferPtr m_IndexBuffer;
 
         void initFromMesh(const MeshPtr& mesh);
     };

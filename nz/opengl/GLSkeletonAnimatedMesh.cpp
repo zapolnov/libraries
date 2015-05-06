@@ -44,22 +44,28 @@ namespace Z
     {
         m_Elements.clear();
         m_VertexBuffers.clear();
-        m_IndexBuffers.clear();
+        m_IndexBuffer.reset();
     }
 
     void GLSkeletonAnimatedMesh::render() const
     {
+        if (!m_IndexBuffer || !m_IndexBuffer->bind())
+            return;
+
         gl::EnableVertexAttribArray(GLAttribute::Position);
         gl::EnableVertexAttribArray(GLAttribute::TexCoord);
         gl::EnableVertexAttribArray(GLAttribute::Normal);
         gl::EnableVertexAttribArray(GLAttribute::Tangent);
         gl::EnableVertexAttribArray(GLAttribute::Bitangent);
 
+        size_t currentVertexBuffer = size_t(-1);
+
         for (const auto& element : m_Elements) {
-            if (!m_VertexBuffers[element.vertexBuffer]->bind())
-                continue;
-            if (!m_IndexBuffers[element.indexBuffer]->bind())
-                continue;
+            if (element.vertexBuffer != currentVertexBuffer) {
+                if (!m_VertexBuffers[element.vertexBuffer]->bind())
+                    continue;
+                currentVertexBuffer = element.vertexBuffer;
+            }
 
             gl::VertexAttribPointer(GLAttribute::Position, 3, GL::FLOAT, GL::FALSE,
                 sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, position)));
@@ -98,7 +104,6 @@ namespace Z
         m_Elements.reserve(elements.size());
 
         size_t vertexBufferIndex = 0;
-        size_t indexBufferIndex = 0;
         std::vector<Vertex> vertexData;
         std::vector<uint16_t> indexData;
 
@@ -179,7 +184,6 @@ if (!first)
 
                 Element elementInfo;
                 elementInfo.vertexBuffer = vertexBufferIndex;
-                elementInfo.indexBuffer = indexBufferIndex;
                 elementInfo.indexBufferOffset = indexOffset;
                 elementInfo.indexBufferLength = numIndices;
                 m_Elements.push_back(elementInfo);
@@ -187,26 +191,24 @@ if (!first)
                 processedElements.insert(element);
             }
 
-            if (!vertexData.empty() && !indexData.empty()) {
+            if (!vertexData.empty()) {
                 GLBufferPtr vertexBuffer = std::make_shared<GLBuffer>(resourceManager(), GL::ARRAY_BUFFER);
-                GLBufferPtr indexBuffer = std::make_shared<GLBuffer>(resourceManager(), GL::ELEMENT_ARRAY_BUFFER);
 
                 vertexBuffer->reload();
                 vertexBuffer->setData(vertexData.data(), vertexData.size() * sizeof(Vertex), GL::STATIC_DRAW);
                 vertexData.clear();
 
-                indexBuffer->reload();
-                indexBuffer->setData(indexData.data(), indexData.size() * sizeof(uint16_t), GL::STATIC_DRAW);
-                indexData.clear();
-
                 m_VertexBuffers.push_back(std::move(vertexBuffer));
-                m_IndexBuffers.push_back(std::move(indexBuffer));
                 ++vertexBufferIndex;
-                ++indexBufferIndex;
             }
         }
 
         gl::BindBuffer(GL::ARRAY_BUFFER, 0);
+
+        m_IndexBuffer = std::make_shared<GLBuffer>(resourceManager(), GL::ELEMENT_ARRAY_BUFFER);
+        m_IndexBuffer->reload();
+        m_IndexBuffer->setData(indexData.data(), indexData.size() * sizeof(uint16_t), GL::STATIC_DRAW);
+
         gl::BindBuffer(GL::ELEMENT_ARRAY_BUFFER, 0);
     }
 }
