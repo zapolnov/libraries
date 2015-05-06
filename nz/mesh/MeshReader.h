@@ -36,10 +36,7 @@ namespace Z
     public:
         enum ReadFlags
         {
-            DontReadNormals   = 0b00000001,
-            DontReadTangents  = 0b00000010,
-            DontReadTexCoords = 0b00000100,
-            DontReadSkeleton  = 0b00001000,
+            DontReadSkeleton  = 0b00000001,
         };
 
         virtual ~MeshReader() = default;
@@ -48,10 +45,10 @@ namespace Z
         static void add(const MeshReaderPtr& reader);
         static void add(MeshReaderPtr&& reader);
 
-        static MeshPtr read(const FileReaderPtr& file, unsigned readFlags = 0);
+        static MeshPtr read(const FileReaderPtr& file, const VertexFormatPtr& format, unsigned readFlags = 0);
 
     protected:
         virtual bool canReadMesh(InputStream* stream) const = 0;
-        virtual MeshPtr readMesh(InputStream* stream, unsigned readFlags) const = 0;
+        virtual MeshPtr readMesh(InputStream* stream, const VertexFormatPtr& format, unsigned readFlags) const = 0;
     };
 }

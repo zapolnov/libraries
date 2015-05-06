@@ -21,51 +21,24 @@
  */
 
 #pragma once
-#include "GLResource.h"
-#include "GLBuffer.h"
-#include "GLAttribute.h"
-#include "opengl.h"
-#include "mesh/Mesh.h"
-#include <memory>
+#include "GLMesh.h"
 
 namespace Z
 {
-    class GLSkeletonAnimatedMesh : public GLResource
+    class GLSkeletonAnimatedMesh : public GLMesh
     {
     public:
         explicit GLSkeletonAnimatedMesh(GLResourceManager* manager);
         ~GLSkeletonAnimatedMesh();
 
-        void reload() override;
         void unload() override;
 
         void render(size_t animationIndex, float animationTime) const;
 
     protected:
-        struct Vertex
-        {
-            GL::Float position[3];
-            GL::Float texCoord[2];
-            GL::Float normal[3];
-            GL::Float tangent[3];
-            GL::Float bitangent[3];
-            GL::Float boneWeights[4];
-            GL::Byte boneIndices[4];
-        };
-
-        struct Element
-        {
-            size_t vertexBuffer;
-            size_t indexBufferOffset;
-            size_t indexBufferLength;
-        };
-
-        std::vector<Element> m_Elements;
-        std::vector<GLBufferPtr> m_VertexBuffers;
-        GLBufferPtr m_IndexBuffer;
         std::vector<SkeletonAnimationPtr> m_Animations;
 
-        void initFromMesh(const MeshPtr& mesh);
+        void initFromMesh(const MeshPtr& mesh) override;
     };
 
     using GLSkeletonAnimatedMeshPtr = std::shared_ptr<GLSkeletonAnimatedMesh>;

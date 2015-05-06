@@ -26,7 +26,8 @@ namespace Z
 {
     static SkeletonAnimationPtr g_NullAnimation;
 
-    Mesh::Mesh()
+    Mesh::Mesh(const VertexFormatPtr& format)
+        : m_VertexFormat(format)
     {
     }
 

@@ -23,6 +23,7 @@
 #pragma once
 #include "GLResource.h"
 #include "GLBuffer.h"
+#include "GLVertexBuffer.h"
 #include "GLAttribute.h"
 #include "opengl.h"
 #include "mesh/Mesh.h"
@@ -42,15 +43,6 @@ namespace Z
         void render() const;
 
     protected:
-        struct Vertex
-        {
-            GL::Float position[3];
-            GL::Float texCoord[2];
-            GL::Float normal[3];
-            GL::Float tangent[3];
-            GL::Float bitangent[3];
-        };
-
         struct Element
         {
             size_t vertexBuffer;
@@ -59,10 +51,10 @@ namespace Z
         };
 
         std::vector<Element> m_Elements;
-        std::vector<GLBufferPtr> m_VertexBuffers;
+        std::vector<GLVertexBufferPtr> m_VertexBuffers;
         GLBufferPtr m_IndexBuffer;
 
-        void initFromMesh(const MeshPtr& mesh);
+        virtual void initFromMesh(const MeshPtr& mesh);
     };
 
     using GLMeshPtr = std::shared_ptr<GLMesh>;

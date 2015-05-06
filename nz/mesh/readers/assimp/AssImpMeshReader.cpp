@@ -28,6 +28,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <png.h>
+#include <unordered_set>
 #include <cstring>
 
 namespace Z
@@ -114,15 +115,7 @@ namespace Z
     }
 
 
-    static inline void appendVec2(std::vector<glm::vec2>& out, const aiVector3D& in)
-    {
-        out.emplace_back(in.x, in.y);
-    }
-
-    static inline void appendVec3(std::vector<glm::vec3>& out, const aiVector3D& in)
-    {
-        out.emplace_back(in.x, in.y, in.z);
-    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     static inline void convertVec3(glm::vec3& out, const aiVector3D& in)
     {
@@ -148,6 +141,176 @@ namespace Z
     }
 
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    struct Reader
+    {
+        virtual ~Reader() = default;
+        virtual void read(glm::vec4& out) = 0;
+    };
+
+    struct Vector3DReader : public Reader
+    {
+        const aiVector3D* p;
+        const float w;
+        Vector3DReader(const aiVector3D* p, float w) : p(p), w(w) {}
+        void read(glm::vec4& out) override { out.x = p->x; out.y = p->y; out.z = p->z; out.w = w; ++p; }
+    };
+
+    struct Vec4Reader : public Reader
+    {
+        const glm::vec4* p;
+        explicit Vec4Reader(const glm::vec4* p) : p(p) {}
+        void read(glm::vec4& out) override { out = *p++; }
+    };
+
+
+    struct Writer
+    {
+        const size_t stride;
+        explicit Writer(const VertexFormatPtr& format) : stride(format->size()) {}
+        virtual ~Writer() = default;
+        virtual void write(const glm::vec4& in) = 0;
+        template <class T> void advance(T*& p) { p = reinterpret_cast<T*>(reinterpret_cast<char*>(p) + stride); }
+    };
+
+    struct UnsignedByteWriter : public Writer
+    {
+        VertexFormat::UByte4* p;
+        UnsignedByteWriter(VertexFormat::UByte4* p, const VertexFormatPtr& format) : Writer(format), p(p) {}
+        void write(const glm::vec4& in) override {
+            (*p)[0] = static_cast<unsigned char>(glm::clamp(in.x, 0.0f, 255.0f));
+            (*p)[1] = static_cast<unsigned char>(glm::clamp(in.y, 0.0f, 255.0f));
+            (*p)[2] = static_cast<unsigned char>(glm::clamp(in.z, 0.0f, 255.0f));
+            (*p)[3] = static_cast<unsigned char>(glm::clamp(in.w, 0.0f, 255.0f));
+            advance(p);
+        }
+    };
+
+    struct UnsignedByteNormWriter : public Writer
+    {
+        VertexFormat::UByte4* p;
+        UnsignedByteNormWriter(VertexFormat::UByte4* p, const VertexFormatPtr& format) : Writer(format), p(p) {}
+        void write(const glm::vec4& in) override {
+            (*p)[0] = static_cast<unsigned char>(glm::clamp(in.x * 255.0f, 0.0f, 255.0f));
+            (*p)[1] = static_cast<unsigned char>(glm::clamp(in.y * 255.0f, 0.0f, 255.0f));
+            (*p)[2] = static_cast<unsigned char>(glm::clamp(in.z * 255.0f, 0.0f, 255.0f));
+            (*p)[3] = static_cast<unsigned char>(glm::clamp(in.w * 255.0f, 0.0f, 255.0f));
+            advance(p);
+        }
+    };
+
+    struct FloatWriter : public Writer
+    {
+        float* p;
+        FloatWriter(float* p, const VertexFormatPtr& format) : Writer(format), p(p) {}
+        void write(const glm::vec4& in) override { *p = in.x; advance(p); }
+    };
+
+    struct Vec2Writer : public Writer
+    {
+        glm::vec2* p;
+        Vec2Writer(glm::vec2* p, const VertexFormatPtr& format) : Writer(format), p(p) {}
+        void write(const glm::vec4& in) override { p->x = in.x; p->y = in.y; advance(p); }
+    };
+
+    struct Vec3Writer : public Writer
+    {
+        glm::vec3* p;
+        Vec3Writer(glm::vec3* p, const VertexFormatPtr& format) : Writer(format), p(p) {}
+        void write(const glm::vec4& in) override { p->x = in.x; p->y = in.y; p->z = in.z; advance(p); }
+    };
+
+    struct Vec4Writer : public Writer
+    {
+        glm::vec4* p;
+        Vec4Writer(glm::vec4* p, const VertexFormatPtr& format) : Writer(format), p(p) {}
+        void write(const glm::vec4& in) override { *p = in; advance(p); }
+    };
+
+
+    static void copy(Writer& writer, Reader& reader, size_t count)
+    {
+        glm::vec4 v;
+        while (count--) {
+            reader.read(v);
+            writer.write(v);
+        }
+    }
+
+
+    static void copyAttribute(const VertexFormatPtr& format, VertexFormat::AttributeID attributeID,
+        void* destination, Reader& reader, size_t count)
+    {
+        if (!format->hasAttribute(attributeID))
+            return;
+
+        const VertexFormat::Attribute& attribute = format->attribute(attributeID);
+        switch (attribute.type)
+        {
+        case VertexFormat::UnsignedByte: {
+            Z_ASSERT(attribute.count == 4);
+            VertexFormat::UByte4* ub = &format->refUByte(attribute.id, destination);
+            switch (attributeID)
+            {
+            case VertexFormat::Normal:
+            case VertexFormat::Tangent:
+            case VertexFormat::Bitangent:
+            case VertexFormat::TexCoord:
+            case VertexFormat::BoneWeights: {
+                UnsignedByteNormWriter writer(ub, format);
+                copy(writer, reader, count);
+              } return;
+
+            case VertexFormat::Position:
+            case VertexFormat::BoneIndices: {
+                UnsignedByteWriter writer(ub, format);
+                copy(writer, reader, count);
+              } return;
+
+            case VertexFormat::NumAttributes:
+                break;
+            }
+            Z_ASSERT_MSG(false, "Invalid attribute ID.");
+          } return;
+
+        case VertexFormat::Float:
+            Z_ASSERT(attribute.count > 0 && attribute.count <= 4);
+            switch (attribute.count)
+            {
+            case 1: {
+                float* f = &format->refFloat(attribute.id, destination);
+                FloatWriter writer(f, format);
+                copy(writer, reader, count);
+              } break;
+
+            case 2: {
+                glm::vec2* v = &format->refVec2(attribute.id, destination);
+                Vec2Writer writer(v, format);
+                copy(writer, reader, count);
+              } break;
+
+            case 3: {
+                glm::vec3* v = &format->refVec3(attribute.id, destination);
+                Vec3Writer writer(v, format);
+                copy(writer, reader, count);
+              } break;
+
+            case 4: {
+                glm::vec4* v = &format->refVec4(attribute.id, destination);
+                Vec4Writer writer(v, format);
+                copy(writer, reader, count);
+              } break;
+            }
+            return;
+        }
+
+        Z_ASSERT_MSG(false, "Invalid vertex attribute format.");
+    }
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     static void readNodeHierarchy(SkeletonPtr& skeleton, const aiNode* rootNode, size_t parentBoneIndex)
     {
         auto nodeName = Utf8String::fromRawBytes(rootNode->mName.data, rootNode->mName.length);
@@ -170,6 +333,8 @@ namespace Z
             readNodeHierarchy(skeleton, rootNode->mChildren[i], boneIndex);
     }
 
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   #if Z_LOGGING_ENABLED
     static std::once_flag g_InitOnce;
@@ -201,23 +366,27 @@ namespace Z
         return true;
     }
 
-    MeshPtr AssImpMeshReader::readMesh(InputStream* stream, unsigned readFlags) const
+    MeshPtr AssImpMeshReader::readMesh(InputStream* stream, const VertexFormatPtr& format, unsigned readFlags) const
     {
         if (!stream)
             return nullptr;
 
         Z_LOG("Loading mesh \"" << stream->name() << "\".");
 
-        bool readNormals = (readFlags & DontReadNormals) == 0;
-        bool readTangents = readNormals && (readFlags & DontReadTangents) == 0;
-        bool readTexCoords = (readFlags & DontReadTexCoords) == 0;
+        bool readPositions = format->hasAttribute(VertexFormat::Position);
+        bool readTexCoords = format->hasAttribute(VertexFormat::TexCoord);
+        bool readNormals = format->hasAttribute(VertexFormat::Normal);
+        bool readTangents = format->hasAttribute(VertexFormat::Tangent);
+        bool readBitangents = format->hasAttribute(VertexFormat::Bitangent);
+        bool readBoneIndices = format->hasAttribute(VertexFormat::BoneIndices);
+        bool readBoneWeights = format->hasAttribute(VertexFormat::BoneWeights);
         bool readSkeleton = (readFlags & DontReadSkeleton) == 0;
 
         const aiScene* scene = nullptr;
         const unsigned flags =
             aiProcess_Triangulate |
-            (!readNormals ? 0 : aiProcess_GenSmoothNormals) |
-            (!readTangents ? 0 : aiProcess_CalcTangentSpace) |
+            (!readNormals && !readTangents && !readBitangents ? 0 : aiProcess_GenSmoothNormals) |
+            (!readTangents && !readBitangents ? 0 : aiProcess_CalcTangentSpace) |
             (!readTexCoords ? 0 : aiProcess_FlipUVs);
 
         Assimp::Importer importer;
@@ -237,12 +406,7 @@ namespace Z
             return nullptr;
         }
 
-        if (scene->mNumMeshes == 0) {
-            Z_LOG("File \"" << stream->name() << "\" does not have meshes.");
-            return nullptr;
-        }
-
-        MeshPtr mesh = std::make_shared<Mesh>();
+        MeshPtr mesh = std::make_shared<Mesh>(format);
         mesh->elements().reserve(scene->mNumMeshes);
 
         SkeletonPtr skeleton;
@@ -257,91 +421,157 @@ namespace Z
             convertMatrix(skeleton->globalInverseTransform(), globalInverseTransform);
         }
 
-        for (int i = 0; i < scene->mNumMeshes; i++) {
-            const aiMesh* sceneMesh = scene->mMeshes[i];
+        std::vector<uint8_t> vertexData;
+        std::vector<uint16_t> indexData;
+        size_t vertexDataLength = 0;
+        size_t vertexBufferIndex = 0;
 
-            if (sceneMesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE) {
-                if (sceneMesh->mName.length == 0)
-                    Z_LOG("In \"" << stream->name() << "\": ignoring non-triangulated mesh #" << i << ".");
-                else {
-                    Z_LOG("In \"" << stream->name() << "\": ignoring non-triangulated mesh #" << i
-                        << " (\"" << sceneMesh->mName.C_Str() << "\").");
-                }
-                continue;
-            }
+        std::unordered_set<const aiMesh*> processedMeshes;
+        int firstUnprocessedMesh = 0;
+        while (processedMeshes.size() < scene->mNumMeshes)
+        {
+            for (int i = firstUnprocessedMesh; i < scene->mNumMeshes; i++)
+            {
+                const aiMesh* sceneMesh = scene->mMeshes[i];
 
-            Mesh::ElementPtr element = std::make_shared<Mesh::Element>();
-            element->name.assign(sceneMesh->mName.data, sceneMesh->mName.length);
+                if (processedMeshes.find(sceneMesh) != processedMeshes.end())
+                    continue;
 
-            element->positions.reserve(sceneMesh->mNumVertices);
-            for (int j = 0; j < sceneMesh->mNumVertices; j++)
-                appendVec3(element->positions, sceneMesh->mVertices[j]);
+                if (sceneMesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE) {
+                    if (sceneMesh->mName.length == 0)
+                        Z_LOG("In \"" << stream->name() << "\": ignoring non-triangulated mesh #" << i << ".");
+                    else {
+                        Z_LOG("In \"" << stream->name() << "\": ignoring non-triangulated mesh #" << i
+                            << " (\"" << sceneMesh->mName.C_Str() << "\").");
+                    }
+                } else if (vertexDataLength + sceneMesh->mNumVertices > 65535) {
+                    if (sceneMesh->mNumVertices <= 65535)
+                        continue;
 
-            if (readNormals) {
-                element->normals.reserve(sceneMesh->mNumVertices);
-                for (int j = 0; j < sceneMesh->mNumVertices; j++)
-                    appendVec3(element->normals, sceneMesh->mNormals[j]);
-            }
+                    if (sceneMesh->mName.length == 0)
+                        Z_LOG("In \"" << stream->name() << "\": mesh #" << i << " has too many vertices.");
+                    else {
+                        Z_LOG("In \"" << stream->name() << "\": mesh #" << i
+                            << " (\"" << sceneMesh->mName.C_Str() << "\") has too many vertices.");
+                    }
+                } else {
+                    Mesh::Element element;
+                    element.name.assign(sceneMesh->mName.data, sceneMesh->mName.length);
 
-            if (readTangents) {
-                element->tangents.reserve(sceneMesh->mNumVertices);
-                element->bitangents.reserve(sceneMesh->mNumVertices);
-                for (int j = 0; j < sceneMesh->mNumVertices; j++) {
-                    appendVec3(element->tangents, sceneMesh->mTangents[j]);
-                    appendVec3(element->bitangents, sceneMesh->mBitangents[j]);
-                }
-            }
+                    // FIXME: read material
 
-            if (readTexCoords && sceneMesh->HasTextureCoords(0)) {
-                element->texCoords.reserve(sceneMesh->mNumVertices);
-                for (int j = 0; j < sceneMesh->mNumVertices; j++)
-                    appendVec2(element->texCoords, sceneMesh->mTextureCoords[0][j]);
-            }
+                    element.vertexBuffer = vertexBufferIndex;
+                    size_t firstIndex = vertexDataLength;
+                    vertexDataLength += sceneMesh->mNumVertices;
+                    vertexData.resize(format->size() * vertexDataLength);
+                    uint8_t* destination = vertexData.data() + firstIndex * format->size();
 
-            if (readSkeleton && sceneMesh->HasBones()) {
-                element->boneWeights.resize(sceneMesh->mNumVertices);
-                for (int j = 0; j < sceneMesh->mNumBones; j++) {
-                    const aiBone* sceneMeshBone = sceneMesh->mBones[j];
-                    std::string boneName(sceneMeshBone->mName.data, sceneMeshBone->mName.length);
+                    if (sceneMesh->HasPositions()) {
+                        Vector3DReader reader(sceneMesh->mVertices, 1.0f);
+                        copyAttribute(format, VertexFormat::Position, destination, reader, sceneMesh->mNumVertices);
+                    }
 
-                    Skeleton::Bone& bone = skeleton->getOrAddBone(boneName);
-                    convertMatrix(bone.matrix(), sceneMeshBone->mOffsetMatrix);
+                    if (sceneMesh->HasNormals()) {
+                        Vector3DReader reader(sceneMesh->mNormals, 0.0f);
+                        copyAttribute(format, VertexFormat::Normal, destination, reader, sceneMesh->mNumVertices);
+                    }
 
-                    for (int k = 0; k < sceneMeshBone->mNumWeights; k++) {
-                        Mesh::BoneWeights& weights = element->boneWeights[sceneMeshBone->mWeights[k].mVertexId];
-                        for (int index = 0; index < Mesh::MAX_BONES_PER_VERTEX; index++) {
-                            if (weights.boneWeight[index] == 0.0f) {
-                                weights.boneWeight[index] = sceneMeshBone->mWeights[k].mWeight;
-                                weights.boneIndex[index] = bone.index;
-                                break;
+                    if (sceneMesh->HasTangentsAndBitangents()) {
+                        Vector3DReader treader(sceneMesh->mTangents, 0.0f);
+                        Vector3DReader breader(sceneMesh->mBitangents, 0.0f);
+                        copyAttribute(format, VertexFormat::Tangent, destination, treader, sceneMesh->mNumVertices);
+                        copyAttribute(format, VertexFormat::Bitangent, destination, breader, sceneMesh->mNumVertices);
+                    }
+
+                    if (sceneMesh->HasTextureCoords(0)) {
+                        Vector3DReader reader(sceneMesh->mTextureCoords[0], 0.0f);
+                        copyAttribute(format, VertexFormat::TexCoord, destination, reader, sceneMesh->mNumVertices);
+                    }
+
+                    bool needWeights = (format->hasAttribute(VertexFormat::BoneWeights));
+                    bool needIndices = (format->hasAttribute(VertexFormat::BoneIndices));
+                    if (sceneMesh->HasBones() && (readSkeleton || needWeights || needIndices)) {
+                        std::vector<glm::vec4> weights;
+                        std::vector<glm::vec4> indices;
+
+                        if (needWeights)
+                            weights.resize(sceneMesh->mNumVertices);
+                        if (needIndices)
+                            indices.resize(sceneMesh->mNumVertices);
+
+                        for (size_t j = 0; j < sceneMesh->mNumBones; j++) {
+                            const aiBone* sceneMeshBone = sceneMesh->mBones[j];
+                            std::string boneName(sceneMeshBone->mName.data, sceneMeshBone->mName.length);
+
+                            Skeleton::Bone& bone = skeleton->getOrAddBone(boneName);
+                            convertMatrix(bone.matrix(), sceneMeshBone->mOffsetMatrix);
+
+                            if (needWeights || needIndices) {
+                                for (int k = 0; k < sceneMeshBone->mNumWeights; k++) {
+                                    size_t v = sceneMeshBone->mWeights[k].mVertexId;
+                                    for (int index = 0; index < 4; index++) {
+                                        if (weights[v][index] == 0.0f) {
+                                            weights[v][index] = sceneMeshBone->mWeights[k].mWeight;
+                                            indices[v][index] = bone.index;
+                                            break;
+                                        }
+                                    }
+                                }
                             }
                         }
+
+                        if (needWeights) {
+                            Vec4Reader r(weights.data());
+                            copyAttribute(format, VertexFormat::BoneWeights, destination, r, sceneMesh->mNumVertices);
+                        }
+
+                        if (needIndices) {
+                            Vec4Reader r(indices.data());
+                            copyAttribute(format, VertexFormat::BoneIndices, destination, r, sceneMesh->mNumVertices);
+                        }
                     }
+
+                    element.indexBufferOffset = indexData.size();
+                    element.indexBufferLength = sceneMesh->mNumFaces * 3;
+                    indexData.reserve(element.indexBufferOffset + element.indexBufferLength);
+                    for (int j = 0; j < sceneMesh->mNumFaces; j++) {
+                        if (sceneMesh->mFaces[j].mNumIndices != 3)
+                            continue;
+                        indexData.emplace_back(sceneMesh->mFaces[j].mIndices[0] + firstIndex);
+                        indexData.emplace_back(sceneMesh->mFaces[j].mIndices[1] + firstIndex);
+                        indexData.emplace_back(sceneMesh->mFaces[j].mIndices[2] + firstIndex);
+                    }
+
+                    if (element.name.empty()) {
+                        Z_LOG(" - Element #" << i << ": "
+                            << sceneMesh->mNumVertices << " vertices, " << sceneMesh->mNumFaces << " faces.");
+                    } else {
+                        Z_LOG(" - Element #" << i << " (\"" << element.name << "\"): "
+                            << sceneMesh->mNumVertices << " vertices, " << sceneMesh->mNumFaces << " faces.");
+                    }
+
+                    mesh->elements().emplace_back(std::move(element));
                 }
+
+                processedMeshes.insert(sceneMesh);
+                if (i == firstUnprocessedMesh)
+                    firstUnprocessedMesh = i + 1;
             }
 
-            element->indices.reserve(sceneMesh->mNumFaces * 3);
-            for (int j = 0; j < sceneMesh->mNumFaces; j++) {
-                if (sceneMesh->mFaces[j].mNumIndices != 3)
-                    continue;
-                element->indices.emplace_back(sceneMesh->mFaces[j].mIndices[0]);
-                element->indices.emplace_back(sceneMesh->mFaces[j].mIndices[1]);
-                element->indices.emplace_back(sceneMesh->mFaces[j].mIndices[2]);
+            if (!vertexData.empty()) {
+                mesh->addVertexBuffer(std::move(vertexData));
+                vertexData.clear();
+                vertexDataLength = 0;
+                ++vertexBufferIndex;
             }
-
-            if (element->name.empty()) {
-                Z_LOG(" - Element #" << i << ": "
-                    << sceneMesh->mNumVertices << " vertices, " << sceneMesh->mNumFaces << " faces.");
-            } else {
-                Z_LOG(" - Element #" << i << " (\"" << element->name << "\"): "
-                    << sceneMesh->mNumVertices << " vertices, " << sceneMesh->mNumFaces << " faces.");
-            }
-
-            mesh->elements().push_back(std::move(element));
         }
 
-        Z_LOG(" - Total " << mesh->elements().size() << " element"
-            << (mesh->elements().size() == 1 ? "" : "s") << '.');
+        mesh->indexBuffer() = std::move(indexData);
+
+        Z_LOG(" - Total "
+            << mesh->elements().size() << " element" << (mesh->elements().size() == 1 ? "" : "s") << " ("
+            << mesh->vertexBuffers().size() << " vertex buffer" << (mesh->vertexBuffers().size() == 1 ? "" : "s")
+            << ").");
 
         if (readSkeleton) {
             for (int i = 0; i < scene->mNumAnimations; i++) {

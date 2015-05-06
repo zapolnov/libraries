@@ -21,18 +21,19 @@
  */
 
 #pragma once
+#include "mesh/VertexFormat.h"
 #include "opengl.h"
 
 namespace Z
 {
     namespace GLAttribute
     {
-        static constexpr int Position = 0;
-        static constexpr int TexCoord = 1;
-        static constexpr int Normal = 2;
-        static constexpr int Tangent = 3;
-        static constexpr int Bitangent = 4;
-        static constexpr int BoneIndices = 5;
-        static constexpr int BoneWeights = 6;
+        static constexpr int Position = VertexFormat::Position;
+        static constexpr int TexCoord = VertexFormat::TexCoord;
+        static constexpr int Normal = VertexFormat::Normal;
+        static constexpr int Tangent = VertexFormat::Tangent;
+        static constexpr int Bitangent = VertexFormat::Bitangent;
+        static constexpr int BoneIndices = VertexFormat::BoneIndices;
+        static constexpr int BoneWeights = VertexFormat::BoneWeights;
     };
 }

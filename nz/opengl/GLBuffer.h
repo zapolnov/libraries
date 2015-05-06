@@ -35,7 +35,7 @@ namespace Z
         explicit GLBuffer(GLResourceManager* manager, GL::Enum type = GL::ARRAY_BUFFER);
         ~GLBuffer();
 
-        bool bind();
+        virtual bool bind();
 
         void reload() override;
         void unload() override;
@@ -50,7 +50,6 @@ namespace Z
         GL::Enum m_Type;
 
         friend class GLMesh;
-        friend class GLSkeletonAnimatedMesh;
     };
 
     using GLBufferPtr = std::shared_ptr<GLBuffer>;

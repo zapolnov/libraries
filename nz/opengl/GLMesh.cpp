@@ -49,47 +49,25 @@ namespace Z
 
     void GLMesh::render() const
     {
-        if (!m_IndexBuffer || !m_IndexBuffer->bind())
+        if (m_Elements.empty() || m_VertexBuffers.empty() || !m_IndexBuffer)
             return;
 
-        gl::EnableVertexAttribArray(GLAttribute::Position);
-        gl::EnableVertexAttribArray(GLAttribute::TexCoord);
-        gl::EnableVertexAttribArray(GLAttribute::Normal);
-        gl::EnableVertexAttribArray(GLAttribute::Tangent);
-        gl::EnableVertexAttribArray(GLAttribute::Bitangent);
+        if (!m_IndexBuffer->bind())
+            return;
 
-        size_t currentVertexBuffer = size_t(-1);
+        m_VertexBuffers[0]->enableAttributes();
 
         for (const auto& element : m_Elements) {
-            if (element.vertexBuffer != currentVertexBuffer) {
-                if (!m_VertexBuffers[element.vertexBuffer]->bind())
-                    continue;
-                currentVertexBuffer = element.vertexBuffer;
+            if (m_VertexBuffers[element.vertexBuffer]->bind()) {
+                gl::DrawElements(GL::TRIANGLES, element.indexBufferLength, GL::UNSIGNED_SHORT,
+                    reinterpret_cast<void*>(sizeof(uint16_t) * element.indexBufferOffset));
             }
-
-            gl::VertexAttribPointer(GLAttribute::Position, 3, GL::FLOAT, GL::FALSE,
-                sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, position)));
-            gl::VertexAttribPointer(GLAttribute::TexCoord, 2, GL::FLOAT, GL::FALSE,
-                sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, texCoord)));
-            gl::VertexAttribPointer(GLAttribute::Normal, 3, GL::FLOAT, GL::FALSE,
-                sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, normal)));
-            gl::VertexAttribPointer(GLAttribute::Tangent, 3, GL::FLOAT, GL::FALSE,
-                sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, tangent)));
-            gl::VertexAttribPointer(GLAttribute::Bitangent, 3, GL::FLOAT, GL::FALSE,
-                sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, bitangent)));
-
-            gl::DrawElements(GL::TRIANGLES, element.indexBufferLength, GL::UNSIGNED_SHORT,
-                reinterpret_cast<void*>(sizeof(uint16_t) * element.indexBufferOffset));
         }
 
         gl::BindBuffer(GL::ARRAY_BUFFER, 0);
         gl::BindBuffer(GL::ELEMENT_ARRAY_BUFFER, 0);
 
-        gl::DisableVertexAttribArray(GLAttribute::Position);
-        gl::DisableVertexAttribArray(GLAttribute::TexCoord);
-        gl::DisableVertexAttribArray(GLAttribute::Normal);
-        gl::DisableVertexAttribArray(GLAttribute::Tangent);
-        gl::DisableVertexAttribArray(GLAttribute::Bitangent);
+        m_VertexBuffers[0]->disableAttributes();
     }
 
     void GLMesh::initFromMesh(const MeshPtr& mesh)
@@ -103,91 +81,28 @@ namespace Z
         const auto& elements = mesh->elements();
         m_Elements.reserve(elements.size());
 
-        size_t vertexBufferIndex = 0;
-        std::vector<Vertex> vertexData;
-        std::vector<uint16_t> indexData;
-
-        std::unordered_set<Mesh::ElementPtr> processedElements;
-        while (processedElements.size() < elements.size())
+        for (const auto& element : mesh->elements())
         {
-            for (const auto& element : mesh->elements())
-            {
-                if (processedElements.find(element) != processedElements.end())
-                    continue;
-
-                if (element->positions.empty() || element->indices.empty()) {
-                    processedElements.insert(element);
-                    continue;
-                }
-
-                if (vertexData.size() + element->positions.size() > 65535) {
-                    Z_CHECK(element->positions.size() <= 65535);
-                    if (element->positions.size() > 65535)
-                        processedElements.insert(element);
-                    continue;
-                }
-
-                size_t indexOffset = vertexData.size();
-                size_t numVertices = element->positions.size();
-                size_t numIndices = element->indices.size();
-
-                vertexData.reserve(indexOffset + numVertices);
-                indexData.reserve(indexData.size() + numIndices);
-
-                for (size_t i = 0; i < numVertices; i++) {
-                    Vertex vertex;
-                    vertex.position[0] = element->positions[i].x;
-                    vertex.position[1] = element->positions[i].y;
-                    vertex.position[2] = element->positions[i].z;
-                    if (element->texCoords.empty()) {
-                        vertex.texCoord[0] = 0.0f;
-                        vertex.texCoord[1] = 0.0f;
-                    } else {
-                        vertex.texCoord[0] = element->texCoords[i].x;
-                        vertex.texCoord[1] = element->texCoords[i].y;
-                    }
-                    vertex.normal[0] = element->normals[i].x;
-                    vertex.normal[1] = element->normals[i].y;
-                    vertex.normal[2] = element->normals[i].z;
-                    vertex.tangent[0] = element->tangents[i].x;
-                    vertex.tangent[1] = element->tangents[i].y;
-                    vertex.tangent[2] = element->tangents[i].z;
-                    vertex.bitangent[0] = element->bitangents[i].x;
-                    vertex.bitangent[1] = element->bitangents[i].y;
-                    vertex.bitangent[2] = element->bitangents[i].z;
-                    vertexData.push_back(vertex);
-                }
-
-                for (size_t i = 0; i < numIndices; i++)
-                    indexData.push_back(element->indices[i] + indexOffset);
-
-                Element elementInfo;
-                elementInfo.vertexBuffer = vertexBufferIndex;
-                elementInfo.indexBufferOffset = indexOffset;
-                elementInfo.indexBufferLength = numIndices;
-                m_Elements.push_back(elementInfo);
-
-                processedElements.insert(element);
-            }
-
-            if (!vertexData.empty()) {
-                GLBufferPtr vertexBuffer = std::make_shared<GLBuffer>(resourceManager(), GL::ARRAY_BUFFER);
-
-                vertexBuffer->reload();
-                vertexBuffer->setData(vertexData.data(), vertexData.size() * sizeof(Vertex), GL::STATIC_DRAW);
-                vertexData.clear();
-
-                m_VertexBuffers.push_back(std::move(vertexBuffer));
-                ++vertexBufferIndex;
-            }
+            Element elementInfo;
+            elementInfo.vertexBuffer = element.vertexBuffer;
+            elementInfo.indexBufferOffset = element.indexBufferOffset;
+            elementInfo.indexBufferLength = element.indexBufferLength;
+            m_Elements.push_back(elementInfo);
         }
 
+        m_VertexBuffers.reserve(mesh->vertexBuffers().size());
+        for (const auto& buffer : mesh->vertexBuffers()) {
+            GLVertexBufferPtr vertexBuffer = std::make_shared<GLVertexBuffer>(nullptr, mesh->vertexFormat());
+            vertexBuffer->reload();
+            vertexBuffer->setData(buffer.data(), buffer.size(), GL::STATIC_DRAW);
+            m_VertexBuffers.emplace_back(std::move(vertexBuffer));
+        }
         gl::BindBuffer(GL::ARRAY_BUFFER, 0);
 
-        m_IndexBuffer = std::make_shared<GLBuffer>(resourceManager(), GL::ELEMENT_ARRAY_BUFFER);
+        const auto& indices = mesh->indexBuffer();
+        m_IndexBuffer = std::make_shared<GLBuffer>(nullptr, GL::ELEMENT_ARRAY_BUFFER);
         m_IndexBuffer->reload();
-        m_IndexBuffer->setData(indexData.data(), indexData.size() * sizeof(uint16_t), GL::STATIC_DRAW);
-
+        m_IndexBuffer->setData(indices.data(), indices.size() * sizeof(uint16_t), GL::STATIC_DRAW);
         gl::BindBuffer(GL::ELEMENT_ARRAY_BUFFER, 0);
     }
 }

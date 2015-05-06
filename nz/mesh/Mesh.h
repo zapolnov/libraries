@@ -24,6 +24,7 @@
 #include "MeshMaterial.h"
 #include "Skeleton.h"
 #include "SkeletonAnimation.h"
+#include "VertexFormat.h"
 #include <glm/glm.hpp>
 #include <string>
 #include <memory>
@@ -38,33 +39,32 @@ namespace Z
     public:
         static constexpr size_t MAX_BONES_PER_VERTEX = 4;
 
-        struct BoneWeights
-        {
-            float boneWeight[MAX_BONES_PER_VERTEX];
-            size_t boneIndex[MAX_BONES_PER_VERTEX];
-        };
-
         struct Element
         {
             std::string name;
             MeshMaterialPtr material;
-            std::vector<glm::vec3> positions;
-            std::vector<glm::vec3> normals;
-            std::vector<glm::vec3> tangents;
-            std::vector<glm::vec3> bitangents;
-            std::vector<glm::vec2> texCoords;
-            std::vector<BoneWeights> boneWeights;
-            std::vector<uint16_t> indices;
+            size_t vertexBuffer;
+            size_t indexBufferOffset;
+            size_t indexBufferLength;
         };
 
-        using ElementPtr = std::shared_ptr<Element>;
-        using ElementList = std::vector<ElementPtr>;
+        using VertexBuffer = std::vector<uint8_t>;
+        using IndexBuffer = std::vector<uint16_t>;
 
-        Mesh();
+        explicit Mesh(const VertexFormatPtr& format);
         ~Mesh();
 
-        ElementList& elements() { return m_Elements; }
-        const ElementList& elements() const { return m_Elements; }
+        std::vector<Element>& elements() { return m_Elements; }
+        const std::vector<Element>& elements() const { return m_Elements; }
+
+        const VertexFormatPtr& vertexFormat() const { return m_VertexFormat; }
+
+        const std::vector<VertexBuffer>& vertexBuffers() const { return m_VertexBuffers; }
+        void addVertexBuffer(const VertexBuffer& buffer) { m_VertexBuffers.emplace_back(buffer); }
+        void addVertexBuffer(VertexBuffer&& buffer) { m_VertexBuffers.emplace_back(std::move(buffer)); }
+
+        IndexBuffer& indexBuffer() { return m_IndexBuffer; }
+        const IndexBuffer& indexBuffer() const { return m_IndexBuffer; }
 
         const SkeletonPtr& skeleton() const { return m_Skeleton; }
         void setSkeleton(const SkeletonPtr& skeleton) { m_Skeleton = skeleton; }
@@ -80,9 +80,12 @@ namespace Z
         SkeletonAnimationPtr addAnimation(const Utf8String& name);
 
     private:
+        IndexBuffer m_IndexBuffer;
+        std::vector<VertexBuffer> m_VertexBuffers;
+        VertexFormatPtr m_VertexFormat;
         std::vector<SkeletonAnimationPtr> m_Animations;
         std::unordered_map<Utf8String, SkeletonAnimationPtr> m_AnimationsByName;
-        ElementList m_Elements;
+        std::vector<Element> m_Elements;
         SkeletonPtr m_Skeleton;
 
         Mesh(const Mesh&) = delete;

@@ -26,6 +26,7 @@
 #include "utility/debug.h"
 #include "image/ImageReader.h"
 #include "mesh/MeshReader.h"
+#include "utility/debug.h"
 #include <chrono>
 #include <vector>
 
@@ -111,9 +112,10 @@ namespace Z
     class GLResourceManager::Mesh : public GLMesh
     {
     public:
-        Mesh(const std::string& fileName, GLResourceManager* resourceManager)
+        Mesh(const std::string& fileName, const VertexFormatPtr& format, GLResourceManager* resourceManager)
             : GLMesh(resourceManager)
             , m_FileName(fileName)
+            , m_VertexFormat(format)
         {
             reload();
         }
@@ -123,12 +125,13 @@ namespace Z
             GLMesh::reload();
 
             FileReaderPtr reader = resourceManager()->fileSystem()->openFile(m_FileName);
-            MeshPtr mesh = MeshReader::read(reader, MeshReader::DontReadSkeleton);
+            MeshPtr mesh = MeshReader::read(reader, m_VertexFormat, MeshReader::DontReadSkeleton);
             initFromMesh(mesh);
         }
 
     private:
         std::string m_FileName;
+        VertexFormatPtr m_VertexFormat;
     };
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -136,9 +139,10 @@ namespace Z
     class GLResourceManager::SkeletonAnimatedMesh : public GLSkeletonAnimatedMesh
     {
     public:
-        SkeletonAnimatedMesh(const std::string& fileName, GLResourceManager* resourceManager)
+        SkeletonAnimatedMesh(const std::string& fileName, const VertexFormatPtr& format, GLResourceManager* resourceManager)
             : GLSkeletonAnimatedMesh(resourceManager)
             , m_FileName(fileName)
+            , m_VertexFormat(format)
         {
             reload();
         }
@@ -148,12 +152,13 @@ namespace Z
             GLSkeletonAnimatedMesh::reload();
 
             FileReaderPtr reader = resourceManager()->fileSystem()->openFile(m_FileName);
-            MeshPtr mesh = MeshReader::read(reader);
+            MeshPtr mesh = MeshReader::read(reader, m_VertexFormat);
             initFromMesh(mesh);
         }
 
     private:
         std::string m_FileName;
+        VertexFormatPtr m_VertexFormat;
     };
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -176,6 +181,8 @@ namespace Z
         resources.reserve(m_Resources.size());
         for (auto resource : m_Resources)
              resources.push_back(resource);
+
+        Z_LOG("Unloading " << resources.size() << " resource" << (resources.size() == 1 ? "" : "s") << '.');
 
         for (auto resource : resources)
             resource->unload();
@@ -208,6 +215,9 @@ namespace Z
         m_ReloadingResourceIndex = 0;
         m_ReloadingResources.store(true);
         m_HaveErasedResources = false;
+
+        Z_LOG("Begin reloading " << m_ReloadingResourcesList.size() << " resource"
+            << (m_ReloadingResourcesList.size() == 1 ? "" : "s") << '.');
     }
 
     bool GLResourceManager::continueReloadResources(float* progress)
@@ -231,14 +241,20 @@ namespace Z
                 break;
         }
 
+        float progressValue = float(m_ReloadingResourceIndex) / float(m_ReloadingResourcesList.size());
         if (progress)
-            *progress = float(m_ReloadingResourceIndex) / float(m_ReloadingResourcesList.size());
+            *progress = progressValue;
 
         bool stillReloading = m_ReloadingResourceIndex < m_ReloadingResourcesList.size();
         m_ReloadingResources.store(stillReloading);
 
         if (!stillReloading)
             m_ReloadingResourcesList.clear();
+
+        if (stillReloading)
+            Z_LOG("Continue reloading resources (" << int(progressValue * 100.0f) << "% done).");
+        else
+            Z_LOG("Done reloading resources.");
 
         return stillReloading;
     }
@@ -286,6 +302,36 @@ namespace Z
         return texture;
     }
 
+    const VertexFormatPtr& GLResourceManager::defaultStaticVertexFormat()
+    {
+        if (!m_DefaultStaticVertexFormat) {
+            VertexFormatPtr format = std::make_shared<VertexFormat>();
+            format->addAttribute(VertexFormat::Position, 3, VertexFormat::Float);
+            format->addAttribute(VertexFormat::TexCoord, 2, VertexFormat::Float);
+            format->addAttribute(VertexFormat::Normal, 3, VertexFormat::Float);
+            format->addAttribute(VertexFormat::Tangent, 3, VertexFormat::Float);
+            format->addAttribute(VertexFormat::Bitangent, 3, VertexFormat::Float);
+            m_DefaultStaticVertexFormat = std::move(format);
+        }
+        return m_DefaultStaticVertexFormat;
+    }
+
+    const VertexFormatPtr& GLResourceManager::defaultAnimatedVertexFormat()
+    {
+        if (!m_DefaultAnimatedVertexFormat) {
+            VertexFormatPtr format = std::make_shared<VertexFormat>();
+            format->addAttribute(VertexFormat::Position, 3, VertexFormat::Float);
+            format->addAttribute(VertexFormat::TexCoord, 2, VertexFormat::Float);
+            format->addAttribute(VertexFormat::Normal, 3, VertexFormat::Float);
+            format->addAttribute(VertexFormat::Tangent, 3, VertexFormat::Float);
+            format->addAttribute(VertexFormat::Bitangent, 3, VertexFormat::Float);
+            format->addAttribute(VertexFormat::BoneIndices, 4, VertexFormat::UnsignedByte);
+            format->addAttribute(VertexFormat::BoneWeights, 4, VertexFormat::Float);
+            m_DefaultAnimatedVertexFormat = std::move(format);
+        }
+        return m_DefaultAnimatedVertexFormat;
+    }
+
     GLMeshPtr GLResourceManager::loadMesh(const std::string& fileName)
     {
         std::lock_guard<decltype(m_Mutex)> lock(m_Mutex);
@@ -299,7 +345,7 @@ namespace Z
                 return mesh;
         }
 
-        std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(fileName, this);
+        std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(fileName, defaultStaticVertexFormat(), this);
         it->second = mesh;
 
         return mesh;
@@ -318,7 +364,8 @@ namespace Z
                 return mesh;
         }
 
-        std::shared_ptr<SkeletonAnimatedMesh> mesh = std::make_shared<SkeletonAnimatedMesh>(fileName, this);
+        std::shared_ptr<SkeletonAnimatedMesh> mesh =
+            std::make_shared<SkeletonAnimatedMesh>(fileName, defaultAnimatedVertexFormat(), this);
         it->second = mesh;
 
         return mesh;

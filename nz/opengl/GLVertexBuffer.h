@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Nikolay Zapolnov (zapolnov@gmail.com)
+ * Copyright (c) 2015 Nikolay Zapolnov (zapolnov@gmail.com).
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,16 +21,26 @@
  */
 
 #pragma once
-#include "mesh/MeshReader.h"
+#include "GLBuffer.h"
+#include "Mesh/VertexFormat.h"
 
 namespace Z
 {
-    class AssImpMeshReader : public MeshReader
+    class GLVertexBuffer : public GLBuffer
     {
     public:
-        AssImpMeshReader();
+        GLVertexBuffer(GLResourceManager* manager, const VertexFormatPtr& format);
 
-        bool canReadMesh(InputStream* stream) const override;
-        MeshPtr readMesh(InputStream* stream, const VertexFormatPtr& format, unsigned flags) const override;
+        void enableAttributes();
+        void disableAttributes();
+
+        bool bind() override;
+
+    private:
+        VertexFormatPtr m_Format;
+
+        friend class GLMesh;
     };
+
+    using GLVertexBufferPtr = std::shared_ptr<GLVertexBuffer>;
 }
