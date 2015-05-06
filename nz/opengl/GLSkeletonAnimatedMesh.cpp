@@ -45,18 +45,37 @@ namespace Z
         m_Elements.clear();
         m_VertexBuffers.clear();
         m_IndexBuffer.reset();
+        m_Animations.clear();
     }
 
-    void GLSkeletonAnimatedMesh::render() const
+    void GLSkeletonAnimatedMesh::render(size_t animationIndex, float animationTime) const
     {
         if (!m_IndexBuffer || !m_IndexBuffer->bind())
             return;
+
+        if (animationIndex >= m_Animations.size()) {
+            Z_LOG("Mesh has no animation #" << animationIndex);
+            return;
+        }
+        const SkeletonAnimationPtr& animation = m_Animations[animationIndex];
+
+        std::vector<glm::mat4> boneMatrices;
+        boneMatrices.reserve(animation->skeleton()->numBones());
+        animation->getPoseForTime(animationTime, boneMatrices);
+
+        if (!boneMatrices.empty()) {
+            GL::Int program = gl::GetInteger(GL::CURRENT_PROGRAM);
+            int uniform = gl::GetUniformLocation(program, "u_bones");
+            gl::UniformMatrix4fv(uniform, boneMatrices.size(), GL::FALSE, &boneMatrices[0][0][0]);
+        }
 
         gl::EnableVertexAttribArray(GLAttribute::Position);
         gl::EnableVertexAttribArray(GLAttribute::TexCoord);
         gl::EnableVertexAttribArray(GLAttribute::Normal);
         gl::EnableVertexAttribArray(GLAttribute::Tangent);
         gl::EnableVertexAttribArray(GLAttribute::Bitangent);
+        gl::EnableVertexAttribArray(GLAttribute::BoneWeights);
+        gl::EnableVertexAttribArray(GLAttribute::BoneIndices);
 
         size_t currentVertexBuffer = size_t(-1);
 
@@ -77,6 +96,12 @@ namespace Z
                 sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, tangent)));
             gl::VertexAttribPointer(GLAttribute::Bitangent, 3, GL::FLOAT, GL::FALSE,
                 sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, bitangent)));
+            gl::VertexAttribPointer(GLAttribute::Bitangent, 3, GL::FLOAT, GL::FALSE,
+                sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, bitangent)));
+            gl::VertexAttribPointer(GLAttribute::BoneWeights, 4, GL::FLOAT, GL::FALSE,
+                sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, boneWeights)));
+            gl::VertexAttribPointer(GLAttribute::BoneIndices, 4, GL::UNSIGNED_BYTE, GL::FALSE,
+                sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, boneIndices)));
 
             gl::DrawElements(GL::TRIANGLES, element.indexBufferLength, GL::UNSIGNED_SHORT,
                 reinterpret_cast<void*>(sizeof(uint16_t) * element.indexBufferOffset));
@@ -90,6 +115,8 @@ namespace Z
         gl::DisableVertexAttribArray(GLAttribute::Normal);
         gl::DisableVertexAttribArray(GLAttribute::Tangent);
         gl::DisableVertexAttribArray(GLAttribute::Bitangent);
+        gl::DisableVertexAttribArray(GLAttribute::BoneWeights);
+        gl::DisableVertexAttribArray(GLAttribute::BoneIndices);
     }
 
     void GLSkeletonAnimatedMesh::initFromMesh(const MeshPtr& mesh)
@@ -106,9 +133,6 @@ namespace Z
         size_t vertexBufferIndex = 0;
         std::vector<Vertex> vertexData;
         std::vector<uint16_t> indexData;
-
-std::vector<glm::mat4> boneMatrices;
-mesh->animation(size_t(0))->getPoseForTime(1.0f, boneMatrices);
 
         std::unordered_set<Mesh::ElementPtr> processedElements;
         while (processedElements.size() < elements.size())
@@ -139,27 +163,9 @@ mesh->animation(size_t(0))->getPoseForTime(1.0f, boneMatrices);
 
                 for (size_t i = 0; i < numVertices; i++) {
                     Vertex vertex;
-
-glm::vec4 v = glm::vec4(element->positions[i], 1.0f);
-const Mesh::BoneWeights& b = element->boneWeights[i];
-glm::mat4 transform;
-bool first = true;
-for (int j = 0; j < Mesh::MAX_BONES_PER_VERTEX; j++) {
-    if (b.boneWeight[j] != 0.0f) {
-        glm::mat4 m = boneMatrices[b.boneIndex[j]] * b.boneWeight[j];
-        if (first)
-            transform = m;
-        else
-            transform += m;
-        first = false;
-    }
-}
-if (!first)
-    v = transform * v;
-
-                    vertex.position[0] = v.x;
-                    vertex.position[1] = v.y;
-                    vertex.position[2] = v.z;
+                    vertex.position[0] = element->positions[i].x;
+                    vertex.position[1] = element->positions[i].y;
+                    vertex.position[2] = element->positions[i].z;
                     if (element->texCoords.empty()) {
                         vertex.texCoord[0] = 0.0f;
                         vertex.texCoord[1] = 0.0f;
@@ -176,6 +182,14 @@ if (!first)
                     vertex.bitangent[0] = element->bitangents[i].x;
                     vertex.bitangent[1] = element->bitangents[i].y;
                     vertex.bitangent[2] = element->bitangents[i].z;
+                    vertex.boneWeights[0] = element->boneWeights[i].boneWeight[0];
+                    vertex.boneWeights[1] = element->boneWeights[i].boneWeight[1];
+                    vertex.boneWeights[2] = element->boneWeights[i].boneWeight[2];
+                    vertex.boneWeights[3] = element->boneWeights[i].boneWeight[3];
+                    vertex.boneIndices[0] = element->boneWeights[i].boneIndex[0];
+                    vertex.boneIndices[1] = element->boneWeights[i].boneIndex[1];
+                    vertex.boneIndices[2] = element->boneWeights[i].boneIndex[2];
+                    vertex.boneIndices[3] = element->boneWeights[i].boneIndex[3];
                     vertexData.push_back(vertex);
                 }
 
@@ -210,5 +224,7 @@ if (!first)
         m_IndexBuffer->setData(indexData.data(), indexData.size() * sizeof(uint16_t), GL::STATIC_DRAW);
 
         gl::BindBuffer(GL::ELEMENT_ARRAY_BUFFER, 0);
+
+        m_Animations = mesh->animations();
     }
 }

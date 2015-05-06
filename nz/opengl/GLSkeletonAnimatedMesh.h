@@ -39,7 +39,7 @@ namespace Z
         void reload() override;
         void unload() override;
 
-        void render() const;
+        void render(size_t animationIndex, float animationTime) const;
 
     protected:
         struct Vertex
@@ -49,6 +49,8 @@ namespace Z
             GL::Float normal[3];
             GL::Float tangent[3];
             GL::Float bitangent[3];
+            GL::Float boneWeights[4];
+            GL::Byte boneIndices[4];
         };
 
         struct Element
@@ -61,6 +63,7 @@ namespace Z
         std::vector<Element> m_Elements;
         std::vector<GLBufferPtr> m_VertexBuffers;
         GLBufferPtr m_IndexBuffer;
+        std::vector<SkeletonAnimationPtr> m_Animations;
 
         void initFromMesh(const MeshPtr& mesh);
     };

@@ -32,5 +32,7 @@ namespace Z
         static constexpr int Normal = 2;
         static constexpr int Tangent = 3;
         static constexpr int Bitangent = 4;
+        static constexpr int BoneIndices = 5;
+        static constexpr int BoneWeights = 6;
     };
 }

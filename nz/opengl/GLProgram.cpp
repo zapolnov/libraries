@@ -63,6 +63,8 @@ namespace Z
         bindAttribLocation(GLAttribute::Normal, "a_normal");
         bindAttribLocation(GLAttribute::Tangent, "a_tangent");
         bindAttribLocation(GLAttribute::Bitangent, "a_bitangent");
+        bindAttribLocation(GLAttribute::BoneIndices, "a_bones");
+        bindAttribLocation(GLAttribute::BoneWeights, "a_weights");
     }
 
     bool GLProgram::load(InputStream* input)

@@ -71,6 +71,7 @@ namespace Z
         void setSkeleton(SkeletonPtr&& skeleton) { m_Skeleton = std::move(skeleton); }
 
         size_t numAnimations() const { return m_Animations.size(); }
+        const std::vector<SkeletonAnimationPtr>& animations() const { return m_Animations; }
         const SkeletonAnimationPtr& animation(size_t index) const;
         const SkeletonAnimationPtr& animation(const char* name) const;
         const SkeletonAnimationPtr& animation(const std::string& name) const;

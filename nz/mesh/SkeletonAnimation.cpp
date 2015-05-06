@@ -29,7 +29,7 @@ namespace Z
     static const glm::mat4 g_IdentityMatrix = glm::mat4(1.0f);
     static const SkeletonAnimation::Channel g_DummyChannel = { 0, 0, 0, 0, 0, 0 };
 
-    template <class T> T getInterpolatedValue(float time, const std::vector<T>& keys, size_t keysOffset,
+    template <class T> T getInterpolatedValue(float time, float duration, const std::vector<T>& keys, size_t keysOffset,
         size_t keysLength, const T& defaultValue, const std::function<T(const T&, const T&, float)>& interpolate)
     {
         if (keysLength < 2) {
@@ -38,20 +38,36 @@ namespace Z
             return keys[keysOffset];
         }
 
-        typename std::vector<T>::const_iterator first = keys.begin() + keysOffset;
-        typename std::vector<T>::const_iterator last = first + keysLength;
-        auto key2 = std::lower_bound(first, last, time,
+        typename std::vector<T>::const_iterator begin = keys.begin() + keysOffset;
+        typename std::vector<T>::const_iterator end = begin + keysLength;
+        typename std::vector<T>::const_iterator key1;
+        typename std::vector<T>::const_iterator key2 = std::lower_bound(begin, end, time,
             [](const T& value, float time) -> bool { return value.time < time; });
 
-        if (key2 == last)
-            return *(last - 1);
-        else if (key2 == first || key2->time == time)
+        if (key2 != end && key2->time == time)
             return *key2;
 
-        auto key1 = key2 - 1;
+        float key1Time;
+        float key2Time;
+        if (key2 != begin && key2 != end) {
+            key1 = key2 - 1;
+            key1Time = key1->time;
+            key2Time = key2->time;
+        } else {
+            key1 = end - 1;
+            if (key2 == begin) {
+                key1Time = -(duration - key1->time);
+                Z_CHECK(key1Time <= 0.0f);
+                key2Time = key2->time;
+            } else {
+                key2 = begin;
+                key1Time = key1->time;
+                key2Time = duration;
+            }
+        }
 
-        float timeDelta = key2->time - key1->time;
-        float factor = (time - key1->time) / timeDelta;
+        float timeDelta = key2Time - key1Time;
+        float factor = (timeDelta != 0.0f ? (time - key1Time) / timeDelta : 0.0f);
         Z_CHECK(factor >= 0.0f && factor <= 1.0f);
 
         T value = interpolate(*key1, *key2, factor);
@@ -99,8 +115,9 @@ namespace Z
             return;
         }
 
+        float durationInTicks = m_Duration;
         float ticksPerSecond = m_TicksPerSecond > 0.0 ? m_TicksPerSecond : 25.0;
-        float timeInTicks = fmod(time * m_TicksPerSecond, m_Duration);
+        float timeInTicks = fmod(time * m_TicksPerSecond, durationInTicks);
 
         size_t numBones = m_Skeleton->numBones();
         boneMatrices.resize(numBones);
@@ -112,27 +129,27 @@ namespace Z
             if (channel.positionKeysLength == 0 && channel.scaleKeysLength == 0 && channel.rotationKeysLength == 0)
                 transform = g_IdentityMatrix;
             else {
-                PositionKey pos = getInterpolatedValue<PositionKey>(time, m_PositionKeys,
-                    channel.positionKeysOffset, channel.positionKeysLength, { time, glm::vec3(0.0f) },
+                PositionKey pos = getInterpolatedValue<PositionKey>(timeInTicks, durationInTicks, m_PositionKeys,
+                    channel.positionKeysOffset, channel.positionKeysLength, { timeInTicks, glm::vec3(0.0f) },
                     [](const PositionKey& key1, const PositionKey& key2, float factor) -> PositionKey {
                         PositionKey r;
                         r.position = key1.position + (key2.position - key1.position) * factor;
                         return r;
                     });
 
-                ScaleKey scale = getInterpolatedValue<ScaleKey>(time, m_ScaleKeys,
-                    channel.scaleKeysOffset, channel.scaleKeysLength, { time, glm::vec3(1.0f) },
+                ScaleKey scale = getInterpolatedValue<ScaleKey>(timeInTicks, durationInTicks, m_ScaleKeys,
+                    channel.scaleKeysOffset, channel.scaleKeysLength, { timeInTicks, glm::vec3(1.0f) },
                     [](const ScaleKey& key1, const ScaleKey& key2, float factor) -> ScaleKey {
                         ScaleKey r;
                         r.scale = key1.scale + (key2.scale - key1.scale) * factor;
                         return r;
                     });
 
-                RotationKey rotation = getInterpolatedValue<RotationKey>(time, m_RotationKeys,
-                    channel.rotationKeysOffset, channel.rotationKeysLength, { time, glm::quat() },
+                RotationKey rotation = getInterpolatedValue<RotationKey>(timeInTicks, durationInTicks, m_RotationKeys,
+                    channel.rotationKeysOffset, channel.rotationKeysLength, { timeInTicks, glm::quat() },
                     [](const RotationKey& key1, const RotationKey& key2, float factor) -> RotationKey {
                         RotationKey r;
-                        r.rotation = glm::mix(key1.rotation, key2.rotation, factor);
+                        r.rotation = glm::slerp(key1.rotation, key2.rotation, factor);
                         return r;
                     });
 
