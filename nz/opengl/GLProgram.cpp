@@ -30,6 +30,8 @@ namespace Z
     GLProgram::GLProgram(GLResourceManager* manager)
         : GLResource(manager)
     {
+        for (int i = 0; i < int(GLUniform::NumStandardUniforms); i++)
+            m_UniformHandles[i] = -1;
     }
 
     GLProgram::~GLProgram()
@@ -58,13 +60,8 @@ namespace Z
 
     void GLProgram::bindAttribLocations()
     {
-        bindAttribLocation(GLAttribute::Position, "a_position");
-        bindAttribLocation(GLAttribute::TexCoord, "a_texcoord");
-        bindAttribLocation(GLAttribute::Normal, "a_normal");
-        bindAttribLocation(GLAttribute::Tangent, "a_tangent");
-        bindAttribLocation(GLAttribute::Bitangent, "a_bitangent");
-        bindAttribLocation(GLAttribute::BoneIndices, "a_bones");
-        bindAttribLocation(GLAttribute::BoneWeights, "a_weights");
+        for (const auto& attr : allGLAttributes())
+            bindAttribLocation(attr.first, attr.second);
     }
 
     bool GLProgram::load(InputStream* input)
@@ -128,7 +125,7 @@ namespace Z
 
         bindAttribLocations();
 
-        return success && link();
+        return success && link() && enumerateStandardUniforms();
     }
 
     bool GLProgram::loadSource(const std::string& vertex, const std::string& fragment)
@@ -147,7 +144,7 @@ namespace Z
 
         bindAttribLocations();
 
-        return success && link();
+        return success && link() && enumerateStandardUniforms();
     }
 
     bool GLProgram::link()
@@ -176,6 +173,45 @@ namespace Z
                 Z_LOG("Unable to link program. Info log is not available.");
 
             return false;
+        }
+
+        return true;
+    }
+
+    bool GLProgram::enumerateStandardUniforms()
+    {
+        GL::Int numUniforms = 0;
+        gl::GetProgramiv(m_Handle, GL::ACTIVE_UNIFORMS, &numUniforms);
+
+        GL::Int maxNameLength = 0;
+        gl::GetProgramiv(m_Handle, GL::ACTIVE_UNIFORM_MAX_LENGTH, &maxNameLength);
+
+        if (numUniforms == 0 || maxNameLength == 0)
+            return true;
+
+        std::vector<GL::Char> buf(maxNameLength + 1);
+        for (GL::UInt i = 0; i < GL::UInt(numUniforms); i++) {
+            GL::Sizei nameLength = 0;
+            GL::Int size = 0;
+            GL::Enum type = GL::NONE;
+            gl::GetActiveUniform(m_Handle, i, maxNameLength, &nameLength, &size, &type, buf.data());
+
+            if (nameLength > 0) {
+                std::string name(buf.data(), nameLength);
+
+                size_t index = name.find('[');
+                if (index != std::string::npos)
+                    name.resize(index);
+
+                GLUniform id = nameToGLUniform(name);
+                if (id != GLUniform::NumStandardUniforms) {
+                    if (type != typeOfGLUniform(id)) {
+                        Z_LOG("Uniform \"" << name
+                            << "\" has invalid type (should be " << typeNameOfGLUniform(id) << ").");
+                    }
+                    m_UniformHandles[int(id)] = gl::GetUniformLocation(m_Handle, name.c_str());
+                }
+            }
         }
 
         return true;

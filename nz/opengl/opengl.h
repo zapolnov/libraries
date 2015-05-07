@@ -21,6 +21,7 @@
  */
 
 #pragma once
+#include "GLAttribute.h"
 #include <cstddef>
 #include <cstdint>
 
@@ -243,4 +244,17 @@ namespace gl
     void Viewport(GL::Int x, GL::Int y, GL::Sizei width, GL::Sizei height);
 
     GL::Int GetInteger(GL::Enum param);
+    void BindAttribLocation(GL::UInt program, Z::GLAttribute index, const GL::Char* name);
+    void DisableVertexAttribArray(Z::GLAttribute index);
+    void EnableVertexAttribArray(Z::GLAttribute index);
+    void VertexAttrib1f(Z::GLAttribute index, GL::Float x);
+    void VertexAttrib1fv(Z::GLAttribute index, const GL::Float* values);
+    void VertexAttrib2f(Z::GLAttribute index, GL::Float x, GL::Float y);
+    void VertexAttrib2fv(Z::GLAttribute index, const GL::Float* values);
+    void VertexAttrib3f(Z::GLAttribute index, GL::Float x, GL::Float y, GL::Float z);
+    void VertexAttrib3fv(Z::GLAttribute index, const GL::Float* values);
+    void VertexAttrib4f(Z::GLAttribute index, GL::Float x, GL::Float y, GL::Float z, GL::Float w);
+    void VertexAttrib4fv(Z::GLAttribute index, const GL::Float* values);
+    void VertexAttribPointer(Z::GLAttribute index, GL::Int size, GL::Enum type, GL::Boolean norm, GL::Sizei stride,
+        const void* ptr);
 }

@@ -39,6 +39,7 @@ namespace Z
             Bitangent,
             BoneIndices,
             BoneWeights,
+
             NumAttributes,
         };
 

@@ -22,6 +22,7 @@
 
 #pragma once
 #include "GLResource.h"
+#include "GLUniform.h"
 #include "opengl.h"
 #include "utility/streams/InputStream.h"
 #include <memory>
@@ -40,12 +41,15 @@ namespace Z
         void unload() override;
 
         int getAttribLocation(const char* name) const { return gl::GetAttribLocation(m_Handle, name); }
+
         int getUniformLocation(const char* name) const { return gl::GetUniformLocation(m_Handle, name); }
+        int getUniformLocation(GLUniform uniform) const { return m_UniformHandles[int(uniform)]; }
 
     protected:
         GL::UInt handle() const { return m_Handle; }
 
         void bindAttribLocation(int index, const char* name) { gl::BindAttribLocation(m_Handle, index, name); }
+        void bindAttribLocation(GLAttribute index, const char* name) { gl::BindAttribLocation(m_Handle, index, name); }
         void bindAttribLocations();
 
         bool load(InputStream* input);
@@ -53,8 +57,11 @@ namespace Z
 
         bool link();
 
+        bool enumerateStandardUniforms();
+
     private:
         GL::UInt m_Handle = 0;
+        int m_UniformHandles[int(GLUniform::NumStandardUniforms)];
     };
 
     using GLProgramPtr = std::shared_ptr<GLProgram>;

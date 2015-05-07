@@ -47,6 +47,8 @@ source_group("Source Files\\qt5" FILES ${qt5_sources})
 source_group("Source Files\\normal" FILES ${normal_sources})
 source_group("Source Files\\dummy" FILES ${dummy_sources})
 
+set_source_files_properties(GLAttribute.def GLUniform.def PROPERTIES HEADER_FILE_ONLY TRUE)
+
 set_target_properties(NZOpenGL PROPERTIES CXX_STANDARD 11)
 target_include_directories(NZOpenGL BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
 target_link_libraries(NZOpenGL NZUtility NZImage NZMesh)

@@ -35,3 +35,64 @@ GL::Int gl::GetInteger(GL::Enum param)
     gl::GetIntegerv(param, &value);
     return value;
 }
+
+void gl::BindAttribLocation(GL::UInt program, Z::GLAttribute index, const GL::Char* name)
+{
+    BindAttribLocation(program, int(index), name);
+}
+
+void gl::DisableVertexAttribArray(Z::GLAttribute index)
+{
+    DisableVertexAttribArray(GL::UInt(index));
+}
+
+void gl::EnableVertexAttribArray(Z::GLAttribute index)
+{
+    EnableVertexAttribArray(GL::UInt(index));
+}
+
+void gl::VertexAttrib1f(Z::GLAttribute index, GL::Float x)
+{
+    VertexAttrib1f(GL::UInt(index), x);
+}
+
+void gl::VertexAttrib1fv(Z::GLAttribute index, const GL::Float* values)
+{
+    VertexAttrib1fv(GL::UInt(index), values);
+}
+
+void gl::VertexAttrib2f(Z::GLAttribute index, GL::Float x, GL::Float y)
+{
+    VertexAttrib2f(GL::UInt(index), x, y);
+}
+
+void gl::VertexAttrib2fv(Z::GLAttribute index, const GL::Float* values)
+{
+    VertexAttrib2fv(GL::UInt(index), values);
+}
+
+void gl::VertexAttrib3f(Z::GLAttribute index, GL::Float x, GL::Float y, GL::Float z)
+{
+    VertexAttrib3f(GL::UInt(index), x, y, z);
+}
+
+void gl::VertexAttrib3fv(Z::GLAttribute index, const GL::Float* values)
+{
+    VertexAttrib3fv(GL::UInt(index), values);
+}
+
+void gl::VertexAttrib4f(Z::GLAttribute index, GL::Float x, GL::Float y, GL::Float z, GL::Float w)
+{
+    VertexAttrib4f(GL::UInt(index), x, y, z, w);
+}
+
+void gl::VertexAttrib4fv(Z::GLAttribute index, const GL::Float* values)
+{
+    VertexAttrib4fv(GL::UInt(index), values);
+}
+
+void gl::VertexAttribPointer(Z::GLAttribute index, GL::Int size, GL::Enum type, GL::Boolean norm, GL::Sizei stride,
+    const void* ptr)
+{
+    VertexAttribPointer(GL::UInt(index), size, type, norm, stride, ptr);
+}

@@ -21,29 +21,36 @@
  */
 
 #pragma once
-#include "mesh/VertexFormat.h"
+#include "opengl.h"
+#include "utility/debug.h"
 #include <vector>
 #include <utility>
 
 namespace Z
 {
-    enum class GLAttribute
+    enum class GLUniform
     {
-        #define Z_GL_ATTRIBUTE(NAME, STRING) NAME = VertexFormat::NAME,
-        #include "GLAttribute.def"
-        #undef Z_GL_ATTRIBUTE
+        #define Z_GL_UNIFORM(NAME, STRING, TYPE) NAME,
+        #include "GLUniform.def"
+        #undef Z_GL_UNIFORM
+
+        NumStandardUniforms
     };
 
-    namespace GLAttributeName
+    namespace GLUniformName
     {
-        #define Z_GL_ATTRIBUTE(NAME, STRING) static constexpr const char* NAME = STRING;
-        #include "GLAttribute.def"
-        #undef Z_GL_ATTRIBUTE
+        #define Z_GL_UNIFORM(NAME, STRING, TYPE) static constexpr const char* NAME = STRING;
+        #include "GLUniform.def"
+        #undef Z_GL_UNIFORM
 
-        const char* forAttribute(GLAttribute attribute);
+        const char* forUniform(GLUniform uniform);
     }
 
-    using GLAttributeList = std::vector<std::pair<GLAttribute, const char*>>;
+    using GLUniformList = std::vector<std::pair<GLUniform, const char*>>;
 
-    const GLAttributeList& allGLAttributes();
+    const GLUniformList& allGLUniforms();
+    GLUniform nameToGLUniform(const std::string& name);
+
+    GL::Enum typeOfGLUniform(GLUniform uniform);
+    const char* typeNameOfGLUniform(GLUniform uniform);
 }

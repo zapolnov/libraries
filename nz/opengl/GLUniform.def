@@ -20,30 +20,7 @@
  * THE SOFTWARE.
  */
 
-#pragma once
-#include "mesh/VertexFormat.h"
-#include <vector>
-#include <utility>
-
-namespace Z
-{
-    enum class GLAttribute
-    {
-        #define Z_GL_ATTRIBUTE(NAME, STRING) NAME = VertexFormat::NAME,
-        #include "GLAttribute.def"
-        #undef Z_GL_ATTRIBUTE
-    };
-
-    namespace GLAttributeName
-    {
-        #define Z_GL_ATTRIBUTE(NAME, STRING) static constexpr const char* NAME = STRING;
-        #include "GLAttribute.def"
-        #undef Z_GL_ATTRIBUTE
-
-        const char* forAttribute(GLAttribute attribute);
-    }
-
-    using GLAttributeList = std::vector<std::pair<GLAttribute, const char*>>;
-
-    const GLAttributeList& allGLAttributes();
-}
+Z_GL_UNIFORM(ProjectionMatrix, "u_projection", GL::FLOAT_MAT4)
+Z_GL_UNIFORM(ModelViewMatrix, "u_modelview", GL::FLOAT_MAT4)
+Z_GL_UNIFORM(BoneMatrixPalette, "u_bones", GL::FLOAT_MAT4)
+Z_GL_UNIFORM(Texture, "u_texture", GL::SAMPLER_2D)

@@ -19,31 +19,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-#pragma once
-#include "mesh/VertexFormat.h"
-#include <vector>
-#include <utility>
+#include "GLAttribute.h"
+#include "utility/debug.h"
 
 namespace Z
 {
-    enum class GLAttribute
-    {
-        #define Z_GL_ATTRIBUTE(NAME, STRING) NAME = VertexFormat::NAME,
-        #include "GLAttribute.def"
-        #undef Z_GL_ATTRIBUTE
-    };
-
     namespace GLAttributeName
     {
-        #define Z_GL_ATTRIBUTE(NAME, STRING) static constexpr const char* NAME = STRING;
-        #include "GLAttribute.def"
-        #undef Z_GL_ATTRIBUTE
-
-        const char* forAttribute(GLAttribute attribute);
+        const char* forAttribute(GLAttribute attribute)
+        {
+            switch (attribute)
+            {
+            #define Z_GL_ATTRIBUTE(NAME, STRING) case GLAttribute::NAME: return GLAttributeName::NAME;
+            #include "GLAttribute.def"
+            #undef Z_GL_ATTRIBUTE
+            }
+            Z_ASSERT_MSG(false, "Invalid attribute ID.");
+            return nullptr;
+        }
     }
 
-    using GLAttributeList = std::vector<std::pair<GLAttribute, const char*>>;
-
-    const GLAttributeList& allGLAttributes();
+    const GLAttributeList& allGLAttributes()
+    {
+        static const GLAttributeList allAttributes = {
+            #define Z_GL_ATTRIBUTE(NAME, STRING) { GLAttribute::NAME, GLAttributeName::NAME },
+            #include "GLAttribute.def"
+            #undef Z_GL_ATTRIBUTE
+        };
+        return allAttributes;
+    }
 }

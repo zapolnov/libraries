@@ -39,6 +39,12 @@ namespace std
         s << static_cast<int>(value);
         return s;
     }
+
+    ostream& operator<<(ostream& s, GL::Boolean value)
+    {
+        s << (value ? "GL::TRUE" : "GL::FALSE");
+        return s;
+    }
 }
 
 std::string gl::DecodeGLClearMask_(GL::Bitfield mask)
