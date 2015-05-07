@@ -26,6 +26,7 @@
 #define _ODE__PRIVATE_ERROR_H_
 
 #include <ode/error.h>
+#include <stdlib.h>
 
 
 
@@ -68,7 +69,7 @@
 
 #  ifdef __GNUC__
 #    define dICHECK(a) { if (!(a)) { dDebug (d_ERR_IASSERT, \
-      "assertion \"" #a "\" failed in %s() [%s:%u]",__FUNCTION__,__FILE__,__LINE__); *(int *)0 = 0; } }
+      "assertion \"" #a "\" failed in %s() [%s:%u]",__FUNCTION__,__FILE__,__LINE__); abort(); } }
 #  else // not __GNUC__
 #    define dICHECK(a) { if (!(a)) { dDebug (d_ERR_IASSERT, \
       "assertion \"" #a "\" failed in %s:%u",__FILE__,__LINE__); *(int *)0 = 0; } }

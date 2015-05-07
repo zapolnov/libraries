@@ -49,7 +49,7 @@
 /* #define dATOMICS_ENABLED 1 */
 /* #define dTLS_ENABLED 1 */
 
-/* #define dTHREADING_INTF_DISABLED 1 */
+#define dTHREADING_INTF_DISABLED 1
 /* #define dBUILTIN_THREADING_IMPL_ENABLED 1 */
 
 

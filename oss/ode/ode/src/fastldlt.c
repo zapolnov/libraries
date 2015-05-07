@@ -23,6 +23,7 @@
 /* generated code, do not edit. */
 
 #include <ode/common.h>
+#include <stdlib.h>
 #include "config.h"
 #include "matrix.h"
 
@@ -400,7 +401,7 @@ void _dFactorLDLT (dReal *A, dReal *d, int n, int nskip1)
         /* done factorizing 1 x 1 block */
         break;
 
-    default: *((char*)0)=0;  /* this should never happen! */
+    default: abort();  /* this should never happen! */
     }
 }
 

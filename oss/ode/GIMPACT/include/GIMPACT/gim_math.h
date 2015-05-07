@@ -31,20 +31,10 @@ email: projectileman@yahoo.com
 -----------------------------------------------------------------------------
 */
 
-#include "config.h"
 
 #include <math.h>
 #include <float.h>
-#if HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#elif defined(_MSC_VER)
-typedef __int32 int32_t;
-typedef unsigned __int32 uint32_t;
-#elif defined(__GNUC__)
-#include <inttypes.h>
-#else
-#error "GIMPACT: Must define int32_t and uint32_t"
-#endif
+#include <stdint.h>
 
 
 /*! \defgroup BASIC_TYPES
