@@ -385,11 +385,23 @@ namespace Z
         const aiScene* scene = nullptr;
         const unsigned flags =
             aiProcess_Triangulate |
+            aiProcess_JoinIdenticalVertices |
+            aiProcess_ImproveCacheLocality |
+            aiProcess_RemoveRedundantMaterials |
+            aiProcess_SortByPType |
+            aiProcess_FindInvalidData |
+            aiProcess_SplitLargeMeshes |
+            aiProcess_OptimizeMeshes |
+            //aiProcess_OptimizeGraph |
+            (!readBoneIndices && !readBoneWeights ? 0 : aiProcess_LimitBoneWeights) |
             (!readNormals && !readTangents && !readBitangents ? 0 : aiProcess_GenSmoothNormals) |
             (!readTangents && !readBitangents ? 0 : aiProcess_CalcTangentSpace) |
-            (!readTexCoords ? 0 : aiProcess_FlipUVs);
+            (!readTexCoords ? 0 : aiProcess_GenUVCoords | aiProcess_TransformUVCoords | aiProcess_FlipUVs);
 
         Assimp::Importer importer;
+        importer.SetPropertyInteger(AI_CONFIG_PP_SLM_VERTEX_LIMIT, 65535);
+        importer.SetPropertyInteger(AI_CONFIG_PP_SLM_TRIANGLE_LIMIT, 1000000000);
+        importer.SetPropertyInteger(AI_CONFIG_PP_LBW_MAX_WEIGHTS, 4);
 
 //        FileReader* inputFile = stream->associatedFile();
 //        if (!inputFile) {
