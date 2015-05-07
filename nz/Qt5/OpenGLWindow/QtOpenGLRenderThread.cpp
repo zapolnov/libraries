@@ -150,7 +150,7 @@ namespace Z
 
                 // Run frame
                 auto time = m_Timer.restart();
-                m_Delegate->renderGL(time);
+                m_Delegate->renderGL(time * 0.001);
                 m_GL->context()->swapBuffers();
             }
 
