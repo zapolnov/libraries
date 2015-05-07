@@ -24,6 +24,7 @@
 #include <QGLContext>
 #include <QGLFunctions>
 #include <cassert>
+#include <mutex>
 #include <thread>
 
 static QGLFunctions g_OpenGLFunctions;

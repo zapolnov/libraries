@@ -396,7 +396,7 @@ INLINE int via_rng_in(void *buf)
     return val;
 }
 
-INLINE volatile  void via_ecb_op5(
+INLINE void via_ecb_op5(
             const void *k, const void *c, const void *s, void *d, int l)
 {
     asm("pushl %ebx\n\t");
@@ -410,7 +410,7 @@ INLINE volatile  void via_ecb_op5(
     asm("popl %ebx\n\t");
 }
 
-INLINE volatile  void via_cbc_op6(
+INLINE void via_cbc_op6(
             const void *k, const void *c, const void *s, void *d, int l, void *v)
 {
     asm("pushl %ebx\n\t");
@@ -425,7 +425,7 @@ INLINE volatile  void via_cbc_op6(
     asm("popl %ebx\n\t");
 }
 
-INLINE volatile  void via_cbc_op7(
+INLINE void via_cbc_op7(
         const void *k, const void *c, const void *s, void *d, int l, void *v, void *w)
 {
     asm("pushl %ebx\n\t");
@@ -443,7 +443,7 @@ INLINE volatile  void via_cbc_op7(
     asm("popl %ebx\n\t");
 }
 
-INLINE volatile  void via_cfb_op6(
+INLINE void via_cfb_op6(
             const void *k, const void *c, const void *s, void *d, int l, void *v)
 {
     asm("pushl %ebx\n\t");
@@ -458,7 +458,7 @@ INLINE volatile  void via_cfb_op6(
     asm("popl %ebx\n\t");
 }
 
-INLINE volatile  void via_cfb_op7(
+INLINE void via_cfb_op7(
         const void *k, const void *c, const void *s, void *d, int l, void *v, void *w)
 {
     asm("pushl %ebx\n\t");
@@ -476,7 +476,7 @@ INLINE volatile  void via_cfb_op7(
     asm("popl %ebx\n\t");
 }
 
-INLINE volatile  void via_ofb_op6(
+INLINE void via_ofb_op6(
             const void *k, const void *c, const void *s, void *d, int l, void *v)
 {
     asm("pushl %ebx\n\t");

@@ -27,6 +27,7 @@ namespace Z
 {
     Resource::Resource(ResourceManager* manager)
         : m_Manager(manager)
+        , m_Flags(0)
     {
         Z_ASSERT(m_Manager);
         m_Manager->registerResource(this);

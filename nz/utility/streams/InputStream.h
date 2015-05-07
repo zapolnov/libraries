@@ -24,6 +24,7 @@
 #include "Stream.h"
 #include <string>
 #include <vector>
+#include <memory>
 #include <cstdint>
 
 namespace Z

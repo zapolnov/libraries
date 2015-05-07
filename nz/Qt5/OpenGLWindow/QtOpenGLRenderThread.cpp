@@ -50,6 +50,8 @@ namespace Z
     QtOpenGLRenderThread::QtOpenGLRenderThread(QGLWidget* gl, QtOpenGLWindowDelegate* delegate)
         : m_GL(gl)
         , m_Delegate(delegate)
+        , m_Suspended(false)
+        , m_ShuttingDown(false)
     {
         Z_ASSERT(delegate != nullptr);
     }

@@ -165,6 +165,7 @@ namespace Z
 
     GLResourceManager::GLResourceManager(const FileSystemPtr& fileSystem)
         : m_FileSystem(fileSystem)
+        , m_ReloadingResources(false)
     {
     }
 

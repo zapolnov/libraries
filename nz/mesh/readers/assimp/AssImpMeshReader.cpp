@@ -27,8 +27,8 @@
 #include <assimp/DefaultLogger.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-#include <png.h>
 #include <unordered_set>
+#include <mutex>
 #include <cstring>
 
 namespace Z
