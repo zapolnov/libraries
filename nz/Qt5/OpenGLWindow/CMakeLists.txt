@@ -23,6 +23,7 @@
 cmake_minimum_required(VERSION 3.1)
 
 include(../../cmake/Qt5.cmake)
+include(../../cmake/OpenGL.cmake)
 
 if(Z_QT5_FOUND)
     set(CMAKE_AUTOMOC TRUE)
@@ -36,4 +37,5 @@ if(Z_QT5_FOUND)
     target_include_directories(NZQt5OpenGLWindow BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
     target_link_libraries(NZQt5OpenGLWindow NZUtility)
     z_target_link_qt5(NZQt5OpenGLWindow)
+    z_target_link_opengl(NZQt5OpenGLWindow)
 endif()
