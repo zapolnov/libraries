@@ -10,7 +10,7 @@ endif()
 add_definitions(-DHAVE_AES)
 add_definitions(-DHAVE_BZIP2)
 
-file(GLOB source_files
+set(source_files
     crypt.h
     ioapi.c
     ioapi.h
