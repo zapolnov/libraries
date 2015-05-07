@@ -193,12 +193,13 @@ namespace Z
         std::lock_guard<decltype(m_Mutex)> lock(m_Mutex);
 
         m_Shutdown = true;
-        unloadAllResources();
 
-        for (auto resource : m_Resources)
-            resource->m_Manager = nullptr;
-
-        m_Resources.clear();
+        if (!m_Resources.empty()) {
+            unloadAllResources();
+            for (auto resource : m_Resources)
+                resource->m_Manager = nullptr;
+            m_Resources.clear();
+        }
     }
 
     void GLResourceManager::beginReloadResources()

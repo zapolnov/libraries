@@ -41,6 +41,7 @@ namespace Z
 
         void showEvent(QShowEvent* showEvent) override;
         void hideEvent(QHideEvent* hideEvent) override;
+        void closeEvent(QCloseEvent* closeEvent) override;
 
         void mousePressEvent(QMouseEvent* mouseEvent) override;
         void mouseMoveEvent(QMouseEvent* mouseEvent) override;

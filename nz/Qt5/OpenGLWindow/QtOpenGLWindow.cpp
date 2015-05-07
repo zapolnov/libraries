@@ -65,8 +65,6 @@ namespace Z
 
     QtOpenGLWindow::~QtOpenGLWindow()
     {
-        m_RenderThread.postShutdown();
-        m_RenderThread.wait();
     }
 
     void QtOpenGLWindow::resizeEvent(QResizeEvent* resizeEvent)
@@ -96,6 +94,14 @@ namespace Z
     {
         if (m_Initialized)
             m_RenderThread.suspend();
+    }
+
+    void QtOpenGLWindow::closeEvent(QCloseEvent*)
+    {
+        if (m_Initialized) {
+            m_RenderThread.postShutdown();
+            m_RenderThread.wait();
+        }
     }
 
     void QtOpenGLWindow::mousePressEvent(QMouseEvent* e)
