@@ -22,15 +22,6 @@
 
 cmake_minimum_required(VERSION 3.1)
 
-add_subdirectory(cmake)
-add_subdirectory(yaml)
-add_subdirectory(utility)
-add_subdirectory(zipfs)
-add_subdirectory(image)
-add_subdirectory(image/readers/png)
-add_subdirectory(opengl)
-add_subdirectory(liquidfun)
-add_subdirectory(mesh)
-add_subdirectory(mesh/readers/assimp)
-add_subdirectory(bin2c)
-add_subdirectory(Qt5)
+add_executable(bin2c ${EXCLUDE_FROM_ALL} main.cpp bin2c.cpp bin2c.h)
+source_group("Source Files" FILES main.cpp bin2c.cpp bin2c.h)
+target_link_libraries(bin2c zlib)
