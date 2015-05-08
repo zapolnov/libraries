@@ -24,6 +24,7 @@
 #include "GLProgram.h"
 #include "GLTexture.h"
 #include "GLMesh.h"
+#include "GLMaterial.h"
 #include "GLSkeletonAnimatedMesh.h"
 #include "utility/FileSystem.h"
 #include <atomic>
@@ -57,6 +58,8 @@ namespace Z
 
         GLTexturePtr loadTexture(const std::string& fileName);
 
+        GLMaterialPtr loadMaterial(const std::string& fileName);
+
         const VertexFormatPtr& defaultStaticVertexFormat();
         const VertexFormatPtr& defaultAnimatedVertexFormat();
 
@@ -73,11 +76,13 @@ namespace Z
         class Texture;
         class Mesh;
         class SkeletonAnimatedMesh;
+        class Material;
 
         FileSystemPtr m_FileSystem;
         std::recursive_mutex m_Mutex;
         std::unordered_map<std::string, std::weak_ptr<Program>> m_Programs;
         std::unordered_map<std::string, std::weak_ptr<Texture>> m_Textures;
+        std::unordered_map<std::string, std::weak_ptr<Material>> m_Materials;
         std::unordered_map<std::string, std::weak_ptr<Mesh>> m_Meshes;
         std::unordered_map<std::string, std::weak_ptr<SkeletonAnimatedMesh>> m_SkeletonAnimatedMeshes;
         VertexFormatPtr m_DefaultStaticVertexFormat;

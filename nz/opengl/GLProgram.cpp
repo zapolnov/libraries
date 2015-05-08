@@ -47,9 +47,12 @@ namespace Z
         unload();
     }
 
-    void GLProgram::use()
+    bool GLProgram::use() const
     {
+        if (m_Handle == 0)
+            return false;
         gl::UseProgram(m_Handle);
+        return true;
     }
 
     void GLProgram::reload()
@@ -74,10 +77,12 @@ namespace Z
         if (length > 0 && filename[length - 1] == '\n')
             filename.resize(--length);
 
-        if (length > 0 && filename[0] != '/') {
-            size_t index = parentFileName.find('/');
+        if (length > 0 && filename[0] == '/')
+            filename = filename.substr(1);
+        else {
+            size_t index = parentFileName.rfind('/');
             std::string parentDir = (index == std::string::npos ? std::string() : parentFileName.substr(0, index + 1));
-            std::string localFileName = filename;
+            std::string localFileName = parentDir + filename;
             if (resourceManager()->fileSystem()->fileExists(localFileName)) {
                 Z_LOG(" - include file \"" << localFileName << "\".");
                 file = resourceManager()->fileSystem()->openFile(localFileName);
@@ -207,8 +212,6 @@ namespace Z
         std::vector<std::string> vertex;
         std::vector<std::string> fragment;
         bool success = parseProgramSource(input, vertex, fragment);
-
-        Z_LOG("Done loading OpenGL program \"" << input->name() << "\".");
 
         GLShader vertexShader(GL::VERTEX_SHADER);
         vertexShader.setSource(vertex);

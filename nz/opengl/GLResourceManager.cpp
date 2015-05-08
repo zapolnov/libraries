@@ -109,6 +109,30 @@ namespace Z
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    class GLResourceManager::Material : public GLMaterial
+    {
+    public:
+        Material(const std::string& fileName, GLResourceManager* resourceManager)
+            : GLMaterial(resourceManager)
+            , m_FileName(fileName)
+        {
+            reload();
+        }
+
+        void reload() override
+        {
+            GLMaterial::reload();
+
+            FileInputStream stream(resourceManager()->fileSystem()->openFile(m_FileName));
+            load(&stream);
+        }
+
+    private:
+        std::string m_FileName;
+    };
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     class GLResourceManager::Mesh : public GLMesh
     {
     public:
@@ -304,16 +328,38 @@ namespace Z
         return texture;
     }
 
+    GLMaterialPtr GLResourceManager::loadMaterial(const std::string& fileName)
+    {
+        std::lock_guard<decltype(m_Mutex)> lock(m_Mutex);
+
+        auto it = m_Materials.find(fileName);
+        if (it == m_Materials.end())
+            it = m_Materials.insert(std::make_pair(fileName, std::weak_ptr<Material>())).first;
+        else {
+            std::shared_ptr<Material> material = it->second.lock();
+            if (material)
+                return material;
+        }
+
+        std::shared_ptr<Material> material = std::make_shared<Material>(fileName, this);
+        it->second = material;
+
+        return material;
+    }
+
     const VertexFormatPtr& GLResourceManager::defaultStaticVertexFormat()
     {
         if (!m_DefaultStaticVertexFormat) {
-            VertexFormatPtr format = std::make_shared<VertexFormat>();
-            format->addAttribute(VertexFormat::Position, 3, VertexFormat::Float);
-            format->addAttribute(VertexFormat::TexCoord, 2, VertexFormat::Float);
-            format->addAttribute(VertexFormat::Normal, 3, VertexFormat::Float);
-            format->addAttribute(VertexFormat::Tangent, 3, VertexFormat::Float);
-            format->addAttribute(VertexFormat::Bitangent, 3, VertexFormat::Float);
-            m_DefaultStaticVertexFormat = std::move(format);
+            std::lock_guard<decltype(m_Mutex)> lock(m_Mutex);
+            if (!m_DefaultStaticVertexFormat) {
+                VertexFormatPtr format = std::make_shared<VertexFormat>();
+                format->addAttribute(VertexFormat::Position, 3, VertexFormat::Float);
+                format->addAttribute(VertexFormat::TexCoord, 2, VertexFormat::Float);
+                format->addAttribute(VertexFormat::Normal, 3, VertexFormat::Float);
+                format->addAttribute(VertexFormat::Tangent, 3, VertexFormat::Float);
+                format->addAttribute(VertexFormat::Bitangent, 3, VertexFormat::Float);
+                m_DefaultStaticVertexFormat = std::move(format);
+            }
         }
         return m_DefaultStaticVertexFormat;
     }
@@ -321,15 +367,18 @@ namespace Z
     const VertexFormatPtr& GLResourceManager::defaultAnimatedVertexFormat()
     {
         if (!m_DefaultAnimatedVertexFormat) {
-            VertexFormatPtr format = std::make_shared<VertexFormat>();
-            format->addAttribute(VertexFormat::Position, 3, VertexFormat::Float);
-            format->addAttribute(VertexFormat::TexCoord, 2, VertexFormat::Float);
-            format->addAttribute(VertexFormat::Normal, 3, VertexFormat::Float);
-            format->addAttribute(VertexFormat::Tangent, 3, VertexFormat::Float);
-            format->addAttribute(VertexFormat::Bitangent, 3, VertexFormat::Float);
-            format->addAttribute(VertexFormat::BoneIndices, 4, VertexFormat::UnsignedByte);
-            format->addAttribute(VertexFormat::BoneWeights, 4, VertexFormat::Float);
-            m_DefaultAnimatedVertexFormat = std::move(format);
+            std::lock_guard<decltype(m_Mutex)> lock(m_Mutex);
+            if (!m_DefaultAnimatedVertexFormat) {
+                VertexFormatPtr format = std::make_shared<VertexFormat>();
+                format->addAttribute(VertexFormat::Position, 3, VertexFormat::Float);
+                format->addAttribute(VertexFormat::TexCoord, 2, VertexFormat::Float);
+                format->addAttribute(VertexFormat::Normal, 3, VertexFormat::Float);
+                format->addAttribute(VertexFormat::Tangent, 3, VertexFormat::Float);
+                format->addAttribute(VertexFormat::Bitangent, 3, VertexFormat::Float);
+                format->addAttribute(VertexFormat::BoneIndices, 4, VertexFormat::UnsignedByte);
+                format->addAttribute(VertexFormat::BoneWeights, 4, VertexFormat::Float);
+                m_DefaultAnimatedVertexFormat = std::move(format);
+            }
         }
         return m_DefaultAnimatedVertexFormat;
     }

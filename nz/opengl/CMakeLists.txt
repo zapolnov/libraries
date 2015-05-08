@@ -51,7 +51,7 @@ set_source_files_properties(GLAttribute.def GLUniform.def PROPERTIES HEADER_FILE
 
 set_target_properties(NZOpenGL PROPERTIES CXX_STANDARD 11)
 target_include_directories(NZOpenGL BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
-target_link_libraries(NZOpenGL NZUtility NZImage NZMesh)
+target_link_libraries(NZOpenGL NZYaml NZUtility NZImage NZMesh)
 
 if(Z_TARGET_QT5)
     z_target_link_qt5(NZOpenGL)

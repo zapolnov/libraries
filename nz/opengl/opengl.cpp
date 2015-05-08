@@ -36,6 +36,14 @@ GL::Int gl::GetInteger(GL::Enum param)
     return value;
 }
 
+void gl::EnableOrDisable(GL::Enum cap, bool flag)
+{
+    if (flag)
+        gl::Enable(cap);
+    else
+        gl::Disable(cap);
+}
+
 void gl::BindAttribLocation(GL::UInt program, Z::GLAttribute index, const GL::Char* name)
 {
     BindAttribLocation(program, int(index), name);

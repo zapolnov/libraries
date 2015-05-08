@@ -35,8 +35,11 @@ namespace Z
         unload();
     }
 
-    void GLTexture::bind()
+    bool GLTexture::bind()
     {
+        if (m_Handle == 0)
+            return false;
+
         gl::BindTexture(m_Type, m_Handle);
         if (m_Dirty) {
             gl::TexParameteri(m_Type, GL::TEXTURE_MIN_FILTER, m_MinFilter);
@@ -45,6 +48,8 @@ namespace Z
             gl::TexParameteri(m_Type, GL::TEXTURE_WRAP_T, m_WrapT);
             m_Dirty = false;
         }
+
+        return true;
     }
 
     void GLTexture::reload()

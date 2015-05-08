@@ -22,44 +22,45 @@
 
 #pragma once
 #include "GLResource.h"
-#include "opengl.h"
-#include "image/Image.h"
-#include <memory>
+#include "GLProgram.h"
+#include "GLTexture.h"
+#include "utility/streams/InputStream.h"
 
 namespace Z
 {
-    class GLTexture : public GLResource
+    class GLMaterial : public GLResource
     {
     public:
-        explicit GLTexture(GLResourceManager* manager, GL::Enum type = GL::TEXTURE_2D);
-        ~GLTexture();
+        explicit GLMaterial(GLResourceManager* manager);
+        ~GLMaterial();
 
-        bool bind();
+        const GLProgramPtr& program() const { return m_Program; }
+        const GLTexturePtr& diffuseMap() const { return m_DiffuseMap; }
+        bool cullFace() const { return m_CullFace; }
+        bool depthTest() const { return m_DepthTest; }
 
-        void setMinFilter(GL::Enum filter) { m_MinFilter = filter; m_Dirty = true; }
-        void setMagFilter(GL::Enum filter) { m_MagFilter = filter; m_Dirty = true; }
-
-        void setWrap(GL::Enum wrap) { m_WrapS = m_WrapT = wrap; m_Dirty = true; }
-        void setWrapS(GL::Enum wrap) { m_WrapS = wrap; m_Dirty = true; }
-        void setWrapT(GL::Enum wrap) { m_WrapT = wrap; m_Dirty = true; }
+        int getUniformLocation(const char* name) const { return m_Program ? m_Program->getUniformLocation(name) : -1; }
+        int getUniformLocation(GLUniform name) const { return m_Program ? m_Program->getUniformLocation(name) : -1; }
 
         void reload() override;
         void unload() override;
 
+        bool bind() const;
+        void unbind() const;
+        bool bindProgram() const;
+        void unbindProgram() const;
+        bool bindDiffuseMap(GL::Enum textureUnit = GL::TEXTURE0) const;
+        void unbindDiffuseMap(GL::Enum textureUnit = GL::TEXTURE0) const;
+
     protected:
-        GL::UInt handle() const { return m_Handle; }
+        GLProgramPtr m_Program;
+        GLTexturePtr m_DiffuseMap;
+        bool m_CullFace;
+        bool m_DepthTest;
 
-        void upload(GL::Int level, const ImagePtr& image);
-
-    private:
-        GL::UInt m_Handle = 0;
-        GL::Enum m_Type = GL::TEXTURE_2D;
-        GL::Enum m_MinFilter = GL::LINEAR;
-        GL::Enum m_MagFilter = GL::LINEAR;
-        GL::Enum m_WrapS = GL::CLAMP_TO_EDGE;
-        GL::Enum m_WrapT = GL::CLAMP_TO_EDGE;
-        bool m_Dirty = true;
+        void reset();
+        bool load(InputStream* stream);
     };
 
-    using GLTexturePtr = std::shared_ptr<GLTexture>;
+    using GLMaterialPtr = std::shared_ptr<GLMaterial>;
 }

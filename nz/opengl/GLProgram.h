@@ -35,7 +35,7 @@ namespace Z
         explicit GLProgram(GLResourceManager* manager);
         ~GLProgram();
 
-        void use();
+        bool use() const;
 
         void reload() override;
         void unload() override;

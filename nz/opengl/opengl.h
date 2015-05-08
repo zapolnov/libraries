@@ -244,6 +244,7 @@ namespace gl
     void Viewport(GL::Int x, GL::Int y, GL::Sizei width, GL::Sizei height);
 
     GL::Int GetInteger(GL::Enum param);
+    void EnableOrDisable(GL::Enum cap, bool flag);
     void BindAttribLocation(GL::UInt program, Z::GLAttribute index, const GL::Char* name);
     void DisableVertexAttribArray(Z::GLAttribute index);
     void EnableVertexAttribArray(Z::GLAttribute index);
