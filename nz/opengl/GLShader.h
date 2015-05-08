@@ -41,6 +41,8 @@ namespace Z
 
         bool compile();
 
+        void printSource() const;
+
     private:
         GL::UInt m_Handle;
         GL::Enum m_Type;

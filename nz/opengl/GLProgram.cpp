@@ -20,10 +20,18 @@
  * THE SOFTWARE.
  */
 #include "GLProgram.h"
+#include "GLResourceManager.h"
 #include "GLShader.h"
 #include "GLAttribute.h"
+#include "utility/streams/FileReader.h"
+#include "utility/streams/FileInputStream.h"
+#include "utility/FileSystem.h"
 #include "utility/debug.h"
+#include "error.h"
 #include <vector>
+#include <string>
+#include <sstream>
+#include <iomanip>
 
 namespace Z
 {
@@ -58,17 +66,36 @@ namespace Z
         }
     }
 
-    void GLProgram::bindAttribLocations()
+    InputStreamPtr GLProgram::openIncludeFile(std::string filename, const std::string& parentFileName) const
     {
-        for (const auto& attr : allGLAttributes())
-            bindAttribLocation(attr.first, attr.second);
+        FileReaderPtr file;
+
+        size_t length = filename.length();
+        if (length > 0 && filename[length - 1] == '\n')
+            filename.resize(--length);
+
+        if (length > 0 && filename[0] != '/') {
+            size_t index = parentFileName.find('/');
+            std::string parentDir = (index == std::string::npos ? std::string() : parentFileName.substr(0, index + 1));
+            std::string localFileName = filename;
+            if (resourceManager()->fileSystem()->fileExists(localFileName)) {
+                Z_LOG(" - include file \"" << localFileName << "\".");
+                file = resourceManager()->fileSystem()->openFile(localFileName);
+            }
+        }
+
+        if (!file) {
+            Z_LOG(" - include file \"" << filename << "\".");
+            file = resourceManager()->fileSystem()->openFile(filename);
+        }
+
+        return std::make_shared<FileInputStream>(file);
     }
 
-    bool GLProgram::load(InputStream* input)
+    bool GLProgram::parseProgramSource(InputStream* input,
+        std::vector<std::string>& vertex, std::vector<std::string>& fragment,
+        std::vector<std::string>* what) const
     {
-        std::vector<std::string>* what = nullptr;
-        std::vector<std::string> vertex;
-        std::vector<std::string> fragment;
         bool success = true;
         int lineNumber = 0;
 
@@ -76,12 +103,13 @@ namespace Z
         if (!input)
             return false;
 
-        Z_LOG("Loading OpenGL program \"" << input->name() << "\".");
-
         static const std::string VERTEX = "%vertex";
         static const std::string VERTEX_LF = "%vertex\n";
         static const std::string FRAGMENT = "%fragment";
         static const std::string FRAGMENT_LF = "%fragment\n";
+        static const std::string BOTH = "%both";
+        static const std::string BOTH_LF = "%both\n";
+        static const std::string INCLUDE = "%include ";
         static const std::string LF = "\n";
 
         while (!input->atEnd()) {
@@ -93,25 +121,94 @@ namespace Z
                     what = &vertex;
                 else if (line == FRAGMENT_LF || line == FRAGMENT)
                     what = &fragment;
-                else {
+                else if (line == BOTH_LF || line == BOTH)
+                    what = nullptr;
+                else if (line.substr(0, INCLUDE.length()) == INCLUDE) {
+                    auto include = openIncludeFile(line.substr(INCLUDE.length()), input->name());
+                    success = parseProgramSource(include.get(), vertex, fragment, what) && success;
+                } else {
                     Z_LOG(input->name() << "(" << lineNumber << "): invalid directive.");
                     what = nullptr;
+                    success = false;
                 }
-                vertex.emplace_back(LF);
-                fragment.emplace_back(LF);
                 continue;
             }
 
-            if (what != &vertex)
-                vertex.emplace_back(LF);
-            if (what != &fragment)
-                fragment.emplace_back(LF);
-
             if (what)
                 what->emplace_back(std::move(line));
-            else if (line.length() > 0 && line != LF)
-                Z_LOG(input->name() << "(" << lineNumber << "): ignored non-empty line.");
+            else {
+                vertex.emplace_back(line);
+                fragment.emplace_back(std::move(line));
+            }
         }
+
+        return success;
+    }
+
+    void GLProgram::printSource() const
+    {
+        GL::Int maxAttachedShaders = 0;
+        gl::GetProgramiv(m_Handle, GL::ATTACHED_SHADERS, &maxAttachedShaders);
+
+        std::vector<GL::UInt> shaders(static_cast<size_t>(maxAttachedShaders));
+        GL::Sizei numAttachedShaders = 0;
+        gl::GetAttachedShaders(m_Handle, maxAttachedShaders, &numAttachedShaders, shaders.data());
+
+        std::stringstream ss;
+        for (auto shader : shaders) {
+            GL::Int type = 0;
+            gl::GetShaderiv(shader, GL::SHADER_TYPE, &type);
+            ss << "// " << GL::Enum(type) << '\n';
+
+            GL::Int bufferLength = 0;
+            gl::GetShaderiv(shader, GL::SHADER_SOURCE_LENGTH, &bufferLength);
+
+            std::vector<char> shaderSource(static_cast<size_t>(bufferLength));
+            GL::Sizei sourceLength = 0;
+            gl::GetShaderSource(shader, bufferLength, &sourceLength, shaderSource.data());
+
+            const char* p = shaderSource.data();
+            const char* end = p + sourceLength;
+            bool printLineNumber = true;
+            int lineNumber = 0;
+            for (; p < end; ++p) {
+                if (printLineNumber) {
+                    ss << std::setw(4) << ++lineNumber << std::setw(0) << ": ";
+                    printLineNumber = false;
+                }
+
+                ss << *p;
+                if (*p == '\n')
+                    printLineNumber = true;
+            }
+
+            if (end > p && end[-1] != '\n')
+                ss << '\n';
+        }
+
+        std::string source = ss.str();
+        size_t length = source.length();
+        if (length > 0 && source[length - 1] == '\n')
+            source.resize(length - 1);
+
+        Z_LOG(source);
+    }
+
+    void GLProgram::bindAttribLocations()
+    {
+        for (const auto& attr : allGLAttributes())
+            bindAttribLocation(attr.first, attr.second);
+    }
+
+    bool GLProgram::load(InputStream* input)
+    {
+        Z_LOG("Loading OpenGL program \"" << input->name() << "\".");
+
+        std::vector<std::string> vertex;
+        std::vector<std::string> fragment;
+        bool success = parseProgramSource(input, vertex, fragment);
+
+        Z_LOG("Done loading OpenGL program \"" << input->name() << "\".");
 
         GLShader vertexShader(GL::VERTEX_SHADER);
         vertexShader.setSource(vertex);
@@ -155,6 +252,9 @@ namespace Z
         gl::GetProgramiv(m_Handle, GL::LINK_STATUS, &success);
 
         if (!success) {
+            Z_LOG("Unable to link program.\n---");
+            printSource();
+
             GL::Int logLength = 0;
             gl::GetProgramiv(m_Handle, GL::INFO_LOG_LENGTH, &logLength);
 
@@ -162,15 +262,18 @@ namespace Z
                 std::vector<GL::Char> data;
                 data.resize(size_t(logLength));
                 gl::GetProgramInfoLog(m_Handle, logLength, &logLength, data.data());
-                data.resize(size_t(logLength));
-                if (logLength > 0) {
-                    Z_LOG("Unable to link program.\n"
-                        << std::string(data.data(), data.size()));
-                }
+
+                std::string infoLog(data.data(), size_t(logLength));
+                size_t length = infoLog.length();
+                if (length > 0 && infoLog[length - 1] != '\n')
+                    infoLog += '\n';
+
+                if (logLength > 0)
+                    Z_LOG("---\n" << infoLog << "---");
             }
 
             if (logLength <= 0)
-                Z_LOG("Unable to link program. Info log is not available.");
+                Z_LOG("---\nInfo log is not available.\n---");
 
             return false;
         }

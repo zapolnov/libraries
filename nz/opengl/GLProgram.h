@@ -45,6 +45,12 @@ namespace Z
         int getUniformLocation(const char* name) const { return gl::GetUniformLocation(m_Handle, name); }
         int getUniformLocation(GLUniform uniform) const { return m_UniformHandles[int(uniform)]; }
 
+        InputStreamPtr openIncludeFile(std::string filename, const std::string& parentFileName) const;
+        bool parseProgramSource(InputStream* input, std::vector<std::string>& vertex,
+            std::vector<std::string>& fragment, std::vector<std::string>* what = nullptr) const;
+
+        void printSource() const;
+
     protected:
         GL::UInt handle() const { return m_Handle; }
 

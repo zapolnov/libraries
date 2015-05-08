@@ -22,6 +22,10 @@
 #include "GLShader.h"
 #include "error.h"
 #include "utility/debug.h"
+#include <vector>
+#include <string>
+#include <sstream>
+#include <iomanip>
 
 namespace Z
 {
@@ -68,22 +72,62 @@ namespace Z
         gl::GetShaderiv(m_Handle, GL::COMPILE_STATUS, &success);
 
         if (!success) {
+            Z_LOG("Unable to compile shader (" << m_Type << ").\n---");
+            printSource();
+
             GL::Int logLength = 0;
             gl::GetShaderiv(m_Handle, GL::INFO_LOG_LENGTH, &logLength);
 
             if (logLength > 0) {
-                std::vector<GL::Char> data;
-                data.resize(size_t(logLength));
+                std::vector<GL::Char> data(static_cast<size_t>(logLength));
                 gl::GetShaderInfoLog(m_Handle, logLength, &logLength, data.data());
-                data.resize(size_t(logLength));
+
+                std::string infoLog(data.data(), size_t(logLength));
+                size_t length = infoLog.length();
+                if (length > 0 && infoLog[length - 1] != '\n')
+                    infoLog += '\n';
+
                 if (logLength > 0)
-                    Z_LOG("Unable to compile shader (" << m_Type << ").\n" << std::string(data.data(), data.size()));
+                    Z_LOG("---\n" << infoLog << "---");
             }
 
             if (logLength <= 0)
-                Z_LOG("Unable to compile shader (" << m_Type << "). Info log is not available.");
+                Z_LOG("---\nInfo log is not available.\n---");
         }
 
         return success != GL::FALSE;
+    }
+
+    void GLShader::printSource() const
+    {
+        GL::Int bufferLength = 0;
+        gl::GetShaderiv(m_Handle, GL::SHADER_SOURCE_LENGTH, &bufferLength);
+
+        std::vector<char> shaderSource(static_cast<size_t>(bufferLength));
+        GL::Sizei sourceLength = 0;
+        gl::GetShaderSource(m_Handle, bufferLength, &sourceLength, shaderSource.data());
+
+        const char* p = shaderSource.data();
+        const char* end = p + sourceLength;
+        std::stringstream ss;
+        bool printLineNumber = true;
+        int lineNumber = 0;
+        for (; p < end; ++p) {
+            if (printLineNumber) {
+                ss << std::setw(4) << ++lineNumber << std::setw(0) << ": ";
+                printLineNumber = false;
+            }
+
+            ss << *p;
+            if (*p == '\n')
+                printLineNumber = true;
+        }
+
+        std::string source = ss.str();
+        size_t length = source.length();
+        if (length > 0 && source[length - 1] == '\n')
+            source.resize(length - 1);
+
+        Z_LOG(source);
     }
 }
