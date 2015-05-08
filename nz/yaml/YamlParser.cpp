@@ -118,6 +118,28 @@ namespace
         return true;
     }
 
+    bool YamlParser::openStream(InputStream* stream)
+    {
+        assert(m_File == nullptr);
+        assert(!m_ParserValid);
+
+        if (!yaml_parser_initialize(&m_Parser))
+        {
+            m_Error.reset(new std::string("Unable to initialize YAML parser."));
+            return false;
+        }
+
+        m_ParserValid = true;
+        m_FileName = stream->name();
+
+        yaml_parser_set_input(&m_Parser, [](void* ud, unsigned char* buffer, size_t size, size_t * bytesRead) -> int {
+            InputStream* input = reinterpret_cast<InputStream*>(ud);
+            return input->readAtMost(buffer, size, bytesRead);
+        }, stream);
+
+        return true;
+    }
+
     bool YamlParser::parse()
     {
         assert(!m_Error);
@@ -335,6 +357,19 @@ namespace Z
         YamlParser parser(error);
 
         if (!parser.openFile(file))
+            return YamlNode();
+
+        if (!parser.parse())
+            return YamlNode();
+
+        return parser.rootNode();
+    }
+
+    YamlNode yamlParseStream(InputStream* stream, YamlErrorPtr& error);
+    {
+        YamlParser parser(error);
+
+        if (!parser.openStream(stream))
             return YamlNode();
 
         if (!parser.parse())

@@ -20,10 +20,36 @@
  * THE SOFTWARE.
  */
 #include "InputStream.h"
+#include "../debug.h"
 #include <sstream>
+#include <algorithm>
 
 namespace Z
 {
+    bool InputStream::readAtMost(void* buffer, size_t size, size_t* bytesRead)
+    {
+        Z_ASSERT(bytesRead != nullptr);
+
+        unsigned char* p = reinterpret_cast<unsigned char*>(buffer);
+        *bytesRead = 0;
+
+        while (size > 0) {
+            if (atEnd())
+                break;
+
+            size_t haveBytes = bytesAvailable();
+            size_t bytesToRead = std::min(size, haveBytes);
+            if (!input->read(p, bytesToRead))
+                return false;
+
+            p += bytesToRead;
+            *bytesRead += bytesToRead;
+            size -= bytesToRead;
+        }
+
+        return true;
+    }
+
     std::string InputStream::readLine(bool includeEolMarker)
     {
         std::stringstream ss;

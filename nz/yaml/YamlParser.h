@@ -22,6 +22,7 @@
 
 #pragma once
 #include "YamlNode.h"
+#include "utility/streams/InputStream.h"
 #include <string>
 #include <memory>
 
@@ -29,4 +30,5 @@ namespace Z
 {
     using YamlErrorPtr = std::unique_ptr<std::string>;
     YamlNode yamlParseFile(const std::string& file, YamlErrorPtr& error);
+    YamlNode yamlParseStream(InputStream* stream, YamlErrorPtr& error);
 }

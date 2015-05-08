@@ -41,6 +41,7 @@ namespace Z
 
         virtual FileReader* associatedFile() const { return nullptr; }
 
+        bool readAtMost(void* buffer, size_t size, size_t* bytesRead);
         std::string readLine(bool includeEolMarker);
         std::vector<char> readAll();
     };
