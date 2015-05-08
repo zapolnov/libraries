@@ -19,40 +19,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include "MemoryFile.h"
-#include "utility/debug.h"
-#include <cstring>
+
+#pragma once
+#include "utility/streams/FileReader.h"
+#include <string>
+#include <mutex>
+#include <memory>
 
 namespace Z
 {
-    MemoryFile::MemoryFile(const std::string& name)
-        : m_Name(name)
+    class ZipFileSystem;
+
+    class ZipFileReader : public FileReader
     {
-    }
+    public:
+        ZipFileReader(const std::string& name, const FileReaderPtr& reader, void* handle, const std::string* password);
+        ~ZipFileReader();
 
-    MemoryFile::~MemoryFile()
-    {
-    }
+        const std::string& name() const override;
 
-    const std::string& MemoryFile::name() const
-    {
-        return m_Name;
-    }
+        uint64_t size() const override;
+        bool read(uint64_t offset, void* buffer, size_t size) override;
 
-    uint64_t MemoryFile::size() const
-    {
-        return m_Data.size();
-    }
+    private:
+        std::mutex m_Mutex;
+        std::string m_Name;
+        std::unique_ptr<std::string> m_Password;
+        void* m_Handle;
+        FileReaderPtr m_ZipReader;
+        uint64_t m_Size;
+        uint64_t m_Offset;
+        bool m_IsOpen;
 
-    bool MemoryFile::read(uint64_t offset, void* buffer, size_t size)
-    {
-        if (offset + size > m_Data.size()) {
-            Z_LOG("Incomplete read in file \"" << m_Name << "\".");
-            return false;
-        }
+        bool reopen();
 
-        memcpy(buffer, m_Data.data() + offset, size);
+        ZipFileReader(const ZipFileReader&) = delete;
+        ZipFileReader& operator=(const ZipFileReader&) = delete;
 
-        return true;
-    }
+        friend class ZipFileSystem;
+    };
 }

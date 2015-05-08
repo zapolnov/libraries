@@ -21,7 +21,6 @@
  */
 
 #pragma once
-
 #include "utility/streams/FileReader.h"
 #include <string>
 #include <mutex>

@@ -127,6 +127,8 @@ typedef struct unz_file_info_s
     uLong disk_offset;
 } unz_file_info;
 
+struct unz64_file_pos_s;
+
 /***************************************************************************/
 /* Opening and close a zip file */
 
@@ -147,6 +149,8 @@ extern unzFile ZEXPORT unzOpen2 OF((const char *path, zlib_filefunc_def* pzlib_f
 /* Open a Zip file, like unzOpen, but provide a set of file low level API for read/write operations */
 extern unzFile ZEXPORT unzOpen2_64 OF((const void *path, zlib_filefunc64_def* pzlib_filefunc_def));
 /* Open a Zip file, like unz64Open, but provide a set of file low level API for read/write 64-bit operations */
+
+extern unzFile ZEXPORT unzOpen3_64 OF((const void *path, zlib_filefunc64_def* pzlib_filefunc_def, const struct unz64_file_pos_s* filepos));
 
 extern int ZEXPORT unzClose OF((unzFile file));
 /* Close a ZipFile opened with unzipOpen. If there is files inside the .Zip opened with unzOpenCurrentFile,
