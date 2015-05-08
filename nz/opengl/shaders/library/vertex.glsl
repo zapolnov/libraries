@@ -22,19 +22,32 @@
 
 %vertex
 
-#define Z_TEXCOORD
-%include library/vertex.glsl
-
-%fragment
-
-#ifdef GL_ES
-precision mediump float;
+#ifdef Z_SKINNING
+%include skinning.glsl
 #endif
 
-uniform sampler2D u_texture;
+attribute vec3 a_position;
+
+#ifdef Z_TEXCOORD
+attribute vec2 a_texcoord;
+#endif
+
+uniform mat4 u_projection;
+uniform mat4 u_modelview;
+
+#ifdef Z_TEXCOORD
 varying vec2 v_texcoord;
+#endif
 
 void main()
 {
-    gl_FragColor = texture2D(u_texture, v_texcoord);
+  #ifdef Z_TEXCOORD
+    v_texcoord = a_texcoord;
+  #endif
+
+    vec4 pos = vec4(a_position, 1.0);
+  #ifdef Z_SKINNING
+    applySkinning(pos);
+  #endif
+    gl_Position = u_projection * u_modelview * pos;
 }

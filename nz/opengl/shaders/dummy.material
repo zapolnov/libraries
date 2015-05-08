@@ -1,0 +1,4 @@
+
+shader: dummy.glsl
+cullFace: false
+depthTest: true

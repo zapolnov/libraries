@@ -23,7 +23,13 @@
 
 namespace Z
 {
-    MeshMaterial::MeshMaterial()
+    MeshMaterial::MeshMaterial(const std::string& name)
+        : m_Name(name)
+    {
+    }
+
+    MeshMaterial::MeshMaterial(std::string&& name)
+        : m_Name(std::move(name))
     {
     }
 

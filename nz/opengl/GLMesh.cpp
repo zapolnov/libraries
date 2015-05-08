@@ -20,6 +20,7 @@
  * THE SOFTWARE.
  */
 #include "GLMesh.h"
+#include "GLResourceManager.h"
 #include "utility/debug.h"
 #include <unordered_set>
 
@@ -57,7 +58,16 @@ namespace Z
 
         m_VertexBuffers[0]->enableAttributes();
 
+        GLMaterialPtr currentMaterial;
         for (const auto& element : m_Elements) {
+            if (currentMaterial != element.material) {
+                if (!element.material->bind()) {
+                    currentMaterial.reset();
+                    continue;
+                }
+                currentMaterial = element.material;
+            }
+
             if (m_VertexBuffers[element.vertexBuffer]->bind()) {
                 gl::DrawElements(GL::TRIANGLES, GL::Sizei(element.indexBufferLength), GL::UNSIGNED_SHORT,
                     reinterpret_cast<void*>(sizeof(uint16_t) * element.indexBufferOffset));
@@ -72,6 +82,11 @@ namespace Z
 
     void GLMesh::initFromMesh(const MeshPtr& mesh)
     {
+        // Keep materials resident until this function returns
+        std::vector<GLMaterialPtr> oldMaterials = std::move(m_Materials);
+        m_Materials.clear();
+        (void)oldMaterials;
+
         unload();
 
         Z_CHECK(mesh != nullptr);
@@ -80,15 +95,44 @@ namespace Z
 
         const auto& elements = mesh->elements();
         m_Elements.reserve(elements.size());
+        m_Materials.reserve(elements.size());
 
+        std::unordered_set<GLMaterialPtr> materialSet;
         for (const auto& element : mesh->elements())
         {
             Element elementInfo;
             elementInfo.vertexBuffer = element.vertexBuffer;
             elementInfo.indexBufferOffset = element.indexBufferOffset;
             elementInfo.indexBufferLength = element.indexBufferLength;
+
+            if (!element.material)
+                elementInfo.material = resourceManager()->dummyMaterial();
+            else {
+                std::string name = element.material->name();
+                size_t length = name.length();
+
+                static const std::string SUFFIX = "material";
+                if (length <= SUFFIX.length() || name.substr(length - SUFFIX.length()) != SUFFIX)
+                    name = name + '.' + SUFFIX;
+                else {
+                    size_t index = length - SUFFIX.length() - 1;
+                    if (name[index] != '.') {
+                        if (name[index] == '-' || name[index] == '_')
+                            name[index] = '.';
+                        else
+                            name = name + '.' + SUFFIX;
+                    }
+                }
+
+                elementInfo.material = resourceManager()->loadMaterial(mesh->baseDirectory() + name);
+            }
+
+            if (elementInfo.material && materialSet.insert(elementInfo.material).second)
+                m_Materials.emplace_back(elementInfo.material);
+
             m_Elements.push_back(elementInfo);
         }
+        materialSet.clear();
 
         m_VertexBuffers.reserve(mesh->vertexBuffers().size());
         for (const auto& buffer : mesh->vertexBuffers()) {

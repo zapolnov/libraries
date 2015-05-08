@@ -76,8 +76,12 @@ namespace Z
 
             FileInputStream stream2(file);
             MeshPtr mesh = reader->readMesh(&stream2, format, readFlags);
-            if (mesh)
+            if (mesh) {
+                const std::string& fileName = file->name();
+                size_t index = fileName.rfind('/');
+                mesh->setBaseDirectory(index == std::string::npos ? std::string() : fileName.substr(0, index + 1));
                 return mesh;
+            }
         }
 
         Z_LOG("There is no reader able to load mesh \"" << file->name() << "\".");

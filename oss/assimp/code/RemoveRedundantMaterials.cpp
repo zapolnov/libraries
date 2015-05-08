@@ -178,9 +178,11 @@ void RemoveRedundantMatsProcess::Execute( aiScene* pScene)
 				const unsigned int idx = aiMappingTable[p]; 
 				if (ppcMaterials[idx]) 
 				{
+                /*
 					aiString sz;
 					sz.length = ::sprintf(sz.data,"JoinedMaterial_#%i",p);
 					((aiMaterial*)ppcMaterials[idx])->AddProperty(&sz,AI_MATKEY_NAME);
+                    */
 				}
 				else
 					ppcMaterials[idx] = pScene->mMaterials[p];

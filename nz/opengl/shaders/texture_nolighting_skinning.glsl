@@ -23,5 +23,4 @@
 %both
 
 #define Z_SKINNING
-
 %include texture_nolighting.glsl

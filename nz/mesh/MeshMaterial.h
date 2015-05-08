@@ -28,10 +28,15 @@ namespace Z
     class MeshMaterial
     {
     public:
-        MeshMaterial();
+        explicit MeshMaterial(const std::string& name);
+        explicit MeshMaterial(std::string&& name);
         ~MeshMaterial();
 
+        const std::string& name() const { return m_Name; }
+
     private:
+        std::string m_Name;
+
         MeshMaterial(const MeshMaterial&) = delete;
         MeshMaterial& operator=(const MeshMaterial&) = delete;
     };

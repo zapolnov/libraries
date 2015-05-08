@@ -23,6 +23,7 @@
 #pragma once
 #include "GLResource.h"
 #include "GLBuffer.h"
+#include "GLMaterial.h"
 #include "GLVertexBuffer.h"
 #include "GLAttribute.h"
 #include "opengl.h"
@@ -45,12 +46,14 @@ namespace Z
     protected:
         struct Element
         {
+            GLMaterialPtr material;
             size_t vertexBuffer;
             size_t indexBufferOffset;
             size_t indexBufferLength;
         };
 
         std::vector<Element> m_Elements;
+        std::vector<GLMaterialPtr> m_Materials;
         std::vector<GLVertexBufferPtr> m_VertexBuffers;
         GLBufferPtr m_IndexBuffer;
 

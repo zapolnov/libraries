@@ -54,6 +54,9 @@ namespace Z
         explicit Mesh(const VertexFormatPtr& format);
         ~Mesh();
 
+        void setBaseDirectory(const std::string& directory) { m_BaseDirectory = directory; }
+        const std::string& baseDirectory() const { return m_BaseDirectory; }
+
         std::vector<Element>& elements() { return m_Elements; }
         const std::vector<Element>& elements() const { return m_Elements; }
 
@@ -80,6 +83,7 @@ namespace Z
         SkeletonAnimationPtr addAnimation(const Utf8String& name);
 
     private:
+        std::string m_BaseDirectory;
         IndexBuffer m_IndexBuffer;
         std::vector<VertexBuffer> m_VertexBuffers;
         VertexFormatPtr m_VertexFormat;

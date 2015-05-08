@@ -59,6 +59,7 @@ namespace Z
         GLTexturePtr loadTexture(const std::string& fileName);
 
         GLMaterialPtr loadMaterial(const std::string& fileName);
+        GLMaterialPtr dummyMaterial();
 
         const VertexFormatPtr& defaultStaticVertexFormat();
         const VertexFormatPtr& defaultAnimatedVertexFormat();
@@ -87,6 +88,7 @@ namespace Z
         std::unordered_map<std::string, std::weak_ptr<SkeletonAnimatedMesh>> m_SkeletonAnimatedMeshes;
         VertexFormatPtr m_DefaultStaticVertexFormat;
         VertexFormatPtr m_DefaultAnimatedVertexFormat;
+        GLMaterialPtr m_DummyMaterial;
         std::unordered_set<GLResource*> m_Resources;
         std::vector<GLResource*> m_ReloadingResourcesList;
         size_t m_ReloadingResourceIndex = 0;

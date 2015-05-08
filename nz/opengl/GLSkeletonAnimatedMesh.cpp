@@ -20,6 +20,8 @@
  * THE SOFTWARE.
  */
 #include "GLSkeletonAnimatedMesh.h"
+#include "GLProgram.h"
+#include "GLUniform.h"
 #include "utility/debug.h"
 #include <unordered_set>
 
@@ -43,23 +45,53 @@ namespace Z
 
     void GLSkeletonAnimatedMesh::render(size_t animationIndex, float animationTime) const
     {
+        if (m_Elements.empty() || m_VertexBuffers.empty() || !m_IndexBuffer)
+            return;
+
         if (animationIndex >= m_Animations.size()) {
             Z_LOG("Mesh has no animation #" << animationIndex);
             return;
         }
         const SkeletonAnimationPtr& animation = m_Animations[animationIndex];
 
+        if (!m_IndexBuffer->bind())
+            return;
+
         std::vector<glm::mat4> boneMatrices;
         boneMatrices.reserve(animation->skeleton()->numBones());
         animation->getPoseForTime(animationTime, boneMatrices);
+        m_VertexBuffers[0]->enableAttributes();
 
-        if (!boneMatrices.empty()) {
-            GL::Int program = gl::GetInteger(GL::CURRENT_PROGRAM);
-            int uniform = gl::GetUniformLocation(program, "u_bones");
-            gl::UniformMatrix4fv(uniform, GL::Sizei(boneMatrices.size()), GL::FALSE, &boneMatrices[0][0][0]);
+        GLMaterialPtr currentMaterial;
+        int lastBonesUniform = -1;
+        for (const auto& element : m_Elements) {
+            if (currentMaterial != element.material) {
+                if (!element.material->bind()) {
+                    currentMaterial.reset();
+                    continue;
+                }
+                currentMaterial = element.material;
+            }
+
+            if (!boneMatrices.empty()) {
+                int uniform = element.material->program()->getUniformLocation(GLUniform::BoneMatrixPalette);
+                if (uniform != -1 && uniform != lastBonesUniform) {
+                    gl::UniformMatrix4fv(uniform, GL::Sizei(boneMatrices.size()), GL::FALSE, &boneMatrices[0][0][0]);
+                    lastBonesUniform = uniform;
+                }
+            }
+
+            if (m_VertexBuffers[element.vertexBuffer]->bind()) {
+                gl::DrawElements(GL::TRIANGLES, GL::Sizei(element.indexBufferLength), GL::UNSIGNED_SHORT,
+                     reinterpret_cast<void*>(sizeof(uint16_t) * element.indexBufferOffset));
+            }
         }
 
-        GLMesh::render();
+        gl::BindBuffer(GL::ARRAY_BUFFER, 0);
+        gl::BindBuffer(GL::ELEMENT_ARRAY_BUFFER, 0);
+
+        m_VertexBuffers[0]->disableAttributes();
+
     }
 
     void GLSkeletonAnimatedMesh::initFromMesh(const MeshPtr& mesh)

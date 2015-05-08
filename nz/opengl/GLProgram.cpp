@@ -125,7 +125,7 @@ namespace Z
             if (index != std::string::npos) {
                 bool endsWithLF = false;
                 size_t length = line.length();
-                if (length > 0 && line[length - 1] == '\n')
+                if (length > 1 && line[length - 1] == '\n')
                     endsWithLF = true;
 
                 line = line.substr(0, index);

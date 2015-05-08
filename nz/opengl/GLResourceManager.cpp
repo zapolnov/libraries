@@ -123,7 +123,10 @@ namespace Z
         {
             GLMaterial::reload();
 
-            FileInputStream stream(resourceManager()->fileSystem()->openFile(m_FileName));
+            FileReaderPtr reader = resourceManager()->fileSystem()->openFile(m_FileName);
+            if (!reader)
+                reader = resourceManager()->fileSystem()->openFile("shaders/dummy.material");
+            FileInputStream stream(reader);
             load(&stream);
         }
 
@@ -345,6 +348,16 @@ namespace Z
         it->second = material;
 
         return material;
+    }
+
+    GLMaterialPtr GLResourceManager::dummyMaterial()
+    {
+        if (!m_DummyMaterial) {
+            std::lock_guard<decltype(m_Mutex)> lock(m_Mutex);
+            if (!m_DummyMaterial)
+                m_DummyMaterial = loadMaterial("shaders/dummy.material");
+        }
+        return m_DummyMaterial;
     }
 
     const VertexFormatPtr& GLResourceManager::defaultStaticVertexFormat()

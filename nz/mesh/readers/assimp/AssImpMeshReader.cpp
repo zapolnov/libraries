@@ -433,6 +433,27 @@ namespace Z
             convertMatrix(skeleton->globalInverseTransform(), globalInverseTransform);
         }
 
+        std::vector<MeshMaterialPtr> materials;
+        materials.reserve(scene->mNumMaterials);
+
+        for (size_t i = 0; i < scene->mNumMaterials; i++) {
+            const aiMaterial* sceneMaterial = scene->mMaterials[i];
+            MeshMaterialPtr material;
+
+            aiString materialName;
+            if (sceneMaterial->Get(AI_MATKEY_NAME, materialName) == AI_SUCCESS)
+                material = std::make_shared<MeshMaterial>(std::string(materialName.data, materialName.length));
+            else {
+                std::stringstream ss;
+                ss << "material" << i;
+                material = std::make_shared<MeshMaterial>(ss.str());
+            }
+
+            Z_LOG(" - Material #" << i << " (\"" << material->name() << "\").");
+            materials.push_back(material);
+        }
+        Z_LOG(" - Total " << materials.size() << " material" << (materials.size() == 1 ? "" : "s") << '.');
+
         std::vector<uint8_t> vertexData;
         std::vector<uint16_t> indexData;
         size_t vertexDataLength = 0;
@@ -470,7 +491,9 @@ namespace Z
                     Mesh::Element element;
                     element.name.assign(sceneMesh->mName.data, sceneMesh->mName.length);
 
-                    // FIXME: read material
+                    Z_CHECK(sceneMesh->mMaterialIndex < materials.size());
+                    if (sceneMesh->mMaterialIndex < materials.size())
+                        element.material = materials[sceneMesh->mMaterialIndex];
 
                     element.vertexBuffer = vertexBufferIndex;
                     size_t firstIndex = vertexDataLength;
