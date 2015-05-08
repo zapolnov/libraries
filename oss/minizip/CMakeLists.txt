@@ -5,6 +5,7 @@ project(minizip C)
 if(MSVC)
     add_definitions(-D_CRT_SECURE_NO_DEPRECATE)
     add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
+    add_definitions(/wd4244 /wd4267 /wd4456)
 endif()
 
 add_definitions(-DHAVE_AES)

@@ -74,7 +74,7 @@ namespace Z
         Skeleton(const Skeleton&) = delete;
         Skeleton& operator=(const Skeleton&) = delete;
 
-        friend class Bone;
+        friend struct Bone;
     };
 
     using SkeletonPtr = std::shared_ptr<Skeleton>;

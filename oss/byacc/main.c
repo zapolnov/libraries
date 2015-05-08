@@ -4,6 +4,7 @@
 #ifndef _WIN32
 #include <unistd.h>		/* for _exit() */
 #else
+#include <io.h>
 #include <stdlib.h>		/* for _exit() */
 #endif
 
@@ -11,7 +12,7 @@
 
 #ifdef HAVE_MKSTEMP
 # define USE_MKSTEMP 1
-#elif defined(HAVE_FCNTL_H)
+#elif !defined(_MSC_VER) && defined(HAVE_FCNTL_H)
 # define USE_MKSTEMP 1
 # include <fcntl.h>		/* for open(), O_EXCL, etc. */
 #else

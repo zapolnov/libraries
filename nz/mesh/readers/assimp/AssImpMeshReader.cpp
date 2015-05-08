@@ -329,7 +329,7 @@ namespace Z
             Z_LOG(" - Bone #" << bone.index << " (\"" << nodeName << "\").");
 
         size_t boneIndex = bone.index;
-        for (int i = 0; i < rootNode->mNumChildren; i++)
+        for (size_t i = 0; i < rootNode->mNumChildren; i++)
             readNodeHierarchy(skeleton, rootNode->mChildren[i], boneIndex);
     }
 
@@ -439,10 +439,10 @@ namespace Z
         size_t vertexBufferIndex = 0;
 
         std::unordered_set<const aiMesh*> processedMeshes;
-        int firstUnprocessedMesh = 0;
+        size_t firstUnprocessedMesh = 0;
         while (processedMeshes.size() < scene->mNumMeshes)
         {
-            for (int i = firstUnprocessedMesh; i < scene->mNumMeshes; i++)
+            for (size_t i = firstUnprocessedMesh; i < scene->mNumMeshes; i++)
             {
                 const aiMesh* sceneMesh = scene->mMeshes[i];
 
@@ -519,12 +519,12 @@ namespace Z
                             convertMatrix(bone.matrix(), sceneMeshBone->mOffsetMatrix);
 
                             if (needWeights || needIndices) {
-                                for (int k = 0; k < sceneMeshBone->mNumWeights; k++) {
+                                for (size_t k = 0; k < sceneMeshBone->mNumWeights; k++) {
                                     size_t v = sceneMeshBone->mWeights[k].mVertexId;
                                     for (int index = 0; index < 4; index++) {
                                         if (weights[v][index] == 0.0f) {
                                             weights[v][index] = sceneMeshBone->mWeights[k].mWeight;
-                                            indices[v][index] = bone.index;
+                                            indices[v][index] = float(bone.index);
                                             break;
                                         }
                                     }
@@ -546,12 +546,12 @@ namespace Z
                     element.indexBufferOffset = indexData.size();
                     element.indexBufferLength = sceneMesh->mNumFaces * 3;
                     indexData.reserve(element.indexBufferOffset + element.indexBufferLength);
-                    for (int j = 0; j < sceneMesh->mNumFaces; j++) {
+                    for (size_t j = 0; j < sceneMesh->mNumFaces; j++) {
                         if (sceneMesh->mFaces[j].mNumIndices != 3)
                             continue;
-                        indexData.emplace_back(sceneMesh->mFaces[j].mIndices[0] + firstIndex);
-                        indexData.emplace_back(sceneMesh->mFaces[j].mIndices[1] + firstIndex);
-                        indexData.emplace_back(sceneMesh->mFaces[j].mIndices[2] + firstIndex);
+                        indexData.emplace_back(uint16_t(sceneMesh->mFaces[j].mIndices[0] + firstIndex));
+                        indexData.emplace_back(uint16_t(sceneMesh->mFaces[j].mIndices[1] + firstIndex));
+                        indexData.emplace_back(uint16_t(sceneMesh->mFaces[j].mIndices[2] + firstIndex));
                     }
 
                     if (element.name.empty()) {
@@ -586,13 +586,13 @@ namespace Z
             << ").");
 
         if (readSkeleton) {
-            for (int i = 0; i < scene->mNumAnimations; i++) {
+            for (size_t i = 0; i < scene->mNumAnimations; i++) {
                 const aiAnimation* sceneAnimation = scene->mAnimations[i];
                 auto animationName = Utf8String::fromRawBytes(sceneAnimation->mName.data, sceneAnimation->mName.length);
 
                 auto animation = mesh->addAnimation(animationName);
-                animation->setDurationInTicks(sceneAnimation->mDuration);
-                animation->setTicksPerSecond(sceneAnimation->mTicksPerSecond);
+                animation->setDurationInTicks(float(sceneAnimation->mDuration));
+                animation->setTicksPerSecond(float(sceneAnimation->mTicksPerSecond));
 
                 if (animationName.empty()) {
                     Z_LOG(" - Animation #" << i << ": affects "
@@ -606,7 +606,7 @@ namespace Z
                         << " ticks/sec).");
                 }
 
-                for (int j = 0; j < sceneAnimation->mNumChannels; j++) {
+                for (size_t j = 0; j < sceneAnimation->mNumChannels; j++) {
                     const aiNodeAnim* channel = sceneAnimation->mChannels[j];
                     auto boneName = Utf8String::fromRawBytes(channel->mNodeName.data, channel->mNodeName.length);
 
@@ -617,21 +617,21 @@ namespace Z
                     for (size_t k = 0; k < channel->mNumPositionKeys; k++) {
                         const aiVectorKey& key = channel->mPositionKeys[k];
                         auto& ref = animation->positionKeys()[keys.positionKeysOffset + k];
-                        ref.time = key.mTime;
+                        ref.time = float(key.mTime);
                         convertVec3(ref.position, key.mValue);
                     }
 
                     for (size_t k = 0; k < channel->mNumScalingKeys; k++) {
                         const aiVectorKey& key = channel->mScalingKeys[k];
                         auto& ref = animation->scaleKeys()[keys.scaleKeysOffset + k];
-                        ref.time = key.mTime;
+                        ref.time = float(key.mTime);
                         convertVec3(ref.scale, key.mValue);
                     }
 
                     for (size_t k = 0; k < channel->mNumRotationKeys; k++) {
                         const aiQuatKey& key = channel->mRotationKeys[k];
                         auto& ref = animation->rotationKeys()[keys.rotationKeysOffset + k];
-                        ref.time = key.mTime;
+                        ref.time = float(key.mTime);
                         convertQuat(ref.rotation, key.mValue);
                     }
                 }

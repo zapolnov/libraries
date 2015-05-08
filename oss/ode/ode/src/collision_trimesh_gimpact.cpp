@@ -509,5 +509,10 @@ int dCollideTTL(dxGeom* g1, dxGeom* g2, int Flags, dContactGeom* Contacts, int S
     return (int)contactcount;
 }
 
+#else
+char _collision_trimesh_gimpact = 1; // prevent librarian warning
 #endif // dTRIMESH_GIMPACT
+
+#else
+char _collision_trimesh_gimpact = 1; // prevent librarian warning
 #endif // dTRIMESH_ENABLED

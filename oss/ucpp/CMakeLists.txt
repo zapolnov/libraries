@@ -5,7 +5,7 @@ project(ucpp)
 if(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
     add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
-    add_definitions(/wd4068 /wd4141 /wd4146 /wd4244 /wd4456 /wd4459)
+    add_definitions(/wd4068 /wd4141 /wd4146 /wd4244 /wd4267 /wd4456 /wd4459)
 endif()
 
 include(CheckCSourceCompiles)

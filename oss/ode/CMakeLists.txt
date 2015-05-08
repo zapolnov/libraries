@@ -10,6 +10,11 @@ if(APPLE)
     endif()
 endif()
 
+if(MSVC)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+    add_definitions(/wd4056 /wd4244 /wd4267 /wd4305 /wd4456 /wd4457 /wd4458 /wd4756 /wd4838)
+endif()
+
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/GIMPACT/include")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/OPCODE")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/libccd/src")
@@ -51,5 +56,7 @@ add_library(ode STATIC ${EXCLUDE_FROM_ALL}
     ${ode_src_files}
     ${ode_src_joints_files}
 )
+
+set_source_files_properties(ode/src/collision_trimesh_trimesh.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
 
 target_include_directories(ode BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")

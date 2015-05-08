@@ -63,7 +63,7 @@ namespace Z
                 }
 
                 auto offset = reinterpret_cast<void*>(attr.offset);
-                gl::VertexAttribPointer(i, attr.count, type, GL::FALSE, m_Format->size(), offset);
+                gl::VertexAttribPointer(i, attr.count, type, GL::FALSE, GL::Sizei(m_Format->size()), offset);
             }
         }
 

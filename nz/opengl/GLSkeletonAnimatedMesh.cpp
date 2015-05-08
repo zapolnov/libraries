@@ -56,7 +56,7 @@ namespace Z
         if (!boneMatrices.empty()) {
             GL::Int program = gl::GetInteger(GL::CURRENT_PROGRAM);
             int uniform = gl::GetUniformLocation(program, "u_bones");
-            gl::UniformMatrix4fv(uniform, boneMatrices.size(), GL::FALSE, &boneMatrices[0][0][0]);
+            gl::UniformMatrix4fv(uniform, GL::Sizei(boneMatrices.size()), GL::FALSE, &boneMatrices[0][0][0]);
         }
 
         GLMesh::render();

@@ -5,6 +5,7 @@ project(jpeg)
 if(MSVC)
     add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+    add_definitions(/wd4267)
 endif()
 
 configure_file(jconfig.vc "${CMAKE_CURRENT_BINARY_DIR}/jconfig.h" COPYONLY)

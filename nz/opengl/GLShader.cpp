@@ -84,6 +84,6 @@ namespace Z
                 Z_LOG("Unable to compile shader (" << m_Type << "). Info log is not available.");
         }
 
-        return success;
+        return success != GL::FALSE;
     }
 }

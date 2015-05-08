@@ -42,6 +42,9 @@
 #include <stdlib.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#ifdef NT_THREADS
+#undef _POSIX_THREADS
+#endif
 #endif
 
 /* For size_t? */

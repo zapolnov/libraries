@@ -2,6 +2,13 @@
 cmake_minimum_required(VERSION 3.1)
 project(byacc)
 
+if(MSVC)
+    add_definitions(-D_CRT_SECURE_NO_DEPRECATE=1)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS=1)
+    add_definitions(-D_CRT_NONSTDC_NO_WARNINGS=1)
+    add_definitions(/wd4715)
+endif()
+
 include(CheckIncludeFile)
 check_include_file(fcntl.h HAVE_FCNTL_H)
 

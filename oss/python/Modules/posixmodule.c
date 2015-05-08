@@ -121,7 +121,7 @@ corresponding Unix manual entries for more information on calls.");
 #define HAVE_SYSTEM     1
 #define HAVE_WAIT       1
 #else
-#ifdef _MSC_VER         /* Microsoft compiler */
+#if defined(_MSC_VER) || defined(MS_WINDOWS)         /* Microsoft compiler */
 #define HAVE_GETCWD     1
 #define HAVE_SPAWNV     1
 #define HAVE_EXECV      1
@@ -259,7 +259,7 @@ extern int lstat(const char *, struct stat *);
 #endif
 #endif
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(MS_WINDOWS)
 #ifdef HAVE_DIRECT_H
 #include <direct.h>
 #endif
@@ -897,7 +897,7 @@ static BOOL __stdcall
 win32_chdir(LPCSTR path)
 {
     char new_path[MAX_PATH+1];
-    int result;
+    DWORD result;
     char env[4] = "=x:";
 
     if(!SetCurrentDirectoryA(path))
@@ -9392,7 +9392,7 @@ all_ins(PyObject *d)
 }
 
 
-#if (defined(_MSC_VER) || defined(__WATCOMC__) || defined(__BORLANDC__)) && !defined(__QNX__)
+#if (defined(_MSC_VER) || defined(__WATCOMC__) || defined(__BORLANDC__)) && !defined(__QNX__) || defined(MS_WINDOWS)
 #define INITFUNC initnt
 #define MODNAME "nt"
 

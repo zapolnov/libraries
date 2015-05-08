@@ -181,8 +181,8 @@ namespace
 
     bool YamlParser::setParseError(const std::string& message)
     {
-        int line = m_Event.start_mark.line + 1;
-        int column = m_Event.start_mark.column + 1;
+        size_t line = m_Event.start_mark.line + 1;
+        size_t column = m_Event.start_mark.column + 1;
 
         std::stringstream ss;
         ss << m_FileName << "(" << line << ", " << column << "): " << message;
@@ -235,8 +235,8 @@ namespace
     bool YamlParser::parseScalarValue(YamlNode& node)
     {
         std::string text(reinterpret_cast<const char*>(m_Event.data.scalar.value), m_Event.data.scalar.length);
-        int line = m_Event.start_mark.line + 1;
-        int column = m_Event.start_mark.column + 1;
+        int line = int(m_Event.start_mark.line + 1);
+        int column = int(m_Event.start_mark.column + 1);
 
         bool valid = false;
         switch (m_Event.data.scalar.style)
@@ -257,8 +257,8 @@ namespace
 
     bool YamlParser::parseSequenceValue(YamlNode& node)
     {
-        int line = m_Event.start_mark.line + 1;
-        int column = m_Event.start_mark.column + 1;
+        int line = int(m_Event.start_mark.line + 1);
+        int column = int(m_Event.start_mark.column + 1);
 
         YamlNode::SequenceValue* items = nullptr;
         node = YamlNode::sequence(items, line, column);
@@ -283,8 +283,8 @@ namespace
 
     bool YamlParser::parseMappingValue(YamlNode& node)
     {
-        int line = m_Event.start_mark.line + 1;
-        int column = m_Event.start_mark.column + 1;
+        int line = int(m_Event.start_mark.line + 1);
+        int column = int(m_Event.start_mark.column + 1);
 
         YamlNode::MappingValue* items = nullptr;
         node = YamlNode::mapping(items, line, column);

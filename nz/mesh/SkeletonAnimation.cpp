@@ -116,7 +116,7 @@ namespace Z
         }
 
         float durationInTicks = m_Duration;
-        float ticksPerSecond = m_TicksPerSecond > 0.0 ? m_TicksPerSecond : 25.0;
+        float ticksPerSecond = float(m_TicksPerSecond > 0.0 ? m_TicksPerSecond : 25.0);
         float timeInTicks = fmod(time * m_TicksPerSecond, durationInTicks);
 
         size_t numBones = m_Skeleton->numBones();

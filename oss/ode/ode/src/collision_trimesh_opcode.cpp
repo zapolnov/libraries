@@ -895,5 +895,10 @@ void dGeomTriMeshDataUpdate(dTriMeshDataID g) {
     g->UpdateData();
 }
 
+#else
+char _collision_trimesh_opcode = 1; // prevent librarian warning
 #endif // dTRIMESH_OPCODE
+
+#else
+char _collision_trimesh_opcode = 1; // prevent librarian warning
 #endif // dTRIMESH_ENABLED

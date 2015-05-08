@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#define _USE_MATH_DEFINES
 #include "DebugRenderer.h"
 #include "utility/debug.h"
 
@@ -136,7 +137,7 @@ namespace Z
     size_t DebugRenderer::initCircleVertices(const b2Vec2& center, float radius, float scale)
     {
         const size_t NUM_VERTICES = 16;
-        const float STEP = 2.0f * M_PI / NUM_VERTICES;
+        const float STEP = float(2.0 * M_PI / NUM_VERTICES);
 
         size_t numFloats = NUM_VERTICES * 2;
         if (m_Vertices.size() < numFloats)

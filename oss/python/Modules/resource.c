@@ -8,6 +8,9 @@
 /* for sysconf */
 #if defined(HAVE_UNISTD_H)
 #include <unistd.h>
+#ifdef NT_THREADS
+#undef _POSIX_THREADS
+#endif
 #endif
 
 /* On some systems, these aren't in any header file.

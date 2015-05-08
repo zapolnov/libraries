@@ -59,7 +59,7 @@ namespace Z
 
         for (const auto& element : m_Elements) {
             if (m_VertexBuffers[element.vertexBuffer]->bind()) {
-                gl::DrawElements(GL::TRIANGLES, element.indexBufferLength, GL::UNSIGNED_SHORT,
+                gl::DrawElements(GL::TRIANGLES, GL::Sizei(element.indexBufferLength), GL::UNSIGNED_SHORT,
                     reinterpret_cast<void*>(sizeof(uint16_t) * element.indexBufferOffset));
             }
         }

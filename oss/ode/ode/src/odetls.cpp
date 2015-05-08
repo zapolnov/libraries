@@ -146,5 +146,7 @@ void COdeTls::FreeTrimeshCollidersCache_Callback(tlsvaluetype vValueData)
 }
 
 
+#else
+char ode_tls = 1; // prevent librarian warning
 #endif // #if dTLS_ENABLED
 
