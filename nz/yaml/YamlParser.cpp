@@ -39,6 +39,8 @@ namespace
         ~YamlParser();
 
         bool openFile(const std::string& path);
+        bool openStream(InputStream* stream);
+
         bool parse();
 
         const YamlNode& rootNode() const { return m_RootNode; }
@@ -365,7 +367,7 @@ namespace Z
         return parser.rootNode();
     }
 
-    YamlNode yamlParseStream(InputStream* stream, YamlErrorPtr& error);
+    YamlNode yamlParseStream(InputStream* stream, YamlErrorPtr& error)
     {
         YamlParser parser(error);
 

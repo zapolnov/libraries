@@ -39,7 +39,7 @@ namespace Z
 
             size_t haveBytes = bytesAvailable();
             size_t bytesToRead = std::min(size, haveBytes);
-            if (!input->read(p, bytesToRead))
+            if (!read(p, bytesToRead))
                 return false;
 
             p += bytesToRead;
