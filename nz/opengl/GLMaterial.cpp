@@ -137,6 +137,7 @@ namespace Z
         struct Context
         {
             GLMaterial* material;
+            InputStream* stream;
             GLResourceManager* resourceManager;
             std::string baseDir;
 
@@ -152,6 +153,11 @@ namespace Z
                     return value;
                 }
             }
+
+            void logError(const YamlNode& node, const std::string& message)
+            {
+                Z_LOG("Unable to parse file \"" << stream->name() << "\": at line " << node.line() << ": " << message);
+            }
         };
 
         static const std::unordered_map<std::string, std::function<bool(Context* C, const YamlNode&)>> handlers = {
@@ -166,18 +172,25 @@ namespace Z
             }},
 
             { "cullFace", [](Context* C, const YamlNode& node) -> bool {
-                C->material->m_CullFace = node.toBool();
+                auto value = node.toBool();
+                if (value == Z::YamlNode::Indeterminate)
+                    return false;
+                C->material->m_CullFace = (value == Z::YamlNode::True);
                 return true;
             }},
 
             { "depthTest", [](Context* C, const YamlNode& node) -> bool {
-                C->material->m_DepthTest = node.toBool();
+                auto value = node.toBool();
+                if (value == Z::YamlNode::Indeterminate)
+                    return false;
+                C->material->m_DepthTest = (value == Z::YamlNode::True);
                 return true;
             }},
         };
 
         Context context;
         context.material = this;
+        context.stream = stream;
         context.resourceManager = resourceManager();
 
         const std::string& fileName = stream->name();
@@ -187,13 +200,14 @@ namespace Z
         for (const auto& option : rootNode.toMapping()) {
             auto it = handlers.find(option.first);
             if (it == handlers.end()) {
-                Z_LOG("Unable to parse file \"" << stream->name() << "\": at line " << option.second.line() << ": "
-                    << "unknown option \"" << option.first << "\".");
+                context.logError(option.second, "unknown option \"" + option.first + "\".");
                 return false;
             }
 
-            if (!it->second(&context, option.second))
+            if (!it->second(&context, option.second)) {
+                context.logError(option.second, "invalid value for option \"" + option.first + "\".");
                 return false;
+            }
         }
 
         return true;
