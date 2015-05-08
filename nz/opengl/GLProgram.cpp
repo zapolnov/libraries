@@ -121,6 +121,19 @@ namespace Z
             std::string line = input->readLine(true);
             ++lineNumber;
 
+            size_t index = line.find("//");
+            if (index != std::string::npos) {
+                bool endsWithLF = false;
+                size_t length = line.length();
+                if (length > 0 && line[length - 1] == '\n')
+                    endsWithLF = true;
+
+                line = line.substr(0, index);
+
+                if (endsWithLF)
+                    line += '\n';
+            }
+
             if (*line.c_str() == '%') {
                 if (line == VERTEX_LF || line == VERTEX)
                     what = &vertex;
