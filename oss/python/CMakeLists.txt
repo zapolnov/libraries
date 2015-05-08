@@ -142,7 +142,6 @@ set(pythonmodules_files
     Modules/_heapqmodule.c
     Modules/_hotshot.c
     Modules/_json.c
-    Modules/_localemodule.c
     Modules/_lsprof.c
     Modules/_randommodule.c
     Modules/_struct.c

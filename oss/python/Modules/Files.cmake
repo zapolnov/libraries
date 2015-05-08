@@ -2,6 +2,8 @@
 set(base_modules_files
     Modules/addrinfo.h
     Modules/_codecsmodule.c
+    Modules/_functoolsmodule.c
+    Modules/_localemodule.c
     Modules/_math.c
     Modules/_math.h
     Modules/_sre.c
@@ -13,6 +15,7 @@ set(base_modules_files
     Modules/getbuildinfo.c
     Modules/getnameinfo.c
     Modules/getpath.c
+    Modules/operator.c
     Modules/posixmodule.c
     Modules/posixmodule.h
     Modules/rotatingtree.c

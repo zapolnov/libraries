@@ -464,7 +464,7 @@ def aliasmbcs():
     if sys.platform == 'win32':
         import locale, codecs
         enc = locale.getdefaultlocale()[1]
-        if enc.startswith('cp'):            # "cp***" ?
+        if enc and enc.startswith('cp'):            # "cp***" ?
             try:
                 codecs.lookup(enc)
             except LookupError:

@@ -121,9 +121,7 @@ struct _inittab _PyImport_Inittab[] = {
 #else
     {"posix", initposix},
 #endif
-#ifdef PYTHON_MODULE_operator
     {"operator", initoperator},
-#endif
     {"signal", initsignal},
 #if 0
     {"_sha", init_sha},
@@ -151,9 +149,7 @@ struct _inittab _PyImport_Inittab[] = {
 #ifdef PYTHON_MODULE_msvcrt
     {"msvcrt", initmsvcrt},
 #endif
-#if 0
     {"_locale", init_locale},
-#endif
 #endif
     /* XXX Should _subprocess go in a WIN32 block?  not WIN64? */
 #ifdef _WIN32
@@ -201,9 +197,7 @@ struct _inittab _PyImport_Inittab[] = {
 #ifdef PYTHON_MODULE_datetime
     {"datetime", initdatetime},
 #endif
-#ifdef PYTHON_MODULE_functools
     {"_functools", init_functools},
-#endif
 #if 0
     {"_json", init_json},
 #endif
