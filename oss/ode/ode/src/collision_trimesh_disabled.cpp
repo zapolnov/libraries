@@ -128,6 +128,8 @@ dTriMeshDataID dGeomTriMeshGetTriMeshDataID(dGeomID g) { return 0; }
 int dGeomTriMeshGetTriangleCount (dGeomID g) { return 0; }
 void dGeomTriMeshDataUpdate(dTriMeshDataID g) {}
 
+#else
+char ode_collision_trimesh_disabled = 1;
 #endif // !dTRIMESH_ENABLED
 
 

@@ -667,4 +667,6 @@ void dxThreadingThreadPool::WaitIdleState()
 }
 
 
+#else
+char ode_threading_pool_win = 1;
 #endif // #if defined(_WIN32)

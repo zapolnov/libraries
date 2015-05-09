@@ -180,4 +180,6 @@ float min_dist, float max_dist, const Point& view_point, CullModeCallback callba
 	return false;
 }
 
+#else
+char ode_opc_picking = 0;
 #endif

@@ -112,4 +112,6 @@ float _nextafterf(float x, float y)
 }
 
 
+#else
+char ode_nextafterf = 1;
 #endif /* #if defined(_ODE__NEXTAFTERF_REQUIRED) */

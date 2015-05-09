@@ -103,5 +103,7 @@ void COdeOu::UndoOUCustomizations()
 }
 
 
+#else
+char ode_ou = 1;
 #endif // dOU_ENABLED
 
