@@ -21,6 +21,7 @@
  */
 #include "SceneNode.h"
 #include "utility/debug.h"
+#include <glm/gtx/matrix_decompose.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace Z
@@ -52,7 +53,19 @@ namespace Z
             m_InverseWorldMatrix.reset(new glm::mat4);
 
         if (m_Flags & InverseWorldMatrixDirty) {
-            *m_InverseWorldMatrix = glm::inverse(m_WorldMatrix);
+            glm::vec3 scale;
+            glm::quat orientation;
+            glm::vec3 translation;
+            glm::vec3 skew;
+            glm::vec4 perspective;
+            if (!glm::decompose(m_WorldMatrix, scale, orientation, translation, skew, perspective))
+                *m_InverseWorldMatrix = glm::inverse(m_WorldMatrix);
+            else {
+                glm::mat4 m = glm::translate(g_IdentityMatrix, -translation);
+                m *= glm::mat4_cast(glm::inverse(orientation));
+                m = glm::scale(m, 1.0f / scale);
+                *m_InverseWorldMatrix = std::move(m);
+            }
             m_Flags &= ~InverseWorldMatrixDirty;
         }
 

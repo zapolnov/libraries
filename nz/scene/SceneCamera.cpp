@@ -38,12 +38,13 @@ namespace Z
     {
         SceneNode::updateTransform(parentMatrix, parentMatrixChanged);
 
-        if (parentMatrixChanged || (m_Flags & ProjectionDirty)) {
+        if (m_Flags & ProjectionDirty) {
             m_Projection = glm::perspective(m_FieldOfView, m_Aspect, m_NearZ, m_FarZ);
             m_Flags = (m_Flags & ~ProjectionDirty) | FrustumDirty;
         }
 
         if (m_Flags & FrustumDirty) {
+            Z_CHECK((m_Flags & ProjectionDirty) == 0);
             m_Frustum = Frustum::fromMatrix(m_Projection * inverseWorldMatrix());
             m_Flags &= ~FrustumDirty;
         }
@@ -52,6 +53,6 @@ namespace Z
     void SceneCamera::invalidate()
     {
         SceneNode::invalidate();
-        m_Flags |= ProjectionDirty | FrustumDirty;
+        invalidateFrustum();
     }
 }

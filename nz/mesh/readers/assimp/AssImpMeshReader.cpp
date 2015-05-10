@@ -373,7 +373,6 @@ namespace Z
 
         Z_LOG("Loading mesh \"" << stream->name() << "\".");
 
-        bool readPositions = format->hasAttribute(VertexFormat::Position);
         bool readTexCoords = format->hasAttribute(VertexFormat::TexCoord);
         bool readNormals = format->hasAttribute(VertexFormat::Normal);
         bool readTangents = format->hasAttribute(VertexFormat::Tangent);

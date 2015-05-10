@@ -24,6 +24,8 @@
 
 namespace Z
 {
+    static const glm::mat4 g_IdentityMatrix = glm::mat4(1.0f);
+
     Scene::Scene()
         : m_ClearBits(GL::COLOR_BUFFER_BIT | GL::DEPTH_BUFFER_BIT)
     {
@@ -53,7 +55,7 @@ namespace Z
         }
 
         update(time);
-        updateTransform(glm::mat4(1.0f), false);
+        updateTransform(g_IdentityMatrix, false);
 
         Z_CHECK(m_Camera != nullptr);
         if (m_Camera) {
