@@ -26,7 +26,7 @@ include(../cmake/OpenGL.cmake)
 include(../cmake/Qt5.cmake)
 include(../cmake/TargetPlatform.cmake)
 
-file(GLOB root_sources *.cpp *.h)
+file(GLOB root_sources *.cpp *.h *.def)
 file(GLOB qt5_sources qt5/*.cpp qt5/*.h)
 file(GLOB normal_sources normal/*.cpp normal/*.h)
 file(GLOB dummy_sources dummy/*.cpp dummy/*.h)
