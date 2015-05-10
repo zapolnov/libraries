@@ -23,6 +23,19 @@
 
 namespace Z
 {
+    static KeyCode keyFromQt(int key)
+    {
+        switch (key)
+        {
+        case Qt::Key_Left: return Key_Left;
+        case Qt::Key_Right: return Key_Right;
+        case Qt::Key_Up: return Key_Up;
+        case Qt::Key_Down: return Key_Down;
+        }
+
+        return UnknownKey;
+    };
+
     GLWindowDelegate::GLWindowDelegate(const GLApplicationPtr& app)
         : m_App(app)
     {
@@ -86,5 +99,19 @@ namespace Z
     void GLWindowDelegate::onPointerReleased(int id, float x, float y)
     {
         m_App->onPointerReleased(id, x, y);
+    }
+
+    void GLWindowDelegate::onKeyPressed(int key)
+    {
+        KeyCode code = keyFromQt(key);
+        if (code != UnknownKey)
+            m_App->onKeyPressed(code);
+    }
+
+    void GLWindowDelegate::onKeyReleased(int key)
+    {
+        KeyCode code = keyFromQt(key);
+        if (code != UnknownKey)
+            m_App->onKeyReleased(code);
     }
 }

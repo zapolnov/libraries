@@ -21,6 +21,7 @@
  */
 
 #pragma once
+#include <functional>
 #include <string>
 
 namespace Z
@@ -35,4 +36,14 @@ namespace Z
 
     KeyCode keyCodeFromName(const std::string& name);
     const char* keyCodeName(KeyCode code);
+}
+
+namespace std
+{
+    template <> struct hash<Z::KeyCode>
+    {
+        size_t operator()(Z::KeyCode code) const {
+            return size_t(code);
+        }
+    };
 }

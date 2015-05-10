@@ -48,6 +48,9 @@ namespace Z
         void onPointerMoved(int id, float x, float y) override;
         void onPointerReleased(int id, float x, float y) override;
 
+        void onKeyPressed(int key) override;
+        void onKeyReleased(int key) override;
+
     private:
         GLApplicationPtr m_App;
     };

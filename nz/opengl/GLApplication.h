@@ -23,7 +23,9 @@
 #pragma once
 #include "GLResourceManager.h"
 #include "utility/FileSystemList.h"
+#include "input/KeyCode.h"
 #include <memory>
+#include <unordered_set>
 #include <unordered_map>
 
 #define Z_GL_APPLICATION_CLASS(CLASS) \
@@ -70,7 +72,12 @@ namespace Z
         void onPointerReleased(int id, float x, float y);
         void onPointerCancelled(int id, float x, float y);
 
+        bool isKeyPressed(KeyCode key) const;
+        void onKeyPressed(KeyCode key);
+        void onKeyReleased(KeyCode key);
+
         void cancelAllTouches();
+        void cancelAllPressedKeys();
 
     protected:
         virtual void onApplicationDidFinishLaunching() {}
@@ -85,6 +92,10 @@ namespace Z
         virtual void onTouchEnded(int id, float x, float y) { (void)id; (void)x; (void)y; }
         virtual void onTouchCancelled(int id, float x, float y) { (void)id; (void)x; (void)y; }
 
+        virtual void onKeyDown(KeyCode key) { (void)key; }
+        virtual void onKeyRepeat(KeyCode key) { (void)key; }
+        virtual void onKeyUp(KeyCode key) { (void)key; }
+
         virtual void drawResourceReloadScreen(double time, float progress);
         virtual void runFrame(double time) = 0;
 
@@ -96,5 +107,6 @@ namespace Z
         int m_ViewportWidth = 0;
         int m_ViewportHeight = 0;
         std::unordered_map<int, std::pair<float, float>> m_PressedPointers;
+        std::unordered_set<KeyCode> m_PressedKeys;
     };
 }

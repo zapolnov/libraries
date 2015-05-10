@@ -47,6 +47,9 @@ namespace Z
         void mouseMoveEvent(QMouseEvent* mouseEvent) override;
         void mouseReleaseEvent(QMouseEvent* mouseEvent) override;
 
+        void keyPressEvent(QKeyEvent* keyEvent) override;
+        void keyReleaseEvent(QKeyEvent* keyEvent) override;
+
     private:
         QtOpenGLRenderThread m_RenderThread;
         bool m_Initialized = false;

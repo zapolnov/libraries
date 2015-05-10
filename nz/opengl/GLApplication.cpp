@@ -58,6 +58,7 @@ namespace Z
 
         m_Suspended = true;
         cancelAllTouches();
+        cancelAllPressedKeys();
 
         m_ResourceManager.unloadAllResources();
     }
@@ -75,6 +76,7 @@ namespace Z
         drawResourceReloadScreen(0.0, 0.0f);
 
         cancelAllTouches();
+        cancelAllPressedKeys();
     }
 
     void GLApplication::resizeGL(int width, int height)
@@ -99,6 +101,7 @@ namespace Z
 
             m_ReloadingResources = false;
             cancelAllTouches();
+            cancelAllPressedKeys();
         }
 
         runFrame(time);
@@ -156,6 +159,34 @@ namespace Z
         }
     }
 
+    bool GLApplication::isKeyPressed(KeyCode key) const
+    {
+        return m_PressedKeys.find(key) != m_PressedKeys.end();
+    }
+
+    void GLApplication::onKeyPressed(KeyCode key)
+    {
+        if (m_Suspended || m_ReloadingResources)
+            return;
+
+        if (m_PressedKeys.insert(key).second)
+            onKeyDown(key);
+        else
+            onKeyRepeat(key);
+    }
+
+    void GLApplication::onKeyReleased(KeyCode key)
+    {
+        if (m_Suspended || m_ReloadingResources)
+            return;
+
+        auto it = m_PressedKeys.find(key);
+        if (it != m_PressedKeys.end()) {
+            m_PressedKeys.erase(it);
+            onKeyUp(key);
+        }
+    }
+
     void GLApplication::cancelAllTouches()
     {
         while (!m_PressedPointers.empty()) {
@@ -165,6 +196,16 @@ namespace Z
             float y = it->second.second;
             m_PressedPointers.erase(it);
             onTouchCancelled(id, x, y);
+        }
+    }
+
+    void GLApplication::cancelAllPressedKeys()
+    {
+        while (!m_PressedKeys.empty()) {
+            auto it = m_PressedKeys.begin();
+            KeyCode key = *it;
+            m_PressedKeys.erase(it);
+            onKeyUp(key);
         }
     }
 

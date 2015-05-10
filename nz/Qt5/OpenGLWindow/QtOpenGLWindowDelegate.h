@@ -45,5 +45,8 @@ namespace Z
         virtual void onPointerPressed(int id, float x, float y) { (void)id; (void)x; (void)y; }
         virtual void onPointerMoved(int id, float x, float y) { (void)id; (void)x; (void)y; }
         virtual void onPointerReleased(int id, float x, float y) { (void)id; (void)x; (void)y; }
+
+        virtual void onKeyPressed(int key) { (void)key; }
+        virtual void onKeyReleased(int key) { (void)key; }
     };
 }

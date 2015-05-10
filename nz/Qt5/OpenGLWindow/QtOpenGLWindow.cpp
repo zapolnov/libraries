@@ -22,6 +22,7 @@
 #include "QtOpenGLWindow.h"
 #include "utility/debug.h"
 #include <QResizeEvent>
+#include <QKeyEvent>
 #include <QDesktopWidget>
 
 namespace Z
@@ -133,6 +134,26 @@ namespace Z
             float y = e->pos().y();
             m_RenderThread.post([this, x, y]() {
                 m_RenderThread.delegate()->onPointerReleased(0, x, y);
+            });
+        }
+    }
+
+    void QtOpenGLWindow::keyPressEvent(QKeyEvent* keyEvent)
+    {
+        if (m_Initialized) {
+            int key = keyEvent->key();
+            m_RenderThread.post([this, key]() {
+                m_RenderThread.delegate()->onKeyPressed(key);
+            });
+        }
+    }
+
+    void QtOpenGLWindow::keyReleaseEvent(QKeyEvent* keyEvent)
+    {
+        if (m_Initialized) {
+            int key = keyEvent->key();
+            m_RenderThread.post([this, key]() {
+                m_RenderThread.delegate()->onKeyReleased(key);
             });
         }
     }
