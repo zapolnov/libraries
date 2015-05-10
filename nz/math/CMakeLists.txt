@@ -22,16 +22,14 @@
 
 cmake_minimum_required(VERSION 3.1)
 
-add_subdirectory(cmake)
-add_subdirectory(yaml)
-add_subdirectory(utility)
-add_subdirectory(zipfs)
-add_subdirectory(image)
-add_subdirectory(image/readers/png)
-add_subdirectory(opengl)
-add_subdirectory(liquidfun)
-add_subdirectory(mesh)
-add_subdirectory(mesh/readers/assimp)
-add_subdirectory(bin2c)
-add_subdirectory(math)
-add_subdirectory(Qt5)
+file(GLOB source_files *.cpp *.h)
+
+add_library(NZMath STATIC ${EXCLUDE_FROM_ALL}
+    ${source_files}
+)
+
+source_group("Source Files" FILES ${source_files})
+
+set_target_properties(NZMath PROPERTIES CXX_STANDARD 11)
+target_link_libraries(NZMath NZUtility glm)
+target_include_directories(NZMath BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
