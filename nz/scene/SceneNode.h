@@ -65,8 +65,14 @@ namespace Z
         virtual void update(double time);
         virtual void draw(const Frustum& frustum, GLUniformSet* uniforms = nullptr) const;
 
+        void setVisible(bool flag = true) { m_Flags = (flag ? m_Flags | Visible : m_Flags &~ Visible); }
+        bool isVisible() const { return (m_Flags & Visible) != 0; }
+
+        void setRenderable(bool flag = true) { m_Flags = (flag ? m_Flags | Renderable : m_Flags &~ Renderable); }
+        bool isRenderable() const { return (m_Flags & Renderable) != 0; }
+
     protected:
-        virtual bool isVisible(const Frustum& frustum) const;
+        virtual bool isInsideFrustum(const Frustum& frustum) const;
         virtual void render(const Frustum& frustum, GLUniformSet* uniforms = nullptr) const;
 
         virtual void invalidate() { m_Flags |= LocalMatrixDirty | WorldMatrixDirty | InverseWorldMatrixDirty; }
@@ -76,6 +82,8 @@ namespace Z
             LocalMatrixDirty        = 0b000000000001,
             WorldMatrixDirty        = 0b000000000010,
             InverseWorldMatrixDirty = 0b000000000100,
+            Visible                 = 0b000000001000,
+            Renderable              = 0b000000010000,
         };
 
         SceneNode* m_Parent;

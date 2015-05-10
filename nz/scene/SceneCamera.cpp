@@ -27,6 +27,7 @@ namespace Z
     SceneCamera::SceneCamera()
         : m_Flags(ProjectionDirty | FrustumDirty)
     {
+        setRenderable(false);
     }
 
     SceneCamera::~SceneCamera()

@@ -19,65 +19,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include "SceneMesh.h"
+#include "Scene.h"
+#include <opengl/GLUniformSet.h>
 
 namespace Z
 {
-    SceneMesh::SceneMesh()
+    Scene::Scene()
+        : m_ClearBits(GL::COLOR_BUFFER_BIT | GL::DEPTH_BUFFER_BIT)
     {
     }
 
-    SceneMesh::SceneMesh(const GLMeshPtr& mesh)
-        : m_Mesh(mesh)
+    Scene::~Scene()
     {
     }
 
-    SceneMesh::SceneMesh(GLMeshPtr&& mesh)
-        : m_Mesh(std::move(mesh))
+    void Scene::setCamera(const SceneCameraPtr& camera)
     {
+        if (m_Camera != camera)
+            m_Camera = camera;
     }
 
-    SceneMesh::~SceneMesh()
+    void Scene::runFrame(double time, GLUniformSet* uniforms)
     {
-    }
-
-    void SceneMesh::setMesh(const GLMeshPtr& mesh)
-    {
-        if (m_Mesh != mesh)
-            m_Mesh = mesh;
-    }
-
-    void SceneMesh::setMesh(GLMeshPtr&& mesh)
-    {
-        if (m_Mesh != mesh)
-            m_Mesh = std::move(mesh);
-    }
-
-    void SceneMesh::setAnimation(size_t index)
-    {
-        if (m_AnimationIndex != index) {
-            m_AnimationIndex = index;
-            m_AnimationTime = 0.0f;
+        if (!uniforms) {
+            GLUniformSet defaultUniforms;
+            runFrame(time, &defaultUniforms);
+            return;
         }
-    }
 
-    void SceneMesh::update(double time)
-    {
-        m_AnimationTime += float(time);
-        SceneNode::update(time);
-    }
+        if (m_ClearBits != 0) {
+            gl::ClearColor(0.1f, 0.7f, 0.3f, 1.0f);
+            gl::Clear(m_ClearBits);
+        }
 
-    bool SceneMesh::isInsideFrustum(const Frustum&) const
-    {
-        // FIXME
-        return true;
-    }
+        update(time);
+        updateTransform(glm::mat4(1.0f), false);
 
-    void SceneMesh::render(const Frustum& frustum, GLUniformSet* uniforms) const
-    {
-        if (m_Mesh) {
-            uniforms->setMatrix4fv(GLUniform::ModelMatrix, worldMatrix());
-            m_Mesh->render(m_AnimationIndex, m_AnimationTime, uniforms);
+        Z_CHECK(m_Camera != nullptr);
+        if (m_Camera) {
+            uniforms->setMatrix4fv(GLUniform::ProjectionMatrix, m_Camera->projectionMatrix());
+            uniforms->setMatrix4fv(GLUniform::ViewMatrix, m_Camera->viewMatrix());
+            draw(m_Camera->frustum(), uniforms);
         }
     }
 }

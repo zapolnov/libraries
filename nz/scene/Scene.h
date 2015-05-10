@@ -22,34 +22,32 @@
 
 #pragma once
 #include "SceneNode.h"
-#include "opengl/GLMesh.h"
+#include "SceneCamera.h"
+#include <opengl/opengl.h>
+#include <memory>
 
 namespace Z
 {
-    class SceneMesh : public SceneNode
+    class GLUniformSet;
+
+    class Scene : public SceneNode
     {
     public:
-        SceneMesh();
-        explicit SceneMesh(const GLMeshPtr& mesh);
-        explicit SceneMesh(GLMeshPtr&& mesh);
-        ~SceneMesh();
+        Scene();
+        ~Scene();
 
-        const GLMeshPtr& mesh() const { return m_Mesh; }
-        void setMesh(const GLMeshPtr& mesh);
-        void setMesh(GLMeshPtr&& mesh);
+        const SceneCameraPtr& camera() const { return m_Camera; }
+        void setCamera(const SceneCameraPtr& camera);
 
-        void setAnimation(size_t index);
-        void restartCurrentAnimation() { m_AnimationTime = 0.0f; }
+        GL::Bitfield clearBits() const { return m_ClearBits; }
+        void setClearBits(GL::Bitfield bits) { m_ClearBits = bits; }
 
-    protected:
-        GLMeshPtr m_Mesh;
-        float m_AnimationTime = 0.0f;
-        size_t m_AnimationIndex = 0;
+        void runFrame(double time, GLUniformSet* uniforms = nullptr);
 
-        void update(double time) override;
-        bool isInsideFrustum(const Frustum& frustum) const override;
-        void render(const Frustum& frustum, GLUniformSet* uniforms = nullptr) const override;
+    private:
+        SceneCameraPtr m_Camera;
+        GL::Bitfield m_ClearBits;
     };
 
-    using SceneMeshPtr = std::shared_ptr<SceneMesh>;
+    using ScenePtr = std::shared_ptr<Scene>;
 }

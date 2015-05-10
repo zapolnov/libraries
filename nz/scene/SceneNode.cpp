@@ -32,7 +32,7 @@ namespace Z
         , m_Position(0.0f)
         , m_Rotation()
         , m_Scale(1.0f)
-        , m_Flags(LocalMatrixDirty | WorldMatrixDirty | InverseWorldMatrixDirty)
+        , m_Flags(LocalMatrixDirty | WorldMatrixDirty | InverseWorldMatrixDirty | Visible | Renderable)
     {
     }
 
@@ -111,14 +111,17 @@ namespace Z
     {
         Z_CHECK((m_Flags & (LocalMatrixDirty | WorldMatrixDirty)) == 0);
 
-        if (isVisible(frustum)) {
-            render(frustum, uniforms);
-            for (const auto& child : m_Children)
-                child->draw(frustum, uniforms);
+        if (isInsideFrustum(frustum)) {
+            if (m_Flags & Visible) {
+                if (m_Flags & Renderable)
+                    render(frustum, uniforms);
+                for (const auto& child : m_Children)
+                    child->draw(frustum, uniforms);
+            }
         }
     }
 
-    bool SceneNode::isVisible(const Frustum&) const
+    bool SceneNode::isInsideFrustum(const Frustum&) const
     {
         return true;
     }

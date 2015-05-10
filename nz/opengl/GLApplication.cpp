@@ -91,6 +91,8 @@ namespace Z
 
     void GLApplication::renderGL(double time)
     {
+        gl::Viewport(0, 0, m_ViewportWidth, m_ViewportHeight);
+
         if (m_ReloadingResources) {
             if (m_ResourceManager.isReloadingResources()) {
                 float progress = 0.0f;
