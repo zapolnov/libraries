@@ -21,37 +21,17 @@
  */
 
 #pragma once
-#include "Sphere.h"
-#include "AABox.h"
-#include "Plane.h"
 #include <glm/glm.hpp>
 
 namespace Z
 {
-    class Frustum
+    class Sphere
     {
     public:
-        enum {
-            Left = 0,
-            Right = 1,
-            Top = 2,
-            Bottom = 3,
-            Far = 4,
-            Near = 5,
-        };
+        glm::vec3 center;
+        float radius;
 
-        static constexpr size_t NUM_PLANES = 6;
-        Plane planes[NUM_PLANES];
-
-        Frustum() {}
-        static Frustum fromMatrix(const glm::mat4& matrix);
-
-        bool intersectsPoint(const glm::vec3& point) const;
-        float pointDistanceToNearPlane(const glm::vec3& point) const;
-
-        bool intersectsSphere(const Sphere& sphere) const;
-        float sphereCenterDistanceToNearPlane(const Sphere& sphere) const;
-
-        bool intersectsAABox(const AABox& box) const;
+        Sphere() {}
+        Sphere(const glm::vec3& c, float r) : center(c), radius(r) {}
     };
 }

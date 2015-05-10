@@ -29,47 +29,109 @@ namespace Z
         Frustum frustum;
 
         auto& l = frustum.planes[Left];
-        l[0] = m[ 3] + m[ 0];
-        l[1] = m[ 7] + m[ 4];
-        l[2] = m[11] + m[ 8];
-        l[3] = m[15] + m[12];
+        l.normal.x = m[ 3] + m[ 0];
+        l.normal.y = m[ 7] + m[ 4];
+        l.normal.z = m[11] + m[ 8];
+        l.distance = m[15] + m[12];
         l = l.normalize();
 
         auto& r = frustum.planes[Right];
-        r[0] = m[ 3] - m[ 0];
-        r[1] = m[ 7] - m[ 4];
-        r[2] = m[11] - m[ 8];
-        r[3] = m[15] - m[12];
+        r.normal.x = m[ 3] - m[ 0];
+        r.normal.y = m[ 7] - m[ 4];
+        r.normal.z = m[11] - m[ 8];
+        r.distance = m[15] - m[12];
         r = r.normalize();
 
         auto& t = frustum.planes[Top];
-        t[0] = m[ 3] - m[ 1];
-        t[1] = m[ 7] - m[ 5];
-        t[2] = m[11] - m[ 9];
-        t[3] = m[15] - m[13];
+        t.normal.x = m[ 3] - m[ 1];
+        t.normal.y = m[ 7] - m[ 5];
+        t.normal.z = m[11] - m[ 9];
+        t.distance = m[15] - m[13];
         t = t.normalize();
 
         auto& b = frustum.planes[Bottom];
-        b[0] = m[ 3] + m[ 1];
-        b[1] = m[ 7] + m[ 5];
-        b[2] = m[11] + m[ 9];
-        b[3] = m[15] + m[13];
+        b.normal.x = m[ 3] + m[ 1];
+        b.normal.y = m[ 7] + m[ 5];
+        b.normal.z = m[11] + m[ 9];
+        b.distance = m[15] + m[13];
         b = b.normalize();
 
         auto& f = frustum.planes[Far];
-        f[0] = m[ 3] - m[ 2];
-        f[1] = m[ 7] - m[ 6];
-        f[2] = m[11] - m[10];
-        f[3] = m[15] - m[14];
+        f.normal.x = m[ 3] - m[ 2];
+        f.normal.y = m[ 7] - m[ 6];
+        f.normal.z = m[11] - m[10];
+        f.distance = m[15] - m[14];
         f = f.normalize();
 
         auto& n = frustum.planes[Near];
-        n[0] = m[ 3] + m[ 2];
-        n[1] = m[ 7] + m[ 6];
-        n[2] = m[11] + m[10];
-        n[3] = m[15] + m[14];
+        n.normal.x = m[ 3] + m[ 2];
+        n.normal.y = m[ 7] + m[ 6];
+        n.normal.z = m[11] + m[10];
+        n.distance = m[15] + m[14];
         n = n.normalize();
 
         return frustum;
+    }
+
+    bool Frustum::intersectsPoint(const glm::vec3& point) const
+    {
+        for (size_t i = 0; i < NUM_PLANES; i++) {
+            const auto& p = planes[i];
+            if (glm::dot(p.normal, point) <= -p.distance)
+                return false;
+        }
+        return true;
+    }
+
+    float Frustum::pointDistanceToNearPlane(const glm::vec3& point) const
+    {
+        float d = 0.0f;
+        for (size_t i = 0; i < NUM_PLANES; i++) {
+            const auto& p = planes[i];
+            d = glm::dot(p.normal, point) + p.distance;
+            if (d <= 0)
+                return -1.0f;
+        }
+        return d;
+    }
+
+    bool Frustum::intersectsSphere(const Sphere& sphere) const
+    {
+        for (size_t i = 0; i < NUM_PLANES; i++) {
+            const auto& p = planes[i];
+            if (glm::dot(p.normal, sphere.center) + p.distance <= -sphere.radius)
+                return false;
+        }
+        return true;
+    }
+
+    float Frustum::sphereCenterDistanceToNearPlane(const Sphere& sphere) const
+    {
+        float d = 0.0f;
+        for (size_t i = 0; i < NUM_PLANES; i++) {
+            const auto& p = planes[i];
+            d = glm::dot(p.normal, sphere.center) + p.distance;
+            if (d <= -sphere.radius)
+                return -1.0f;
+        }
+        return d;
+    }
+
+    bool Frustum::intersectsAABox(const AABox& box) const
+    {
+        glm::vec3 boxCenter = box.center();
+        glm::vec3 boxHalfSize = box.halfSize();
+
+        for (size_t i = 0; i < NUM_PLANES; ++i) {
+            const auto& p = planes[i];
+            const auto& n = p.normal;
+
+            float distanceToCenter = glm::dot(n, boxCenter) + p.distance;
+            float maxDistance = fabs(n.x * boxHalfSize.x) + fabs(n.y * boxHalfSize.y) + fabs(n.z * boxHalfSize.z);
+            if (distanceToCenter < -maxDistance)
+                return false;
+        }
+
+        return true;
     }
 }

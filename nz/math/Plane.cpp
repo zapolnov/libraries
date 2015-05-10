@@ -25,10 +25,7 @@ namespace Z
 {
     Plane Plane::normalize() const
     {
-        float length = glm::length(glm::vec3(static_cast<glm::vec4&>(*this)));
-        x /= length;
-        y /= length;
-        z /= length;
-        w /= length;
+        float x = 1.0f / glm::length(normal);
+        return Plane(normal * x, distance * x);
     }
 }

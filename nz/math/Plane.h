@@ -25,22 +25,16 @@
 
 namespace Z
 {
-    class Plane : public glm::vec4
+    class Plane
     {
     public:
+        glm::vec3 normal;
+        float distance;
+
         Plane() {}
-        Plane(float a, float b, float c, float d) : glm::vec4(a, b, c, d) {}
-        explicit Plane(const glm::vec4& value) : glm::vec4(value) {}
-
-        float& A() { return x; }
-        float& B() { return y; }
-        float& C() { return z; }
-        float& D() { return w; }
-
-        const float& A() const { return x; }
-        const float& B() const { return y; }
-        const float& C() const { return z; }
-        const float& D() const { return w; }
+        Plane(float a, float b, float c, float d) : normal(a, b, c), distance(d) {}
+        Plane(const glm::vec3& n, float d) : normal(n), distance(d) {}
+        explicit Plane(const glm::vec4& value) : normal(glm::vec3(value)), distance(value.w) {}
 
         Plane normalize() const;
     };
