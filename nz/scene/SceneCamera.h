@@ -32,10 +32,13 @@ namespace Z
         SceneCamera();
         ~SceneCamera();
 
-        const glm::mat4& projectionMatrix() const { Z_CHECK((m_Flags & ProjectionDirty) == 0); return m_Projection; }
-        const glm::mat4& modelViewMatrix() const { return inverseWorldMatrix(); }
-
         const Frustum& frustum() const { Z_CHECK((m_Flags & FrustumDirty) == 0); return m_Frustum; }
+        const glm::mat4& projectionMatrix() const { Z_CHECK((m_Flags & ProjectionDirty) == 0); return m_Projection; }
+        const glm::mat4& viewMatrix() const { return inverseWorldMatrix(); }
+
+        glm::vec3 rightVector() const { return glm::vec3(viewMatrix()[0]); }
+        glm::vec3 upVector() const { return glm::vec3(viewMatrix()[1]); }
+        glm::vec3 forwardVector() const { return glm::vec3(viewMatrix()[2]); }
 
         float aspect() const { return m_Aspect; }
         void setAspect(float aspect) { m_Aspect = aspect; invalidateFrustum(); }

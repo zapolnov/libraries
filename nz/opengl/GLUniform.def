@@ -21,6 +21,7 @@
  */
 
 Z_GL_UNIFORM(ProjectionMatrix, "u_projection", GL::FLOAT_MAT4)
-Z_GL_UNIFORM(ModelViewMatrix, "u_modelview", GL::FLOAT_MAT4)
+Z_GL_UNIFORM(ModelMatrix, "u_model", GL::FLOAT_MAT4)
+Z_GL_UNIFORM(ViewMatrix, "u_view", GL::FLOAT_MAT4)
 Z_GL_UNIFORM(BoneMatrixPalette, "u_bones", GL::FLOAT_MAT4)
 Z_GL_UNIFORM(Texture, "u_texture", GL::SAMPLER_2D)

@@ -76,7 +76,7 @@ namespace Z
     void SceneMesh::render(const Frustum& frustum, GLUniformSet* uniforms) const
     {
         if (m_Mesh) {
-            uniforms->setMatrix4fv(GLUniform::ModelViewMatrix, worldMatrix());
+            uniforms->setMatrix4fv(GLUniform::ModelMatrix, worldMatrix());
             m_Mesh->render(m_AnimationIndex, m_AnimationTime, uniforms);
         }
     }

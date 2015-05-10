@@ -33,7 +33,8 @@ attribute vec2 a_texcoord;
 #endif
 
 uniform mat4 u_projection;
-uniform mat4 u_modelview;
+uniform mat4 u_model;
+uniform mat4 u_view;
 
 #ifdef Z_TEXCOORD
 varying vec2 v_texcoord;
@@ -49,5 +50,5 @@ void main()
   #ifdef Z_SKINNING
     applySkinning(pos);
   #endif
-    gl_Position = u_projection * u_modelview * pos;
+    gl_Position = u_projection * u_model * u_view * pos;
 }
