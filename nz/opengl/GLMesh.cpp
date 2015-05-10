@@ -48,7 +48,7 @@ namespace Z
         m_IndexBuffer.reset();
     }
 
-    void GLMesh::render() const
+    void GLMesh::render(size_t, float, const GLUniformSet* uniforms) const
     {
         if (m_Elements.empty() || m_VertexBuffers.empty() || !m_IndexBuffer)
             return;
@@ -61,10 +61,14 @@ namespace Z
         GLMaterialPtr currentMaterial;
         for (const auto& element : m_Elements) {
             if (currentMaterial != element.material) {
-                if (!element.material->bind()) {
+                if (!element.material || !element.material->bind()) {
                     currentMaterial.reset();
                     continue;
                 }
+
+                if (uniforms)
+                    uniforms->upload(element.material->program());
+
                 currentMaterial = element.material;
             }
 

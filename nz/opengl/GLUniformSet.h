@@ -21,46 +21,37 @@
  */
 
 #pragma once
-#include "GLResource.h"
-#include "GLBuffer.h"
-#include "GLMaterial.h"
-#include "GLVertexBuffer.h"
-#include "GLAttribute.h"
-#include "GLUniformSet.h"
 #include "opengl.h"
-#include "mesh/Mesh.h"
+#include "utility/debug.h"
+#include "GLUniform.h"
+#include "GLProgram.h"
+#include <glm/glm.hpp>
+#include <vector>
+#include <utility>
 #include <memory>
 
 namespace Z
 {
-    class GLMesh : public GLResource
+    class GLUniformSet
     {
     public:
-        explicit GLMesh(GLResourceManager* manager);
-        ~GLMesh();
+        GLUniformSet();
+        ~GLUniformSet();
 
-        void reload() override;
-        void unload() override;
+        void upload(const GLProgramPtr& program) const;
 
-        virtual void render(size_t animationIndex = 0, float animationTime = 0.0f,
-            const GLUniformSet* uniforms = nullptr) const;
+        void setMatrix4fv(GLUniform uniform, const glm::mat4& matrix, GL::Boolean transpose = GL::FALSE);
+        void setMatrix4fv(GLUniform uniform, glm::mat4&& matrix, GL::Boolean transpose = GL::FALSE);
 
-    protected:
-        struct Element
-        {
-            GLMaterialPtr material;
-            size_t vertexBuffer;
-            size_t indexBufferOffset;
-            size_t indexBufferLength;
-        };
+        void unset(GLUniform uniform);
 
-        std::vector<Element> m_Elements;
-        std::vector<GLMaterialPtr> m_Materials;
-        std::vector<GLVertexBufferPtr> m_VertexBuffers;
-        GLBufferPtr m_IndexBuffer;
+    private:
+        struct Value;
+        struct Matrix4;
 
-        virtual void initFromMesh(const MeshPtr& mesh);
+        std::unique_ptr<Value> m_Values[size_t(GLUniform::NumStandardUniforms)];
+
+        GLUniformSet(const GLUniformSet&) = delete;
+        GLUniformSet& operator=(const GLUniformSet&) = delete;
     };
-
-    using GLMeshPtr = std::shared_ptr<GLMesh>;
 }

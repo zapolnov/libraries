@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Nikolay Zapolnov (zapolnov@gmail.com).
+ * Copyright (c) 2015 Nikolay Zapolnov (zapolnov@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,46 +21,34 @@
  */
 
 #pragma once
-#include "GLResource.h"
-#include "GLBuffer.h"
-#include "GLMaterial.h"
-#include "GLVertexBuffer.h"
-#include "GLAttribute.h"
-#include "GLUniformSet.h"
-#include "opengl.h"
-#include "mesh/Mesh.h"
-#include <memory>
+#include "SceneNode.h"
+#include "opengl/GLMesh.h"
 
 namespace Z
 {
-    class GLMesh : public GLResource
+    class SceneMesh : public SceneNode
     {
     public:
-        explicit GLMesh(GLResourceManager* manager);
-        ~GLMesh();
+        SceneMesh();
+        explicit SceneMesh(const GLMeshPtr& mesh);
+        explicit SceneMesh(GLMeshPtr&& mesh);
+        ~SceneMesh();
 
-        void reload() override;
-        void unload() override;
+        const GLMeshPtr& mesh() const { return m_Mesh; }
+        void setMesh(const GLMeshPtr& mesh);
+        void setMesh(GLMeshPtr&& mesh);
 
-        virtual void render(size_t animationIndex = 0, float animationTime = 0.0f,
-            const GLUniformSet* uniforms = nullptr) const;
+        void setAnimation(size_t index);
 
     protected:
-        struct Element
-        {
-            GLMaterialPtr material;
-            size_t vertexBuffer;
-            size_t indexBufferOffset;
-            size_t indexBufferLength;
-        };
+        GLMeshPtr m_Mesh;
+        float m_AnimationTime = 0.0f;
+        size_t m_AnimationIndex = 0;
 
-        std::vector<Element> m_Elements;
-        std::vector<GLMaterialPtr> m_Materials;
-        std::vector<GLVertexBufferPtr> m_VertexBuffers;
-        GLBufferPtr m_IndexBuffer;
-
-        virtual void initFromMesh(const MeshPtr& mesh);
+        void update(double time) override;
+        bool isVisible(const Frustum& frustum) const override;
+        void render(const Frustum& frustum, GLUniformSet* uniforms = nullptr) const override;
     };
 
-    using GLMeshPtr = std::shared_ptr<GLMesh>;
+    using SceneMeshPtr = std::shared_ptr<SceneMesh>;
 }

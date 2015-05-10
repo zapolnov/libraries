@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Nikolay Zapolnov (zapolnov@gmail.com).
+ * Copyright (c) 2015 Nikolay Zapolnov (zapolnov@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,27 +19,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-#pragma once
-#include "GLMesh.h"
+#include "SceneCamera.h"
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace Z
 {
-    class GLSkeletonAnimatedMesh : public GLMesh
+    SceneCamera::SceneCamera()
+        : m_Flags(ProjectionDirty | FrustumDirty)
     {
-    public:
-        explicit GLSkeletonAnimatedMesh(GLResourceManager* manager);
-        ~GLSkeletonAnimatedMesh();
+    }
 
-        void unload() override;
+    SceneCamera::~SceneCamera()
+    {
+    }
 
-        void render(size_t animationIndex, float animationTime, const GLUniformSet* uniforms = nullptr) const override;
+    void SceneCamera::updateTransform(const glm::mat4& parentMatrix, bool parentMatrixChanged)
+    {
+        SceneNode::updateTransform(parentMatrix, parentMatrixChanged);
 
-    protected:
-        std::vector<SkeletonAnimationPtr> m_Animations;
+        if (parentMatrixChanged || (m_Flags & ProjectionDirty)) {
+            m_Projection = glm::perspective(m_FieldOfView, m_Aspect, m_NearZ, m_FarZ);
+            m_Flags = (m_Flags & ~ProjectionDirty) | FrustumDirty;
+        }
 
-        void initFromMesh(const MeshPtr& mesh) override;
-    };
+        if (m_Flags & FrustumDirty) {
+            m_Frustum = Frustum::fromMatrix(m_Projection * inverseWorldMatrix());
+            m_Flags &= ~FrustumDirty;
+        }
+    }
 
-    using GLSkeletonAnimatedMeshPtr = std::shared_ptr<GLSkeletonAnimatedMesh>;
+    void SceneCamera::invalidate()
+    {
+        SceneNode::invalidate();
+        m_Flags |= ProjectionDirty | FrustumDirty;
+    }
 }

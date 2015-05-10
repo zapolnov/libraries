@@ -43,7 +43,7 @@ namespace Z
         m_Animations.clear();
     }
 
-    void GLSkeletonAnimatedMesh::render(size_t animationIndex, float animationTime) const
+    void GLSkeletonAnimatedMesh::render(size_t animationIndex, float animationTime, const GLUniformSet* uniforms) const
     {
         if (m_Elements.empty() || m_VertexBuffers.empty() || !m_IndexBuffer)
             return;
@@ -66,10 +66,14 @@ namespace Z
         int lastBonesUniform = -1;
         for (const auto& element : m_Elements) {
             if (currentMaterial != element.material) {
-                if (!element.material->bind()) {
+                if (!element.material || !element.material->bind()) {
                     currentMaterial.reset();
                     continue;
                 }
+
+                if (uniforms)
+                    uniforms->upload(element.material->program());
+
                 currentMaterial = element.material;
             }
 
@@ -91,7 +95,6 @@ namespace Z
         gl::BindBuffer(GL::ELEMENT_ARRAY_BUFFER, 0);
 
         m_VertexBuffers[0]->disableAttributes();
-
     }
 
     void GLSkeletonAnimatedMesh::initFromMesh(const MeshPtr& mesh)
