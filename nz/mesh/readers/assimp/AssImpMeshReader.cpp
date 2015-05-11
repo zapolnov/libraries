@@ -392,10 +392,12 @@ namespace Z
             aiProcess_SplitLargeMeshes |
             aiProcess_OptimizeMeshes |
             //aiProcess_OptimizeGraph |
+            (readBoneWeights || readBoneIndices || readSkeleton ? 0 : aiProcess_PreTransformVertices) |
             (!readBoneIndices && !readBoneWeights ? 0 : aiProcess_LimitBoneWeights) |
             (!readNormals && !readTangents && !readBitangents ? 0 : aiProcess_GenSmoothNormals) |
             (!readTangents && !readBitangents ? 0 : aiProcess_CalcTangentSpace) |
-            (!readTexCoords ? 0 : aiProcess_GenUVCoords | aiProcess_TransformUVCoords | aiProcess_FlipUVs);
+            (!readTexCoords ? 0 : aiProcess_GenUVCoords | aiProcess_TransformUVCoords | aiProcess_FlipUVs) |
+            0;
 
         Assimp::Importer importer;
         importer.SetPropertyInteger(AI_CONFIG_PP_SLM_VERTEX_LIMIT, 65535);

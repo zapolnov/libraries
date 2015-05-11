@@ -53,6 +53,7 @@ namespace Z
             m_InverseWorldMatrix.reset(new glm::mat4);
 
         if (m_Flags & InverseWorldMatrixDirty) {
+            /*
             glm::vec3 scale;
             glm::quat orientation;
             glm::vec3 translation;
@@ -66,6 +67,8 @@ namespace Z
                 m = glm::scale(m, 1.0f / scale);
                 *m_InverseWorldMatrix = std::move(m);
             }
+            */
+            *m_InverseWorldMatrix = glm::inverse(m_WorldMatrix);
             m_Flags &= ~InverseWorldMatrixDirty;
         }
 

@@ -50,5 +50,5 @@ void main()
   #ifdef Z_SKINNING
     applySkinning(pos);
   #endif
-    gl_Position = u_projection * u_model * u_view * pos;
+    gl_Position = u_projection * u_view * u_model * pos;
 }

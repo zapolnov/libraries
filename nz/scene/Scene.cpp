@@ -50,7 +50,7 @@ namespace Z
         }
 
         if (m_ClearBits != 0) {
-            gl::ClearColor(0.1f, 0.7f, 0.3f, 1.0f);
+            gl::ClearColor(0.1f, 0.3f, 0.7f, 1.0f);
             gl::Clear(m_ClearBits);
         }
 
