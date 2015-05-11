@@ -163,6 +163,28 @@ namespace Z
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    class GLResourceManager::PreloadedMesh : public GLMesh
+    {
+    public:
+        PreloadedMesh(const MeshPtr& mesh, GLResourceManager* resourceManager)
+            : GLMesh(resourceManager)
+            , m_Mesh(mesh)
+        {
+            reload();
+        }
+
+        void reload() override
+        {
+            GLMesh::reload();
+            initFromMesh(m_Mesh);
+        }
+
+    private:
+        MeshPtr m_Mesh;
+    };
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     class GLResourceManager::SkeletonAnimatedMesh : public GLSkeletonAnimatedMesh
     {
     public:
@@ -394,6 +416,12 @@ namespace Z
             }
         }
         return m_DefaultAnimatedVertexFormat;
+    }
+
+    GLMeshPtr GLResourceManager::createMesh(const MeshPtr& mesh)
+    {
+        std::lock_guard<decltype(m_Mutex)> lock(m_Mutex);
+        return std::make_shared<PreloadedMesh>(mesh, this);
     }
 
     GLMeshPtr GLResourceManager::loadMesh(const std::string& fileName)

@@ -64,6 +64,7 @@ namespace Z
         const VertexFormatPtr& defaultStaticVertexFormat();
         const VertexFormatPtr& defaultAnimatedVertexFormat();
 
+        GLMeshPtr createMesh(const MeshPtr& mesh);
         GLMeshPtr loadMesh(const std::string& fileName);
         GLSkeletonAnimatedMeshPtr loadSkeletonAnimatedMesh(const std::string& fileName);
 
@@ -76,6 +77,7 @@ namespace Z
         class StaticProgram;
         class Texture;
         class Mesh;
+        class PreloadedMesh;
         class SkeletonAnimatedMesh;
         class Material;
 

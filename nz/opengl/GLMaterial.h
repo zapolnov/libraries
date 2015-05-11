@@ -25,6 +25,7 @@
 #include "GLProgram.h"
 #include "GLTexture.h"
 #include "utility/streams/InputStream.h"
+#include <string>
 
 namespace Z
 {
@@ -52,6 +53,8 @@ namespace Z
         void unbindProgram() const;
         bool bindDiffuseMap(GL::Enum textureUnit = GL::TEXTURE0) const;
         void unbindDiffuseMap(GL::Enum textureUnit = GL::TEXTURE0) const;
+
+        static std::string fileNameForMaterial(std::string name);
 
     protected:
         GLProgramPtr m_Program;

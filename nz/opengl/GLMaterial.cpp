@@ -111,6 +111,49 @@ namespace Z
         }
     }
 
+    std::string GLMaterial::fileNameForMaterial(std::string name)
+    {
+        size_t length = name.length();
+
+        for (auto& ch : name) {
+            unsigned char c = static_cast<unsigned char>(ch);
+            switch (c)
+            {
+            case '?':
+            case '*':
+            case '<':
+            case '>':
+            case ':':
+                ch = '_';
+                break;
+            case '\\':
+                ch = '/';
+                break;
+            default:
+                if (c < 32 || c >= 127)
+                    ch = '_';
+            }
+        }
+
+        static const std::string SUFFIX = "material";
+        if (length <= SUFFIX.length() || name.substr(length - SUFFIX.length()) != SUFFIX) {
+            if (length > 0 && name[length - 1] == '.')
+                name = name + SUFFIX;
+            else
+                name = name + '.' + SUFFIX;
+        } else {
+            size_t index = length - SUFFIX.length() - 1;
+            if (name[index] != '.') {
+                if (name[index] == '-' || name[index] == '_')
+                    name[index] = '.';
+                else
+                    name = name + '.' + SUFFIX;
+            }
+        }
+
+        return name;
+    }
+
     void GLMaterial::reset()
     {
         m_Program.reset();

@@ -31,5 +31,5 @@ add_library(NZODEPhysicsScene STATIC ${EXCLUDE_FROM_ALL}
 source_group("Source Files" FILES ${source_files})
 
 set_target_properties(NZODEPhysicsScene PROPERTIES CXX_STANDARD 11)
-target_link_libraries(NZODEPhysicsScene NZScene NZUtility glm ode)
+target_link_libraries(NZODEPhysicsScene NZScene NZOpenGL NZMesh NZUtility glm ode)
 target_include_directories(NZODEPhysicsScene BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")

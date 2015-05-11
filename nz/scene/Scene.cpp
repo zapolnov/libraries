@@ -54,6 +54,8 @@ namespace Z
             gl::Clear(m_ClearBits);
         }
 
+        updateTransform(g_IdentityMatrix, false);
+
         update(time);
         updateTransform(g_IdentityMatrix, false);
 
@@ -63,5 +65,6 @@ namespace Z
             uniforms->setMatrix4fv(GLUniform::ViewMatrix, m_Camera->viewMatrix());
             draw(m_Camera->frustum(), uniforms);
         }
+
     }
 }

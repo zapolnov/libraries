@@ -21,23 +21,37 @@
  */
 
 #pragma once
-#include <scene/SceneNode.h>
 #include "ODEPhysicsWorld.h"
+#include "mesh/Mesh.h"
+#include "utility/FileSystem.h"
+#include <scene/SceneNode.h>
+#include <vector>
 
 namespace Z
 {
     class ODEPhysicsBody : public SceneNode
     {
     public:
-        explicit ODEPhysicsBody(const ODEPhysicsWorldPtr& world);
+        explicit ODEPhysicsBody(const ODEPhysicsWorld* world);
         ~ODEPhysicsBody();
 
         dBodyID odeBody() const { return m_Body; }
 
+        void addBox(float x, float y, float z);
+
     protected:
+        void invalidate() override;
+
+        void updateTransform(const glm::mat4& parentMatrix, bool parentMatrixChanged) override;
         void update(double time) override;
 
     private:
+        std::shared_ptr<ODEPhysicsWorld::Instance> m_ODE;
+        dSpaceID m_Space;
         dBodyID m_Body;
+        std::vector<dGeomID> m_Geoms;
+        bool m_PositionChanged = true;
     };
+
+    using ODEPhysicsBodyPtr = std::shared_ptr<ODEPhysicsBody>;
 }

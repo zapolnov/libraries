@@ -23,42 +23,51 @@
 
 namespace Z
 {
-    static const int MAX_CONTACTS = 50;
+    static const int MAX_CONTACTS = 40;
+    static std::once_flag g_PhysicsFormatInitFlag;
     static std::once_flag g_ODEInitFlag;
 
-    ODEPhysicsWorld::ODEPhysicsWorld()
+
+    ODEPhysicsWorld::Instance::Instance()
     {
         std::call_once(g_ODEInitFlag, []() {
-            dInitODE2(0);
+            dInitODE();
         });
 
         m_World = dWorldCreate();
         m_Space = dSimpleSpaceCreate(0);
-        m_JointGroup = dJointGroupCreate(0);
-
-        dWorldSetGravity(m_World, 0.0f, -1.0f, 0.0f);
-        dWorldSetERP(m_World, 0.2f);
-        dWorldSetCFM(m_World, 1.0e-5);
-        dWorldSetContactMaxCorrectingVel(m_World, 0.9f);
-        dWorldSetContactSurfaceLayer(m_World, 0.001f);
-        dWorldSetAutoDisableFlag(m_World, 1);
+        m_ContactGroup = dJointGroupCreate(0);
     }
 
-    ODEPhysicsWorld::~ODEPhysicsWorld()
+    ODEPhysicsWorld::Instance::~Instance()
     {
-        dJointGroupDestroy(m_JointGroup);
+        dJointGroupDestroy(m_ContactGroup);
         dSpaceDestroy(m_Space);
         dWorldDestroy(m_World);
     }
 
+
+    ODEPhysicsWorld::ODEPhysicsWorld()
+    {
+        m_Instance = std::make_shared<Instance>();
+
+        dWorldSetGravity(m_Instance->m_World, 0.0f, -9.8f, 0.0f);
+        dWorldSetCFM(m_Instance->m_World, 0.0f);
+        dWorldSetAutoDisableFlag(m_Instance->m_World, 1);
+    }
+
+    ODEPhysicsWorld::~ODEPhysicsWorld()
+    {
+    }
+
     void ODEPhysicsWorld::update(double time)
     {
-        m_Time += time;
-        while (m_Time > 1.0 / 30.0) {
-            dSpaceCollide(m_Space, this, &handleCollision);
-            dWorldStep(m_World, 0.05);
-            dJointGroupEmpty(m_JointGroup);
-            m_Time -= 1.0 / 30.0;
+        m_Time += std::min(time, 1.0 / 60.0);
+        if (m_Time > 1.0 / 60.0) {
+            dSpaceCollide(m_Instance->m_Space, m_Instance.get(), &handleCollision);
+            dWorldStep(m_Instance->m_World, 1.0 / 60.0);
+            dJointGroupEmpty(m_Instance->m_ContactGroup);
+            m_Time -= 1.0 / 60.0;
         }
 
         SceneNode::update(time);
@@ -66,25 +75,20 @@ namespace Z
 
     void ODEPhysicsWorld::handleCollision(void* data, dGeomID geom1, dGeomID geom2)
     {
-        ODEPhysicsWorld* self = reinterpret_cast<ODEPhysicsWorld*>(data);
+        Instance* instance = reinterpret_cast<Instance*>(data);
+
+        dBodyID body1 = dGeomGetBody(geom1);
+        dBodyID body2 = dGeomGetBody(geom2);
+        if (body1 && body2 && dAreConnectedExcluding(body1, body2, dJointTypeContact))
+            return;
 
         dContact contact[MAX_CONTACTS];
-        for (int i = 0; i < MAX_CONTACTS; i++) {
-            contact[i].surface.mode = dContactBounce | dContactSoftCFM;
-            contact[i].surface.mu = dInfinity;
-            contact[i].surface.mu2 = 0;
-            contact[i].surface.bounce = 0.01f;
-            contact[i].surface.bounce_vel = 0.1f;
-            contact[i].surface.soft_cfm = 0.01f;
-        }
+        memset(contact, 0, sizeof(contact));
 
         int numContacts = dCollide(geom1, geom2, MAX_CONTACTS, &contact[0].geom, sizeof(dContact));
         if (numContacts > 0) {
-            dBodyID body1 = dGeomGetBody(geom1);
-            dBodyID body2 = dGeomGetBody(geom2);
-
             for (int i = 0; i < numContacts; i++) {
-                dJointID joint = dJointCreateContact(self->m_World, self->m_JointGroup, &contact[i]);
+                dJointID joint = dJointCreateContact(instance->m_World, instance->m_ContactGroup, &contact[i]);
                 dJointAttach(joint, body1, body2);
             }
         }

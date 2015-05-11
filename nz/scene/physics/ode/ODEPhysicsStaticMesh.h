@@ -21,45 +21,32 @@
  */
 
 #pragma once
-#include <scene/SceneNode.h>
-#include <ode/ode.h>
+#include "ODEPhysicsWorld.h"
+#include <scene/SceneMesh.h>
+#include <vector>
 
 namespace Z
 {
-    class ODEPhysicsBody;
-
-    class ODEPhysicsWorld : public SceneNode
+    class ODEPhysicsStaticMesh : public SceneMesh
     {
     public:
-        ODEPhysicsWorld();
-        ~ODEPhysicsWorld();
+        static const unsigned long CATEGORY_BIT = 0b0000001;
 
-        dWorldID odeWorld() const { return m_Instance->m_World; }
-        dSpaceID odeSpace() const { return m_Instance->m_Space; }
-        dJointGroupID odeJointGroup() const { return m_Instance->m_ContactGroup; }
+        ODEPhysicsStaticMesh(const ODEPhysicsWorld* world, GLResourceManager& resourceManager, const MeshPtr& mesh);
+        ~ODEPhysicsStaticMesh();
 
     protected:
-        void update(double time) override;
+        void invalidate() override;
+        void updateTransform(const glm::mat4& parentMatrix, bool parentMatrixChanged) override;
 
     private:
-        struct Instance
-        {
-            dWorldID m_World;
-            dSpaceID m_Space;
-            dJointGroupID m_ContactGroup;
-
-            Instance();
-            ~Instance();
-        };
-
-        double m_Time = 0.0;
-        std::shared_ptr<Instance> m_Instance;
-
-        static void handleCollision(void* data, dGeomID geom1, dGeomID geom2);
-
-        friend class ODEPhysicsBody;
-        friend class ODEPhysicsStaticMesh;
+        std::shared_ptr<ODEPhysicsWorld::Instance> m_ODE;
+        std::vector<dGeomID> m_Geoms;
+        std::vector<dTriMeshDataID> m_TriMeshData;
+        std::vector<dTriIndex> m_IndicesBuffer;
+        MeshPtr m_Mesh;
+        bool m_PositionChanged = true;
     };
 
-    using ODEPhysicsWorldPtr = std::shared_ptr<ODEPhysicsWorld>;
+    using ODEPhysicsStaticMeshPtr = std::shared_ptr<ODEPhysicsStaticMesh>;
 }
