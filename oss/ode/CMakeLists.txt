@@ -60,3 +60,8 @@ add_library(ode STATIC ${EXCLUDE_FROM_ALL}
 set_source_files_properties(ode/src/collision_trimesh_trimesh.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
 
 target_include_directories(ode BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
+
+if(APPLE)
+    find_library(CoreServices CoreServices)
+    target_link_libraries(ode ${CoreServices})
+endif()
