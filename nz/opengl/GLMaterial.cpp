@@ -50,6 +50,9 @@ namespace Z
     {
         bool success = true;
 
+        if (m_Invisible)
+            return false;
+
         if (!bindProgram())
             return false;
 
@@ -112,8 +115,11 @@ namespace Z
     {
         m_Program.reset();
         m_DiffuseMap.reset();
+        m_DiffuseWrapS = GL::CLAMP_TO_EDGE;
+        m_DiffuseWrapT = GL::CLAMP_TO_EDGE;
         m_CullFace = true;
         m_DepthTest = true;
+        m_Invisible = false;
     }
 
     bool GLMaterial::load(InputStream* stream)
@@ -141,7 +147,8 @@ namespace Z
             GLResourceManager* resourceManager;
             std::string baseDir;
 
-            std::string nodeToPath(const YamlNode& node) const {
+            std::string nodeToPath(const YamlNode& node) const
+            {
                 std::string value = node.toString();
                 size_t length = value.length();
                 if (length > 0 && value[0] == '/')
@@ -152,6 +159,20 @@ namespace Z
                         return localFileName;
                     return value;
                 }
+            }
+
+            bool nodeToTextureWrap(const YamlNode& node, GL::Enum& value) const
+            {
+                std::string str = node.toString();
+                if (str == "clamp_to_edge") {
+                    value = GL::CLAMP_TO_EDGE;
+                    return true;
+                }
+                if (str == "repeat") {
+                    value = GL::REPEAT;
+                    return true;
+                }
+                return false;
             }
 
             void logError(const YamlNode& node, const std::string& message)
@@ -168,6 +189,26 @@ namespace Z
 
             { "diffuseMap", [](Context* C, const YamlNode& node) -> bool {
                 C->material->m_DiffuseMap = C->resourceManager->loadTexture(C->nodeToPath(node));
+                if (C->material->m_DiffuseMap) {
+                    C->material->m_DiffuseMap->setWrapS(C->material->m_DiffuseWrapS);
+                    C->material->m_DiffuseMap->setWrapT(C->material->m_DiffuseWrapT);
+                }
+                return true;
+            }},
+
+            { "diffuseWrapS", [](Context* C, const YamlNode& node) -> bool {
+                if (!C->nodeToTextureWrap(node, C->material->m_DiffuseWrapS))
+                    return false;
+                if (C->material->m_DiffuseMap)
+                    C->material->m_DiffuseMap->setWrapS(C->material->m_DiffuseWrapS);
+                return true;
+            }},
+
+            { "diffuseWrapT", [](Context* C, const YamlNode& node) -> bool {
+                if (!C->nodeToTextureWrap(node, C->material->m_DiffuseWrapT))
+                    return false;
+                if (C->material->m_DiffuseMap)
+                    C->material->m_DiffuseMap->setWrapT(C->material->m_DiffuseWrapT);
                 return true;
             }},
 
@@ -184,6 +225,14 @@ namespace Z
                 if (value == Z::YamlNode::Indeterminate)
                     return false;
                 C->material->m_DepthTest = (value == Z::YamlNode::True);
+                return true;
+            }},
+
+            { "invisible", [](Context* C, const YamlNode& node) -> bool {
+                auto value = node.toBool();
+                if (value == Z::YamlNode::Indeterminate)
+                    return false;
+                C->material->m_Invisible = (value == Z::YamlNode::True);
                 return true;
             }},
         };

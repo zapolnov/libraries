@@ -38,6 +38,7 @@ namespace Z
         const GLTexturePtr& diffuseMap() const { return m_DiffuseMap; }
         bool cullFace() const { return m_CullFace; }
         bool depthTest() const { return m_DepthTest; }
+        bool invisible() const { return m_Invisible; }
 
         int getUniformLocation(const char* name) const { return m_Program ? m_Program->getUniformLocation(name) : -1; }
         int getUniformLocation(GLUniform name) const { return m_Program ? m_Program->getUniformLocation(name) : -1; }
@@ -55,8 +56,11 @@ namespace Z
     protected:
         GLProgramPtr m_Program;
         GLTexturePtr m_DiffuseMap;
+        GL::Enum m_DiffuseWrapS;
+        GL::Enum m_DiffuseWrapT;
         bool m_CullFace;
         bool m_DepthTest;
+        bool m_Invisible;
 
         void reset();
         bool load(InputStream* stream);
