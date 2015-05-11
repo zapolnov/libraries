@@ -317,14 +317,14 @@ void _dFactorLDLT (dReal *A, dReal *d, int n, int nskip1)
         dee = d + i;
         /* factorize 2 x 2 block Z,dee */
         /* factorize row 1 */
-        dee[0] = dRecip(Z11);
+        dee[0] = Z11 != 0 ? dRecip(Z11) : 0;
         /* factorize row 2 */
         sum = 0;
         q1 = Z21;
         q2 = q1 * dee[0];
         Z21 = q2;
         sum += q1*q2;
-        dee[1] = dRecip(Z22 - sum);
+        dee[1] = Z22 - sum != 0 ? dRecip(Z22 - sum) : 0;
         /* done factorizing 2 x 2 block */
         ell[nskip1] = Z21;
     }

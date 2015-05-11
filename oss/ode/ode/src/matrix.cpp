@@ -350,8 +350,8 @@ void _dLDLTRemove (dReal **A, const int *p, dReal *L, dReal *d,
             {
                 dReal *Lcurr = L + r*nskip;
                 for (int i=0; i<r; ++Lcurr, ++i) {
-                    dIASSERT(d[i] != dReal(0.0));
-                    t[i] = *Lcurr / d[i];
+                    //dIASSERT(d[i] != dReal(0.0));
+                    t[i] = (d[i] != 0 ? *Lcurr / d[i] : 0);
                 }
             }
             dReal *a = t + r;
