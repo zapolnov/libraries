@@ -380,6 +380,7 @@ namespace Z
         bool readBoneIndices = format->hasAttribute(VertexFormat::BoneIndices);
         bool readBoneWeights = format->hasAttribute(VertexFormat::BoneWeights);
         bool readSkeleton = (readFlags & DontReadSkeleton) == 0;
+        bool readMaterials = (readFlags & DontReadMaterials) == 0;
 
         const aiScene* scene = nullptr;
         const unsigned flags =
@@ -391,7 +392,6 @@ namespace Z
             aiProcess_FindInvalidData |
             aiProcess_SplitLargeMeshes |
             aiProcess_OptimizeMeshes |
-            //aiProcess_OptimizeGraph |
             (readBoneWeights || readBoneIndices || readSkeleton ? 0 : aiProcess_PreTransformVertices) |
             (!readBoneIndices && !readBoneWeights ? 0 : aiProcess_LimitBoneWeights) |
             (!readNormals && !readTangents && !readBitangents ? 0 : aiProcess_GenSmoothNormals) |
@@ -435,25 +435,27 @@ namespace Z
         }
 
         std::vector<MeshMaterialPtr> materials;
-        materials.reserve(scene->mNumMaterials);
+        if (readMaterials) {
+            materials.reserve(scene->mNumMaterials);
 
-        for (size_t i = 0; i < scene->mNumMaterials; i++) {
-            const aiMaterial* sceneMaterial = scene->mMaterials[i];
-            MeshMaterialPtr material;
+            for (size_t i = 0; i < scene->mNumMaterials; i++) {
+                const aiMaterial* sceneMaterial = scene->mMaterials[i];
+                MeshMaterialPtr material;
 
-            aiString materialName;
-            if (sceneMaterial->Get(AI_MATKEY_NAME, materialName) == AI_SUCCESS)
-                material = std::make_shared<MeshMaterial>(std::string(materialName.data, materialName.length));
-            else {
-                std::stringstream ss;
-                ss << "material" << i;
-                material = std::make_shared<MeshMaterial>(ss.str());
+                aiString materialName;
+                if (sceneMaterial->Get(AI_MATKEY_NAME, materialName) == AI_SUCCESS)
+                    material = std::make_shared<MeshMaterial>(std::string(materialName.data, materialName.length));
+                else {
+                    std::stringstream ss;
+                    ss << "material" << i;
+                    material = std::make_shared<MeshMaterial>(ss.str());
+                }
+
+                Z_LOG(" - Material #" << i << " (\"" << material->name() << "\").");
+                materials.push_back(material);
             }
-
-            Z_LOG(" - Material #" << i << " (\"" << material->name() << "\").");
-            materials.push_back(material);
+            Z_LOG(" - Total " << materials.size() << " material" << (materials.size() == 1 ? "" : "s") << '.');
         }
-        Z_LOG(" - Total " << materials.size() << " material" << (materials.size() == 1 ? "" : "s") << '.');
 
         std::vector<uint8_t> vertexData;
         std::vector<uint16_t> indexData;
@@ -492,9 +494,11 @@ namespace Z
                     Mesh::Element element;
                     element.name.assign(sceneMesh->mName.data, sceneMesh->mName.length);
 
-                    Z_CHECK(sceneMesh->mMaterialIndex < materials.size());
-                    if (sceneMesh->mMaterialIndex < materials.size())
-                        element.material = materials[sceneMesh->mMaterialIndex];
+                    if (readMaterials) {
+                        Z_CHECK(sceneMesh->mMaterialIndex < materials.size());
+                        if (sceneMesh->mMaterialIndex < materials.size())
+                            element.material = materials[sceneMesh->mMaterialIndex];
+                    }
 
                     element.vertexBuffer = vertexBufferIndex;
                     size_t firstIndex = vertexDataLength;

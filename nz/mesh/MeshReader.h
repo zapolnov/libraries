@@ -36,7 +36,8 @@ namespace Z
     public:
         enum ReadFlags
         {
-            DontReadSkeleton  = 0b00000001,
+            DontReadSkeleton    = 0b00000001,
+            DontReadMaterials   = 0b00000010,
         };
 
         virtual ~MeshReader() = default;
