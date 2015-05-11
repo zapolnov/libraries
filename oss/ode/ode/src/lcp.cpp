@@ -532,7 +532,8 @@ void dLCP::transfer_i_to_C (int i)
                 for (int j=0; j<nC; ++j) Ltgt[j] = ell[j];
             }
             const int nC = m_nC;
-            m_d[nC] = dRecip (AROW(i)[i] - dDot(m_ell,m_Dell,nC));
+            dReal tmp = AROW(i)[i] - dDot(m_ell,m_Dell,nC);
+            m_d[nC] = tmp != 0 ? dRecip (tmp) : 0;
         }
         else {
             m_d[0] = dRecip (AROW(i)[i]);
@@ -580,7 +581,8 @@ void dLCP::transfer_i_from_N_to_C (int i)
                 for (int j=0; j<nC; ++j) Ltgt[j] = ell[j] = Dell[j] * d[j];
             }
             const int nC = m_nC;
-            m_d[nC] = dRecip (AROW(i)[i] - dDot(m_ell,m_Dell,nC));
+            dReal tmp = AROW(i)[i] - dDot(m_ell,m_Dell,nC);
+            m_d[nC] = tmp != 0 ? dRecip (tmp) : 0;
         }
         else {
             m_d[0] = dRecip (AROW(i)[i]);
@@ -940,7 +942,7 @@ void dSolveLCP (dxWorldProcessMemArena *memarena, int n, dReal *A, dReal *x, dRe
 
                 int cmd = 1;		// index switching command
                 int si = 0;		// si = index to switch if cmd>3
-                dReal s = -w[i]/delta_w[i];
+                dReal s = delta_w[i] != 0 ? -w[i]/delta_w[i] : 0;
                 if (dir > 0) {
                     if (hi[i] < dInfinity) {
                         dReal s2 = (hi[i]-x[i])*dirf;	// was (hi[i]-x[i])/dirf	// step to x(i)=hi(i)
