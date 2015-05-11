@@ -31,6 +31,8 @@ namespace Z
         case Qt::Key_Right: return Key_Right;
         case Qt::Key_Up: return Key_Up;
         case Qt::Key_Down: return Key_Down;
+        case Qt::Key_PageUp: return Key_PageUp;
+        case Qt::Key_PageDown: return Key_PageDown;
         }
 
         return UnknownKey;
