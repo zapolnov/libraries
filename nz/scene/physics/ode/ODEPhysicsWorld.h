@@ -41,6 +41,11 @@ namespace Z
     protected:
         void update(double time) override;
 
+        virtual void beforeUpdatePhysics() {}
+        virtual void afterUpdatePhysics() {}
+
+        virtual bool handleCollision(dGeomID geom1, dGeomID geom2);
+
     private:
         struct Instance
         {
@@ -55,7 +60,7 @@ namespace Z
         double m_Time = 0.0;
         std::shared_ptr<Instance> m_Instance;
 
-        static void handleCollision(void* data, dGeomID geom1, dGeomID geom2);
+        static void odeCollisionCallback(void* data, dGeomID geom1, dGeomID geom2);
 
         friend class ODEPhysicsBody;
         friend class ODEPhysicsStaticMesh;

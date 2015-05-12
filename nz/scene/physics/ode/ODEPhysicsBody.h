@@ -37,7 +37,7 @@ namespace Z
 
         dBodyID odeBody() const { return m_Body; }
 
-        void addBox(float x, float y, float z);
+        void addBox(float density, float x, float y, float z);
 
     protected:
         void invalidate() override;

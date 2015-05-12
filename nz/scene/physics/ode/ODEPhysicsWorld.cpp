@@ -62,25 +62,27 @@ namespace Z
 
     void ODEPhysicsWorld::update(double time)
     {
+        beforeUpdatePhysics();
+
         m_Time += std::min(time, 1.0 / 60.0);
         if (m_Time > 1.0 / 60.0) {
-            dSpaceCollide(m_Instance->m_Space, m_Instance.get(), &handleCollision);
+            dSpaceCollide(m_Instance->m_Space, this, &odeCollisionCallback);
             dWorldStep(m_Instance->m_World, 1.0 / 60.0);
             dJointGroupEmpty(m_Instance->m_ContactGroup);
             m_Time -= 1.0 / 60.0;
         }
 
+        afterUpdatePhysics();
+
         SceneNode::update(time);
     }
 
-    void ODEPhysicsWorld::handleCollision(void* data, dGeomID geom1, dGeomID geom2)
+    bool ODEPhysicsWorld::handleCollision(dGeomID geom1, dGeomID geom2)
     {
-        Instance* instance = reinterpret_cast<Instance*>(data);
-
         dBodyID body1 = dGeomGetBody(geom1);
         dBodyID body2 = dGeomGetBody(geom2);
         if (body1 && body2 && dAreConnectedExcluding(body1, body2, dJointTypeContact))
-            return;
+            return false;
 
         dContact contact[MAX_CONTACTS];
         memset(contact, 0, sizeof(contact));
@@ -88,9 +90,18 @@ namespace Z
         int numContacts = dCollide(geom1, geom2, MAX_CONTACTS, &contact[0].geom, sizeof(dContact));
         if (numContacts > 0) {
             for (int i = 0; i < numContacts; i++) {
-                dJointID joint = dJointCreateContact(instance->m_World, instance->m_ContactGroup, &contact[i]);
+                dJointID joint = dJointCreateContact(m_Instance->m_World, m_Instance->m_ContactGroup, &contact[i]);
                 dJointAttach(joint, body1, body2);
             }
+            return true;
         }
+
+        return false;
+    }
+
+    void ODEPhysicsWorld::odeCollisionCallback(void* data, dGeomID geom1, dGeomID geom2)
+    {
+        ODEPhysicsWorld* self = reinterpret_cast<ODEPhysicsWorld*>(data);
+        self->handleCollision(geom1, geom2);
     }
 }

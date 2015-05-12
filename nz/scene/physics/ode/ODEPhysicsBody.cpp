@@ -41,11 +41,11 @@ namespace Z
         dBodyDestroy(m_Body);
     }
 
-    void ODEPhysicsBody::addBox(float x, float y, float z)
+    void ODEPhysicsBody::addBox(float density, float x, float y, float z)
     {
         // FIXME
         dMass m;
-        dMassSetBox(&m, 1.0f, x, y, z);
+        dMassSetBox(&m, density, x, y, z);
 
         dGeomID geom = dCreateBox(m_Space, x, y, z);
         dGeomSetBody(geom, m_Body);
