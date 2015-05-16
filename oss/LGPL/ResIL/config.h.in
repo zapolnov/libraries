@@ -55,7 +55,7 @@
 #undef IL_NO_WAD
 #undef IL_NO_WAL
 #undef IL_NO_WBMP
-#undef IL_NO_WDP
+#define IL_NO_WDP
 #undef IL_NO_XPM
 
 #undef IL_USE_DXTC_NVIDIA

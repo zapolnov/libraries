@@ -16,6 +16,7 @@
 #include "il_manip.h"
 #include "il_pal.h"
 #include "il_bits.h"
+#include <algorithm>
 
 #ifndef _WIN32
 #define min(x,y) ((x) < (y) ? (x) : (y))
@@ -93,7 +94,7 @@ bool readScanLine(ILimage* image, ILubyte* chunk, ILushort chunkSize, int y)
 			if (chunkOffset+1 < chunkSize) {
 				// RLE decoding
 				ILubyte value = chunk[chunkOffset+1];
-				auto toCopy = min(controlByte-128, image->Width-outOffset);
+				auto toCopy = std::min(controlByte-128, image->Width-outOffset);
 				memset(&data[outOffset], value, toCopy);
 				chunkOffset += 2;
 				outOffset += toCopy;
@@ -105,7 +106,7 @@ bool readScanLine(ILimage* image, ILubyte* chunk, ILushort chunkSize, int y)
 			ILuint bytesToCopy = controlByte;
 			if (chunkOffset+bytesToCopy+1 < chunkSize) {
 				// Raw copying
-				bytesToCopy = min(bytesToCopy, image->Width-outOffset);
+				bytesToCopy = std::min(bytesToCopy, image->Width-outOffset);
 				memcpy(&data[outOffset], &chunk[chunkOffset+1], bytesToCopy);
 				chunkOffset += bytesToCopy+1;
 				outOffset += bytesToCopy;

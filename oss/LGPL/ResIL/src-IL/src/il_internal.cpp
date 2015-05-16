@@ -18,7 +18,7 @@
 
 /* Siigron: added this for Linux... a #define should work, but for some reason
 	it doesn't (anyone who knows why?) */
-#if !_WIN32 || (_WIN32 && __GNUC__) // Cygwin
+#if !_WIN32 || (_WIN32 && __CYGWIN__) // Cygwin
 	int stricmp(const char *src1, const char *src2)
 	{
 		return strcasecmp(src1, src2);

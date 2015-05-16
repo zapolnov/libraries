@@ -208,14 +208,14 @@ TIFF *iTIFFOpen(ILimage* image, const char *Mode)
 
 	if (Mode[0] == 'w')
 		tif = TIFFClientOpen("TIFFMemFile", Mode,
-							image,
+							(thandle_t)image,
 							_tiffFileReadProcW, _tiffFileWriteProc,
 							_tiffFileSeekProcW, _tiffFileCloseProc,
 							_tiffFileSizeProcW, _tiffDummyMapProc,
 							_tiffDummyUnmapProc);
 	else
 		tif = TIFFClientOpen("TIFFMemFile", Mode,
-							image,
+							(thandle_t)image,
 							_tiffFileReadProc, _tiffFileWriteProc,
 							_tiffFileSeekProc, _tiffFileCloseProc,
 							_tiffFileSizeProc, _tiffDummyMapProc,

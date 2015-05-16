@@ -60,9 +60,9 @@ void *vec_malloc(const ILsizei size)
 #else
 	// Memalign hack from ffmpeg for MinGW
 	void *ptr;
-	int diff;
+	ptrdiff_t diff;
 	ptr = malloc(_size+16+1);
-	diff= ((-(int)ptr - 1)&15) + 1;
+	diff= ((-(ptrdiff_t)ptr - 1)&15) + 1;
 	ptr = (void*)(((char*)ptr)+diff);
 	((char*)ptr)[-1]= diff;
 	return ptr;
@@ -129,7 +129,7 @@ static void ILAPIENTRY DefaultFreeFunc(const void * CONST_RESTRICT ptr)
 	    _mm_free((void*)ptr);
 #else
 #if defined(VECTORMEM) & !defined(POSIX_MEMALIGN) & !defined(VALLOC) & !defined(MEMALIGN) & !defined(MM_MALLOC)
-	    free(((char*)Ptr) - ((char*)Ptr)[-1]);
+	    free(((char*)ptr) - ((char*)ptr)[-1]);
 #else	    
 	    free((void*)ptr);
 #endif //OTHERS...

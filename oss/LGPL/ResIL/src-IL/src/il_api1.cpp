@@ -13,6 +13,7 @@ here
 // il.h functions should be implemented here without including that header
 // to prevent warnings about mixing API 1 and 2
 #include "il_internal.h"
+#undef __IL_H__
 #include "IL/il2.h"
 #include "il_stack.h"
 
