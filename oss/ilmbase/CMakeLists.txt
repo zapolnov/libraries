@@ -49,7 +49,15 @@ add_library(ilmbase STATIC ${EXCLUDE_FROM_ALL}
     ${imath_sources}
 )
 
-target_include_directories(ilmbase PUBLIC
+target_include_directories(ilmbase PUBLIC BEFORE
     "${CMAKE_CURRENT_BINARY_DIR}/include"
     "${CMAKE_CURRENT_BINARY_DIR}/include/OpenEXR"
+)
+
+target_include_directories(ilmbase PRIVATE BEFORE
+    "${CMAKE_CURRENT_SOURCE_DIR}/Half"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Iex"
+    "${CMAKE_CURRENT_SOURCE_DIR}/IexMath"
+    "${CMAKE_CURRENT_SOURCE_DIR}/IlmThread"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Imath"
 )

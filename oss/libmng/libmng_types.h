@@ -205,7 +205,9 @@
 #define HAVE_BOOLEAN
 #endif
 #ifndef _WIN32
+#ifndef HAVE_BOOLEAN
 typedef int boolean;
+#endif
 #endif
 /* For jpegsrc.v09a: */
 #include <stdio.h>
