@@ -14,6 +14,7 @@
 #include "il_internal.h"
 #ifndef IL_NO_IWI
 #include "il_dds.h"
+#undef IL__2__h
 #include "IL/il.h"
 
 typedef struct IWIHEAD

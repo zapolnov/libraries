@@ -108,7 +108,7 @@ ILint iGetSgiHead(SIO* io, iSgiHeader *Header)
 {
 	ILint read = (ILint) io->read(io, Header, 1, sizeof(iSgiHeader));
 
-	#ifdef __LITTLE_ENDIAN__
+	#ifdef IL_LITTLE_ENDIAN
 	iSwapShort(&Header->MagicNum);
 	iSwapUShort(&Header->Dim);
 	iSwapUShort(&Header->XSize);
@@ -222,7 +222,7 @@ ILint iGetScanLine(ILimage* image, ILubyte *ScanLine, iSgiHeader *Head, ILuint L
 		if (image->io.read(&image->io, &Pixel, Head->Bpc, 1) != 1)
 			return -1;
 		
-#ifndef __LITTLE_ENDIAN__
+#ifndef IL_LITTLE_ENDIAN
 		iSwapUShort(&Pixel);
 #endif
 
@@ -238,7 +238,7 @@ ILint iGetScanLine(ILimage* image, ILubyte *ScanLine, iSgiHeader *Head, ILuint L
 		else {
 			if (image->io.read(&image->io, &Pixel, Head->Bpc, 1) != 1)
 				return -1;
-#ifndef __LITTLE_ENDIAN__
+#ifndef IL_LITTLE_ENDIAN
 			iSwapUShort(&Pixel);
 #endif
 			if (Head->Bpc == 1) {
@@ -266,7 +266,7 @@ ILint iGetScanLine(ILimage* image, ILubyte *ScanLine, iSgiHeader *Head, ILuint L
 
 ILboolean iReadRleSgi(ILimage* image, iSgiHeader *Head)
 {
-	#ifdef __LITTLE_ENDIAN__
+	#ifdef IL_LITTLE_ENDIAN
 	ILuint ixTable;
 	#endif
 	ILuint 		ChanInt = 0;
@@ -287,13 +287,13 @@ ILboolean iReadRleSgi(ILimage* image, iSgiHeader *Head)
 	if (image->io.read(&image->io, LenTable, TableSize * sizeof(ILuint), 1) != 1)
 		goto cleanup_error;
 
-#ifdef __LITTLE_ENDIAN__
+#ifdef IL_LITTLE_ENDIAN
 	// Fix the offset/len table (it's big endian format)
 	for (ixTable = 0; ixTable < TableSize; ixTable++) {
 		iSwapUInt(OffTable + ixTable);
 		iSwapUInt(LenTable + ixTable);
 	}
-#endif //__LITTLE_ENDIAN__
+#endif //IL_LITTLE_ENDIAN
 
 	// We have to create a temporary buffer for the image, because SGI
 	//	images are plane-separated.
@@ -343,7 +343,7 @@ ILboolean iReadRleSgi(ILimage* image, iSgiHeader *Head)
 		}
 	}
 
-	#ifdef __LITTLE_ENDIAN__
+	#ifdef IL_LITTLE_ENDIAN
 	if (Head->Bpc == 2)
 		sgiSwitchData(image->Data, image->SizeOfData);
 	#endif
@@ -474,7 +474,7 @@ ILboolean iSaveRleSgi(ILimage* image, ILubyte *Data, ILuint w, ILuint h, ILuint 
 		else
 			success = IL_FALSE;
 		DataOff += LenTable[y];
-#ifdef __LITTLE_ENDIAN__
+#ifdef IL_LITTLE_ENDIAN
 		iSwapUInt(&StartTable[y]);
  		iSwapUInt(&LenTable[y]);
 #endif

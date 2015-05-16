@@ -14,6 +14,7 @@
 #include "il_internal.h"
 #ifndef IL_NO_JP2
 #include <jasper/jasper.h>
+#undef IL__2__h
 #include "IL/il.h"
 
 #if defined(_WIN32) && defined(IL_USE_PRAGMA_LIBS)
@@ -206,19 +207,19 @@ ILboolean ilLoadJp2LInternal(ILimage* image, const void *Lump, ILuint Size)
 
 static int iJp2_file_read(jas_stream_obj_t *obj, char *buf, int cnt)
 {
-	obj;
+	(void)obj;
 	return (int) iCurImage->io.read(&iCurImage->io, buf, 1, cnt);
 }
 
 static int iJp2_file_write(jas_stream_obj_t *obj, char *buf, int cnt)
 {
-	obj;
+	(void)obj;
 	return (int) iCurImage->io.write(buf, 1, cnt, &iCurImage->io);
 }
 
 static long iJp2_file_seek(jas_stream_obj_t *obj, long offset, int origin)
 {
-	obj;
+	(void)obj;
 
 	// We could just pass origin to iseek, but this is probably more portable.
 	switch (origin)
@@ -235,7 +236,7 @@ static long iJp2_file_seek(jas_stream_obj_t *obj, long offset, int origin)
 
 static int iJp2_file_close(jas_stream_obj_t *obj)
 {
-	obj;
+	(void)obj;
 	return 0;  // We choose when we want to close the file.
 }
 

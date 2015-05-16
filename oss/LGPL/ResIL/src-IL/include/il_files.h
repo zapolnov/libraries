@@ -30,7 +30,7 @@ __FILES_EXTERN void				iSetOutputFake(SIO* io);
 __FILES_EXTERN ILHANDLE			ILAPIENTRY iGetFile(ILimage* image);
 __FILES_EXTERN const ILubyte*	ILAPIENTRY iGetLump(ILimage* image);
 
-__FILES_EXTERN ILuint			ILAPIENTRY ilprintf(SIO* io, const char *, ...);
+__FILES_EXTERN ILint			ILAPIENTRY ilprintf(SIO* io, const char *, ...);
 __FILES_EXTERN void				ipad(SIO* io, ILuint NumZeros);
 
 #endif//FILES_H

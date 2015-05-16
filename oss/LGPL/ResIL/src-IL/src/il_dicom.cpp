@@ -443,7 +443,7 @@ ILboolean iLoadDicomInternal(ILimage* image)
 	}
 
 	// We may have to swap the order of the data.
-#ifdef __BIG_ENDIAN__
+#ifdef IL_BIG_ENDIAN
 			if (!Header.BigEndian) {
 				if (Header.Format == IL_RGB)
 					Header.Format = IL_BGR;

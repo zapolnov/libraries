@@ -13,6 +13,7 @@
 
 #include "il_internal.h"
 #ifndef IL_NO_RAW
+#undef IL__2__h
 #include "IL/il.h"
 
 

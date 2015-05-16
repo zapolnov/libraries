@@ -128,7 +128,7 @@ static ILboolean load_ilbm(ILimage* image)
     Uint32      remainingbytes;
     Uint32      width;
     BMHD          bmhd;
-    char        *error;
+    const char  *error;
     Uint8       flagHAM,flagEHB;
 
     error   = NULL;
@@ -494,7 +494,7 @@ static ILboolean load_ilbm(ILimage* image)
                         {
                             finalcolor = pixelcolor;
                         }
-#if defined( __LITTLE_ENDIAN__ )
+#if defined( IL_LITTLE_ENDIAN )
                         {
                             *ptr++ = (Uint8)(finalcolor>>16);
                             *ptr++ = (Uint8)(finalcolor>>8);

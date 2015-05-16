@@ -57,7 +57,7 @@ ILuint iGetSunHead(SIO* io, SUNHEAD *Header)
 {
 	ILuint read = (ILuint) io->read(io, Header, 1, sizeof(SUNHEAD));
 
-	#ifdef __LITTLE_ENDIAN__
+	#ifdef IL_LITTLE_ENDIAN
 	iSwapUInt(&Header->MagicNumber);
 	iSwapUInt(&Header->Width);
 	iSwapUInt(&Header->Height);

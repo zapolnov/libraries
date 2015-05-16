@@ -14,7 +14,7 @@
 #include "il_internal.h"
 #ifndef IL_NO_MDL
 #include "il_mdl.h"
-#include "IL/il2.h"
+#undef IL__2__h
 #include "IL/il.h"
 
 

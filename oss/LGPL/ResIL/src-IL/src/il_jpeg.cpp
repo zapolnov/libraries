@@ -15,6 +15,7 @@
 //
 
 #include "il_internal.h"
+#undef IL__2__h
 #include "IL/il.h"
 
 #ifndef IL_NO_JPG

@@ -24,7 +24,7 @@ ILint iGetPicHead(SIO* io, PIC_HEAD *Header)
 {
 	ILint read = (ILint) io->read(io, Header, 1, sizeof(Header));
 
-	#ifdef __LITTLE_ENDIAN__
+	#ifdef IL_LITTLE_ENDIAN
 	iSwapInt(&Header->Magic);
 	iSwapFloat(&Header->Version);
 	iSwapShort(&Header->Width);

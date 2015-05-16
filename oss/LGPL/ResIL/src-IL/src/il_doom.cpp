@@ -13,11 +13,11 @@
 
 #include "il_internal.h"
 #ifndef IL_NO_DOOM
-#include "IL/il.h"
-#include "IL/il2.h"
 #include "il_manip.h"
 #include "il_pal.h"
 #include "il_doompal.h"
+#undef IL__2__h
+#include "IL/il.h"
 
 
 //

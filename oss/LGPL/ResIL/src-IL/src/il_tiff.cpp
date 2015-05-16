@@ -144,7 +144,7 @@ _tiffFileSeekProcW(thandle_t fd, toff_t tOff, int whence)
 static int
 _tiffFileCloseProc(thandle_t fd)
 {
-	fd;
+	(void)fd;
 	return (0);
 }
 
@@ -184,7 +184,7 @@ _tiffFileSizeProcW(thandle_t fd)
 static int
 _tiffDummyMapProc(thandle_t fd, tdata_t* pbase, toff_t* psize)
 {
-	fd; pbase; psize;
+	(void)fd; (void)pbase; (void)psize;
 	return 0;
 }
 
@@ -196,13 +196,13 @@ _tiffDummyMapProc(thandle_t fd, tdata_t* pbase, toff_t* psize)
 static void
 _tiffDummyUnmapProc(thandle_t fd, tdata_t base, toff_t size)
 {
-	fd; base; size;
+	(void)fd; (void)base; (void)size;
 	return;
 }
 
 /*----------------------------------------------------------------------------*/
 
-TIFF *iTIFFOpen(ILimage* image, char *Mode)
+TIFF *iTIFFOpen(ILimage* image, const char *Mode)
 {
 	TIFF *tif;
 
@@ -233,7 +233,7 @@ int tiffErrors = 0;
 void warningHandler(const char* mod, const char* fmt, va_list ap)
 {
 	++tiffWarnings;
-	mod; fmt; ap;
+	(void)mod; (void)fmt; (void)ap;
 	//char buff[1024];
 	//vsnprintf(buff, 1024, fmt, ap);
 }
@@ -241,7 +241,7 @@ void warningHandler(const char* mod, const char* fmt, va_list ap)
 void errorHandler(const char* mod, const char* fmt, va_list ap)
 {
 	++tiffErrors;
-	mod; fmt; ap;
+	(void)mod; (void)fmt; (void)ap;
 	//char buff[1024];
 	//vsnprintf(buff, 1024, fmt, ap);
 }
@@ -539,7 +539,7 @@ ILboolean decodeOther(ILimage* baseImage, TiffLoadState& state, int frameNo)
 	}
 	state.frame->Origin = IL_ORIGIN_LOWER_LEFT;  // eiu...dunno if this is right
 
-	#ifdef __BIG_ENDIAN__ //TIFFReadRGBAImage reads abgr on big endian, convert to rgba
+	#ifdef IL_BIG_ENDIAN //TIFFReadRGBAImage reads abgr on big endian, convert to rgba
 	EndianSwapData(Image);
 	#endif
 

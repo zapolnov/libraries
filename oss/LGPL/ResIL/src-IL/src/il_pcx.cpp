@@ -23,7 +23,7 @@ ILuint iGetPcxHead(SIO* io, PCXHEAD *header)
 {
 	ILuint read = (ILuint) io->read(io, header, 1, sizeof(PCXHEAD));
 
-	#ifdef __BIG_ENDIAN__
+	#ifdef IL_BIG_ENDIAN
 	iSwapUShort(header->Xmin); // = GetLittleShort();
 	iSwapUShort(header->Ymin); // = GetLittleShort();
 	iSwapUShort(header->Xmax); // = GetLittleShort();

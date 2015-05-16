@@ -51,7 +51,7 @@ ILint iGetPixHead(SIO* io, PIXHEAD *Header)
 {
 	ILint read = (ILint) io->read(io, Header, 1, sizeof(PIXHEAD));
 
-#ifdef __LITTLE_ENDIAN__
+#ifdef IL_LITTLE_ENDIAN
 	iSwapUShort(&Header->Width);
 	iSwapUShort(&Header->Height);
 	iSwapUShort(&Header->OffX);

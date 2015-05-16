@@ -313,7 +313,7 @@ ILAPI ILimage* ILAPIENTRY ilu2Rotate_(ILimage *image, ILfloat Angle)
 
 ILAPI ILimage* ILAPIENTRY iluRotate3D_(ILimage *Image, ILfloat x, ILfloat y, ILfloat z, ILfloat Angle)
 {
-	Image; x; y; z; Angle;
+	(void)Image; (void)x; (void)y; (void)z; (void)Angle;
 	return NULL;
 }
 

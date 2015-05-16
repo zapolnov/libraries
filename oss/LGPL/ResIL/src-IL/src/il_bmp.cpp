@@ -34,7 +34,7 @@ void GetShiftFromMask(const ILuint Mask, ILuint * CONST_RESTRICT ShiftLeft, ILui
 void flipHeaderEndians(BMPHEAD * const header)
 {
 	// @todo: untested endian conversion - I don't have a machine+OS that uses big endian
-	#ifdef __BIG_ENDIAN__
+	#ifdef IL_BIG_ENDIAN
 	iSwapInt(Header->bfSize); //= GetLittleInt();
 	iSwapUInt(Header->bfReserved); // = GetLittleUInt();
 	iSwapInt(Header->bfDataOff); // = GetLittleInt();
@@ -77,7 +77,7 @@ ILboolean iGetOS2Head(SIO* io, OS2_HEAD * const Header)
 		return IL_FALSE;
 
 	// @todo: untested endian conversion - I don't have a machine+OS that uses big endian
-	#ifdef __BIG_ENDIAN__
+	#ifdef IL_BIG_ENDIAN
 	UShort(&Header->bfType);
 	UInt(&Header->biSize);
 	Short(&Header->xHotspot);
@@ -562,7 +562,7 @@ ILboolean ilReadUncompBmp32(ILimage* image, BMPHEAD * Header)
 	DWORD* start = (DWORD*) il2GetData(image);
 	DWORD* stop = start + image->Width * image->Height;
 	for (DWORD* pixel = start; pixel < stop; ++pixel)
-		(*pixel) = (((*pixel) && 255) << 24) + ((*pixel) >> 8);
+		(*pixel) = (((*pixel) & 255) << 24) + ((*pixel) >> 8);
 
 	if (read == image->SizeOfPlane)
 	{

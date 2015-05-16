@@ -16,8 +16,8 @@
 #include "il_internal.h"
 #include "il_register.h"
 #include <string.h>
+#undef IL__2__h
 #include "IL/il.h"
-#include "IL/il2.h"
 
 // Global variables: Linked lists of registered formats
 iFormatL *LoadProcs = NULL;

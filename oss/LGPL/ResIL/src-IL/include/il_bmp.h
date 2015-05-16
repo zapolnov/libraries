@@ -29,7 +29,7 @@ typedef struct BMPHEAD {
 	uint32_t		bfDataOff;
 	uint32_t		biSize;
 	uint32_t		biWidth;
-	uint32_t		biHeight;
+	int32_t			biHeight;
 	uint16_t		biPlanes; // Must be 1
 	uint16_t		biBitCount; // Bits per pixel
 	uint32_t		biCompression; // 0: none, 1: RLE8, 2: RLE4, more...

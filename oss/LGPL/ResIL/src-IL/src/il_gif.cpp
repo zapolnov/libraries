@@ -582,7 +582,7 @@ ILboolean GifLoader::readImage()
 
 	//read image descriptor
    auto read = io->read(io, &ImageDesc, 1, sizeof(IMAGEDESC));
-   #ifdef __BIG_ENDIAN__
+   #ifdef IL_BIG_ENDIAN
    iSwapUShort(ImageDesc.OffX);
    iSwapUShort(ImageDesc.OffY);
    iSwapUShort(ImageDesc.Width);
@@ -754,7 +754,7 @@ ILboolean iLoadGifInternal(ILimage* image)
 
 	// Read header
 	auto read = image->io.read(&image->io, &loader.mHeader, 1, sizeof(GIFHEAD));
-	#ifdef __BIG_ENDIAN__
+	#ifdef IL_BIG_ENDIAN
 	iSwapUShort(Header.Width);
 	iSwapUShort(Header.Height);
 	#endif

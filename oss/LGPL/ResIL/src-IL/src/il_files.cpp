@@ -270,7 +270,7 @@ ILuint64 ILAPIENTRY il2GetLumpPos(ILimage* aImageExt)
 }
 
 
-ILuint ILAPIENTRY ilprintf(SIO* io, const char *Line, ...)
+ILint ILAPIENTRY ilprintf(SIO* io, const char *Line, ...)
 {
 	char	Buffer[2048];  // Hope this is large enough
 	va_list	VaLine;
@@ -283,7 +283,7 @@ ILuint ILAPIENTRY ilprintf(SIO* io, const char *Line, ...)
 	i = ilCharStrLen(Buffer);
 	io->write(Buffer, 1, i, io);
 
-	return i;
+	return (ILint)i;
 }
 
 
@@ -387,7 +387,7 @@ ILint64 ILAPIENTRY iSeekLump(SIO* io, ILint64 Offset, ILuint Mode)
 			if (Offset > 0)
 				return 1;
 			// Should we use >= instead?
-			if (abs(Offset) > (ILint)io->lumpSize)  // If ReadLumpSize == 0, too bad
+			if ((Offset >= 0 ? Offset : -Offset) > (ILint)io->lumpSize)  // If ReadLumpSize == 0, too bad
 				return 1;
 			io->rwPos = io->lumpSize + Offset;
 			break;

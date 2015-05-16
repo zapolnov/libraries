@@ -25,7 +25,7 @@ ILboolean iGetVtfHead(SIO* io, VTFHEAD *Header)
 	auto read = io->read(io, Header, 1, sizeof(*Header));
 
 	// @todo: untested endian conversion - I don't have a machine+OS that uses big endian
-	#ifdef __BIG_ENDIAN__
+	#ifdef IL_BIG_ENDIAN
 	iSwapUInt(Header->Version[0]);
 	iSwapUInt(Header->Version[1]);
 	iSwapUInt(Header->HeaderSize);

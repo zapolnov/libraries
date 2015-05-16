@@ -42,7 +42,7 @@ ILint iGetExrHead(SIO* io, EXRHEAD *Header)
 {
 	ILint read = (ILint) io->read(io, Header, 1, sizeof(EXRHEAD));
 
-	#ifdef __BIG_ENDIAN__
+	#ifdef IL_BIG_ENDIAN
 	iSwapUInt(&Header->MagicNumber);
 	iSwapUInt(&Header->Version);
 	#endif
@@ -166,7 +166,7 @@ ILboolean iLoadExrInternal(ILimage* image)
 	// print an error message, and return a partial image
 	// to the caller.
 		il2SetError(IL_LIB_EXR_ERROR);  // Could I use something a bit more descriptive based on e?
-		e;  // Prevent the compiler from yelling at us about this being unused.
+		(void)e;  // Prevent the compiler from yelling at us about this being unused.
 		return IL_FALSE;
     }
 

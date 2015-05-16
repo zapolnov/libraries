@@ -101,7 +101,7 @@ static void ico_png_read(png_structp png_ptr, png_bytep data, png_size_t length)
 
 static void ico_png_error_func(png_structp png_ptr, png_const_charp message)
 {
-	message;
+	(void)message;
 	il2SetError(IL_LIB_PNG_ERROR);
 
 	/*
@@ -117,7 +117,7 @@ static void ico_png_error_func(png_structp png_ptr, png_const_charp message)
 
 static void ico_png_warn_func(png_structp png_ptr, png_const_charp message)
 {
-	png_ptr; message;
+	(void)png_ptr; (void)message;
 	return;
 }
 
@@ -184,7 +184,7 @@ ILboolean ico_readpng_get_image(struct IconData* data, ICOIMAGE *Icon, ILdouble 
 	ILdouble image_gamma;
 #endif
 
-	display_exponent;
+	(void)display_exponent;
 
 	/* setjmp() must be called in every function that calls a PNG-reading
 	 * libpng function */
@@ -229,7 +229,7 @@ ILboolean ico_readpng_get_image(struct IconData* data, ICOIMAGE *Icon, ILdouble 
 #endif
 
 	//fix endianess
-#ifdef __LITTLE_ENDIAN__
+#ifdef IL_LITTLE_ENDIAN
 	if (bit_depth == 16)
 		png_set_swap(data->ico_png_ptr);
 #endif

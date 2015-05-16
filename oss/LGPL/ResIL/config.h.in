@@ -1,0 +1,91 @@
+
+#undef ALTIVEC_GCC
+#cmakedefine GCC_X86_ASM 1
+
+#undef ILUT_USE_ALLEGRO
+#undef ILUT_USE_DIRECTX8
+#undef ILUT_USE_DIRECTX9
+#cmakedefine ILUT_USE_OPENGL 1
+#undef ILUT_USE_SDL
+#undef ILUT_USE_X11
+#undef ILUT_USE_XSHM
+#define IL_INLINE_ASM 1
+
+#undef IL_NO_BLP
+#undef IL_NO_BMP
+#undef IL_NO_DCX
+#undef IL_NO_DDS
+#undef IL_NO_DICOM
+#undef IL_NO_EXR
+#undef IL_NO_FITS
+#undef IL_NO_GAMES
+#undef IL_NO_GIF
+#undef IL_NO_HDR
+#undef IL_NO_ICNS
+#undef IL_NO_ICON
+#undef IL_NO_IFF
+#undef IL_NO_ILBM
+#undef IL_NO_IWI
+#undef IL_NO_JP2
+#undef IL_NO_JPG
+#undef IL_NO_LCMS
+#undef IL_NO_LIF
+#undef IL_NO_MDL
+#undef IL_NO_MNG
+#undef IL_NO_MP3
+#undef IL_NO_PCD
+#undef IL_NO_PCX
+#undef IL_NO_PIC
+#undef IL_NO_PIX
+#undef IL_NO_PNG
+#undef IL_NO_PNM
+#undef IL_NO_PSD
+#undef IL_NO_PSP
+#undef IL_NO_PXR
+#undef IL_NO_RAW
+#undef IL_NO_ROT
+#undef IL_NO_SGI
+#undef IL_NO_SUN
+#undef IL_NO_TEXTURE
+#undef IL_NO_TGA
+#undef IL_NO_TIF
+#undef IL_NO_TPL
+#undef IL_NO_UTX
+#undef IL_NO_VTF
+#undef IL_NO_WAD
+#undef IL_NO_WAL
+#undef IL_NO_WBMP
+#undef IL_NO_WDP
+#undef IL_NO_XPM
+
+#undef IL_USE_DXTC_NVIDIA
+#undef IL_USE_DXTC_SQUISH
+
+#cmakedefine HAVE_MEMALIGN 1
+#cmakedefine HAVE_POSIX_MEMALIGN 1
+#cmakedefine HAVE_MM_MALLOC_H 1
+#cmakedefine HAVE__MM_MALLOC 1
+#cmakedefine HAVE_VALLOC 1
+
+#ifdef HAVE_MEMALIGN
+ #define MEMALIGN 1
+#endif
+
+#ifdef HAVE_POSIX_MEMALIGN
+ #define POSIX_MEMALIGN 1
+#endif
+
+#if defined(HAVE_MM_MALLOC_H) && defined(HAVE__MM_MALLOC)
+ #define MM_MALLOC 1
+#endif
+
+#ifdef HAVE_VALLOC
+ #define VALLOC 1
+#endif
+
+#define VECTORMEM 1
+
+#undef RESTRICT_KEYWORD
+#cmakedefine WORDS_BIGENDIAN 1
+
+#define register

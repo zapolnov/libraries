@@ -560,7 +560,7 @@ int jas_image_addfmt(int id, char *name, char *ext, char *desc,
 	return 0;
 }
 
-int jas_image_strtofmt(char *name)
+int jas_image_strtofmt(const char *name)
 {
 	jas_image_fmtinfo_t *fmtinfo;
 	if (!(fmtinfo = jas_image_lookupfmtbyname(name))) {

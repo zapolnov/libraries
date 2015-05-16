@@ -44,7 +44,7 @@ ILboolean iGetPsdHead(SIO* io, PSDHEAD *Header)
 {
 	io->read(io, Header, 1, sizeof(PSDHEAD));
 
-#ifdef __LITTLE_ENDIAN__
+#ifdef IL_LITTLE_ENDIAN
 	iSwapUShort(&Header->Version);
 	iSwapUShort(&Header->Channels);
 	iSwapUInt(&Header->Height);
@@ -109,7 +109,7 @@ ILuint *GetCompChanLen(ILimage* image, PSDHEAD *Head, ILushort& ChannelNum)
 		ifree(ChanLen);
 		return NULL;
 	}
-#ifdef __LITTLE_ENDIAN__
+#ifdef IL_LITTLE_ENDIAN
 	for (i = 0; i < Head->Height * ChannelNum; i++) {
 		iSwapUShort(&RleTable[i]);
 	}

@@ -268,7 +268,7 @@ ILboolean ReadLayerBlock(PspLoadState* state, ILuint BlockLen, ILimage* image)
 	ILuint				ChunkSize, Padding, i, j;
 	ILushort			NumChars;
 
-	BlockLen;
+	(void)BlockLen;
 
 	// Layer sub-block header
 	if (image->io.read(&image->io, &Block, 1, sizeof(Block)) != sizeof(Block))

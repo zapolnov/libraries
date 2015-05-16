@@ -782,7 +782,7 @@ ILboolean il2FixCur(ILimage* image)
 		}
 	}
 /*	Swap Colors on Big Endian !!!!!
-#ifdef __BIG_ENDIAN__
+#ifdef IL_BIG_ENDIAN
 	// Swap endian
 	EndianSwapData(image);
 #endif 

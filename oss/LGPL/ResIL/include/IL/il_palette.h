@@ -51,7 +51,7 @@ public:
 	}
 
 	// Destructor
-	virtual ~ILpal()
+	~ILpal()
 	{
 		delete mPalette;
 		mPalette = NULL; // Prevent use after free

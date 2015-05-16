@@ -27,7 +27,7 @@ int rmask, gmask, bmask, amask;
 void InitSDL()
 {
 //#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-#ifdef __BIG_ENDIAN__
+#ifdef IL_BIG_ENDIAN
 	isBigEndian = 1;
     rmask = 0xFF000000;
     gmask = 0x00FF0000;
@@ -80,7 +80,7 @@ SDL_Surface *ILAPIENTRY ilutConvertToSDLSurface(unsigned int flags)
 		}
 	}
 	else if (Image->Format != IL_COLOR_INDEX) {  // We have to convert the image.
-		#ifdef __BIG_ENDIAN__
+		#ifdef IL_BIG_ENDIAN
 		Image = iConvertImage(Image, IL_RGBA, IL_UNSIGNED_BYTE);
 		#else
 		Image = iConvertImage(Image, IL_BGRA, IL_UNSIGNED_BYTE);
