@@ -206,9 +206,9 @@ MNG_LOCAL mng_retcode filter_paeth (mng_datap pData)
     iB  = (mng_uint32)*pPriorx;
     iC  = (mng_uint32)*pPriorx_prev;
     iP  = iA + iB - iC;
-    iPa = abs (iP - iA);
-    iPb = abs (iP - iB);
-    iPc = abs (iP - iC);
+    iPa = abs ((mng_int32)iP - (mng_int32)iA);
+    iPb = abs ((mng_int32)iP - (mng_int32)iB);
+    iPc = abs ((mng_int32)iP - (mng_int32)iC);
 
     if ((iPa <= iPb) && (iPa <= iPc))
       *pRawx = (mng_uint8)(*pRawx + iA);

@@ -1676,6 +1676,8 @@ mng_retcode mng_trace (mng_datap  pData,
 
 /* ************************************************************************** */
 
+#else /* MNG_INCLUDE_TRACE_PROCS */
+char _libmng_trace = 1;   /* silence librarian warning */
 #endif /* MNG_INCLUDE_TRACE_PROCS */
 
 /* ************************************************************************** */

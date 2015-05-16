@@ -6081,6 +6081,8 @@ MNG_C_SPECIALFUNC (mng_special_unknown)
 #endif /* MNG_INCLUDE_READ_PROCS || MNG_INCLUDE_WRITE_PROCS */
 #endif /* MNG_OPTIMIZE_CHUNKREADER */
 
+char _libmng_chunk_descr = 1;   /* silence librarian warning */
+
 /* ************************************************************************** */
 /* * end of file                                                            * */
 /* ************************************************************************** */
