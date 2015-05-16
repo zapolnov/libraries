@@ -1,0 +1,28 @@
+
+#cmakedefine HAVE_FCNTL_H 1
+#cmakedefine HAVE_UNISTD_H 1
+#cmakedefine HAVE_IO_H 1
+#cmakedefine HAVE_SYS_TYPES_H 1
+#cmakedefine HAVE_SYS_TIME_H 1
+#cmakedefine HAVE_STDLIB_H 1
+#cmakedefine HAVE_STDDEF_H 1
+#cmakedefine HAVE_STDBOOL_H 1
+#cmakedefine HAVE_STDINT_H 1
+
+#cmakedefine HAVE_GETTIMEOFDAY 1
+#cmakedefine HAVE_GETRUSAGE 1
+
+#define JAS_CONFIGURE 1
+#define JAS_VERSION "1.900.1"
+
+#ifndef _JASPER_TYPEDEFS
+#define _JASPER_TYPEDEFS
+
+typedef unsigned char uchar;
+typedef unsigned short ushort;
+typedef unsigned int uint;
+typedef unsigned long ulong;
+typedef long long longlong;
+typedef unsigned long long ulonglong;
+
+#endif

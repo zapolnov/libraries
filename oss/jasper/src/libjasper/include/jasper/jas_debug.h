@@ -76,7 +76,6 @@
 
 #include <jasper/jas_config.h>
 #include "jasper/jas_types.h"
-#include "jasper/jas_debug.h"
 
 #ifdef __cplusplus
 extern "C" {
