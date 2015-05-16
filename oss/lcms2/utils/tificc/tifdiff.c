@@ -386,7 +386,7 @@ int CmpImages(TIFF* tiff1, TIFF* tiff2, TIFF* diff)
             case PHOTOMETRIC_MINISWHITE:
             case PHOTOMETRIC_MINISBLACK:
 
-                    dE = fabs(buf2[cols] - buf1[cols]); 
+                    dE = abs(buf2[cols] - buf1[cols]);
                 
                     AddOnePixel(&ColorantStat[0], dE);
                     AddOnePixel(&EuclideanStat, dE);
@@ -397,9 +397,9 @@ int CmpImages(TIFF* tiff1, TIFF* tiff2, TIFF* diff)
                     {
                         int index = 3 * cols;
 
-                        dR = fabs(buf2[index+0] - buf1[index+0]); 
-                        dG = fabs(buf2[index+1] - buf1[index+1]); 
-                        dB = fabs(buf2[index+2] - buf1[index+2]); 
+                        dR = abs(buf2[index+0] - buf1[index+0]);
+                        dG = abs(buf2[index+1] - buf1[index+1]);
+                        dB = abs(buf2[index+2] - buf1[index+2]);
 
                         dE = sqrt(dR * dR + dG * dG + dB * dB) / sqrt(3.);
                     }
@@ -415,10 +415,10 @@ int CmpImages(TIFF* tiff1, TIFF* tiff2, TIFF* diff)
                 {
                         int index = 4 * cols;
 
-                        dC = fabs(buf2[index+0] - buf1[index+0]); 
-                        dM = fabs(buf2[index+1] - buf1[index+1]); 
-                        dY = fabs(buf2[index+2] - buf1[index+2]); 
-                        dK = fabs(buf2[index+3] - buf1[index+3]); 
+                        dC = abs(buf2[index+0] - buf1[index+0]);
+                        dM = abs(buf2[index+1] - buf1[index+1]);
+                        dY = abs(buf2[index+2] - buf1[index+2]);
+                        dK = abs(buf2[index+3] - buf1[index+3]);
 
                         dE = sqrt(dC * dC + dM * dM + dY * dY + dK * dK) / 2.;
                     }
