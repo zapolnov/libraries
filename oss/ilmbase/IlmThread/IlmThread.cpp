@@ -77,4 +77,6 @@ Thread::start ()
 
 ILMTHREAD_INTERNAL_NAMESPACE_SOURCE_EXIT
 
+#else
+char _IlmThread_cpp = 1; // silence librarian warning
 #endif

@@ -103,4 +103,6 @@ Semaphore::value () const
 
 ILMTHREAD_INTERNAL_NAMESPACE_SOURCE_EXIT
 
+#else
+char _IlmThreadSemaphorePosix_cpp = 1; // silence librarian warning
 #endif

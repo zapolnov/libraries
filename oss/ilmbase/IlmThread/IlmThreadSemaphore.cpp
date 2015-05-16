@@ -57,4 +57,6 @@ int Semaphore::value () const {return 0;}
 
 ILMTHREAD_INTERNAL_NAMESPACE_SOURCE_EXIT
 
+#else
+char _IlmThreadSemaphore_cpp = 1; // silence librarian warning
 #endif

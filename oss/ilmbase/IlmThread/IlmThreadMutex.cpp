@@ -56,4 +56,6 @@ void Mutex::unlock () const {}
 
 ILMTHREAD_INTERNAL_NAMESPACE_SOURCE_EXIT
 
+#else
+char _IlmThreadMutex_cpp = 1; // silence librarian warning
 #endif

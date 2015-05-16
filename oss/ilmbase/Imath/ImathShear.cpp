@@ -50,5 +50,6 @@ IMATH_INTERNAL_NAMESPACE_SOURCE_ENTER
 // empty
 
 
+char _ImathShear_cpp = 1; // silence librarian warning
 
 IMATH_INTERNAL_NAMESPACE_SOURCE_EXIT
