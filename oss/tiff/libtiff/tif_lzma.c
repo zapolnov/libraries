@@ -490,6 +490,8 @@ bad:
 		     "No space for LZMA2 state block");
 	return 0;
 }
+#else
+char _libtiff_lzma_support = 1; /* silence librarian warning */
 #endif /* LZMA_SUPORT */
 
 /* vim: set ts=8 sts=8 sw=8 noet: */

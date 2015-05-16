@@ -54,6 +54,8 @@ int TIFFReInitJPEG_12( TIFF *tif, int scheme, int is_encode )
         return JPEGSetupDecode(tif);
 }
 
+#else
+char _libtiff_jpeg_12_support = 1; /* silence librarian warning */
 #endif /* defined(JPEG_DUAL_MODE_8_12) */
 
 /*

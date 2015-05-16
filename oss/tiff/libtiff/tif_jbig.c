@@ -200,6 +200,8 @@ int TIFFInitJBIG(TIFF* tif, int scheme)
 	return 1;
 }
 
+#else
+char _libtiff_jbig_support = 1; /* silence librarian warning */
 #endif /* JBIG_SUPPORT */
 
 /* vim: set ts=8 sts=8 sw=8 noet: */

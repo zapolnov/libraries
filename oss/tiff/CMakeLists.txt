@@ -39,12 +39,11 @@ check_function_exists(getopt HAVE_GETOPT)
 check_function_exists(mmap HAVE_MMAP)
 check_function_exists(setmode HAVE_SETMODE)
 
-#NEED_LIBPORT
-#TIFF_UINT64_FORMAT
 configure_file(tif_config.h.in "${CMAKE_CURRENT_BINARY_DIR}/tif_config.h")
 configure_file(tif_config.h.in "${CMAKE_CURRENT_BINARY_DIR}/tiffconf.h")
 
-file(GLOB source_files libtiff/*.c libtiff/*.h)
+file(GLOB source_files libtiff/*.c libtiff/*.h libtiff/*.cpp libtiff/*.cxx libtiff/*.hxx)
+set_source_files_properties(libtiff/tif_stream.cxx PROPERTIES HEADER_FILE_ONLY TRUE)
 source_group("Source Files" FILES ${source_files})
 
 add_library(tiff STATIC ${EXCLUDE_FROM_ALL}
