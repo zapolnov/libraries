@@ -65,7 +65,7 @@ add_library(libjasper STATIC ${EXCLUDE_FROM_ALL}
 )
 
 set_target_properties(libjasper PROPERTIES OUTPUT_NAME "jasper")
-target_link_libraries(libjasper jpeg)
+target_link_libraries(libjasper libjpeg)
 target_include_directories(libjasper BEFORE PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/src/libjasper/include"
     "${CMAKE_CURRENT_BINARY_DIR}"

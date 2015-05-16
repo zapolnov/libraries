@@ -20,6 +20,7 @@
  * THE SOFTWARE.
  */
 #include "ODEPhysicsWorld.h"
+#include <mutex>
 
 namespace Z
 {

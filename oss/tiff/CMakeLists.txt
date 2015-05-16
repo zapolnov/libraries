@@ -1,6 +1,6 @@
 
 cmake_minimum_required(VERSION 3.1)
-project(tiff C)
+project(tiff)
 
 add_definitions(-D__STDC_FORMAT_MACROS=1)
 if(APPLE)
@@ -46,7 +46,7 @@ file(GLOB source_files libtiff/*.c libtiff/*.h libtiff/*.cpp libtiff/*.cxx libti
 set_source_files_properties(libtiff/tif_stream.cxx PROPERTIES HEADER_FILE_ONLY TRUE)
 source_group("Source Files" FILES ${source_files})
 
-add_library(tiff STATIC ${EXCLUDE_FROM_ALL}
+add_library(libtiff STATIC ${EXCLUDE_FROM_ALL}
     "${CMAKE_CURRENT_BINARY_DIR}/tif_config.h"
     "${CMAKE_CURRENT_BINARY_DIR}/tiffconf.h"
     ${source_files}
@@ -58,12 +58,13 @@ else()
     set_source_files_properties(libtiff/tif_win32.c PROPERTIES HEADER_FILE_ONLY TRUE)
 endif()
 
-target_include_directories(tiff BEFORE PUBLIC
+set_target_properties(libtiff PROPERTIES OUTPUT_NAME "tiff")
+target_include_directories(libtiff BEFORE PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/libtiff"
     "${CMAKE_CURRENT_BINARY_DIR}"
 )
 
-target_link_libraries(tiff jpeg zlib)
+target_link_libraries(libtiff libjpeg zlib)
 
 add_subdirectory(tools)
