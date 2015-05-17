@@ -130,12 +130,12 @@ static   char tiffcrop_rev_date[] = "12-13-2010";
 # include <stdint.h>
 #endif
 
-#ifndef HAVE_GETOPT
-extern int getopt(int, char**, char*);
-#endif
-
 #ifdef NEED_LIBPORT
 # include "libport.h"
+#endif
+
+#ifndef HAVE_GETOPT
+extern int getopt(int argc, char * const* argv, const char *optstring);
 #endif
 
 #include "tiffio.h"

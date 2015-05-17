@@ -74,14 +74,14 @@ namespace Z
             m_TriMeshData.push_back(data);
 
             if (!hasNormals) {
-                dGeomTriMeshDataBuildSingle(data, vertexData, vertexStride, vertexCount,
-                    indices, indexCount, indexTriStride);
+                dGeomTriMeshDataBuildSingle(data, vertexData, int(vertexStride), int(vertexCount),
+                    indices, int(indexCount), int(indexTriStride));
             } else {
                 const void* normalsData = vertexBuffer.data() +
                     mesh->vertexFormat()->attribute(VertexFormat::Normal).offset;
 
-                dGeomTriMeshDataBuildSingle1(data, vertexData, vertexStride, vertexCount,
-                    indices, indexCount, indexTriStride, normalsData);
+                dGeomTriMeshDataBuildSingle1(data, vertexData, int(vertexStride), int(vertexCount),
+                    indices, int(indexCount), int(indexTriStride), normalsData);
             }
 
             dGeomID triMesh = dCreateTriMesh(m_ODE->m_Space, data, nullptr, nullptr, nullptr);

@@ -368,7 +368,7 @@ int
 ThreadPool::numThreads () const
 {
     Lock lock (_data->threadMutex);
-    return _data->numThreads;
+    return int(_data->numThreads);
 }
 
 

@@ -34,7 +34,7 @@ namespace Z
         GL::Boolean transpose;
 
         void bind(int handle) const override {
-            gl::UniformMatrix4fv(handle, matrix.size(), transpose, &matrix[0][0][0]);
+            gl::UniformMatrix4fv(handle, GL::Sizei(matrix.size()), transpose, &matrix[0][0][0]);
         }
     };
 
