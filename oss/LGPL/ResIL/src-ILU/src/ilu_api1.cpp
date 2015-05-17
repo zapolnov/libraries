@@ -11,10 +11,9 @@
 
 //#include "IL/ilu.h"
 
-#include "IL/il.h"
 #include "ilu_internal.h"
-#undef __IL_H__
-#include "IL/ilu2.h"
+#undef IL__2__h
+#include "IL/il.h"
 
 ILconst_string ILAPIENTRY iluErrorString(ILenum Error)
 {
