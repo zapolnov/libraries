@@ -26,6 +26,10 @@ namespace Z
 {
     namespace GLAttributeName
     {
+        #define Z_GL_ATTRIBUTE(NAME, STRING) const char* const NAME = STRING;
+        #include "GLAttribute.def"
+        #undef Z_GL_ATTRIBUTE
+
         const char* forAttribute(GLAttribute attribute)
         {
             switch (attribute)

@@ -79,11 +79,11 @@ namespace Z
 
     private:
         enum Flag {
-            LocalMatrixDirty        = 0b000000000001,
-            WorldMatrixDirty        = 0b000000000010,
-            InverseWorldMatrixDirty = 0b000000000100,
-            Visible                 = 0b000000001000,
-            Renderable              = 0b000000010000,
+            LocalMatrixDirty        = 0x00000001,
+            WorldMatrixDirty        = 0x00000002,
+            InverseWorldMatrixDirty = 0x00000004,
+            Visible                 = 0x00000008,
+            Renderable              = 0x00000010,
         };
 
         SceneNode* m_Parent;

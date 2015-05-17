@@ -34,9 +34,9 @@ namespace Z
     public:
         enum Primitives
         {
-            Points = 0b0001,
-            Lines = 0b0010,
-            Triangles = 0b0100,
+            Points = 0x0001,
+            Lines = 0x0002,
+            Triangles = 0x0004,
         };
 
         DebugRenderer(GLResourceManager& resourceManager);

@@ -53,7 +53,8 @@ namespace Z
             Fn m_Revert;
             MergeFn m_Merge;
 
-            using QtMergeableUndoCommand::QtMergeableUndoCommand;
+            Command(const QString& text, int id, Data* data = nullptr, QUndoCommand* parent = nullptr)
+                : QtMergeableUndoCommand(text, id, data, parent) {}
 
             void repeat() final override { if (m_Repeat) m_Repeat(); }
             void revert() final override { if (m_Revert) m_Revert(); }

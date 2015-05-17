@@ -21,6 +21,7 @@
  */
 #include "ODEPhysicsWorld.h"
 #include <mutex>
+#include <algorithm>
 
 namespace Z
 {
@@ -68,7 +69,7 @@ namespace Z
         m_Time += std::min(time, 1.0 / 60.0);
         if (m_Time > 1.0 / 60.0) {
             dSpaceCollide(m_Instance->m_Space, this, &odeCollisionCallback);
-            dWorldStep(m_Instance->m_World, 1.0 / 60.0);
+            dWorldStep(m_Instance->m_World, dReal(1.0 / 60.0));
             dJointGroupEmpty(m_Instance->m_ContactGroup);
             m_Time -= 1.0 / 60.0;
         }

@@ -2,6 +2,11 @@
 cmake_minimum_required(VERSION 3.1)
 project(ilmbase)
 
+if(MSVC)
+    add_definitions(/wd4018)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+endif()
+
 if(NOT WIN32)
     add_definitions(-pthread)
 endif()

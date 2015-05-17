@@ -53,8 +53,8 @@ namespace Z
 
     protected:
         enum {
-            ProjectionDirty = 0b00000001,
-            FrustumDirty    = 0b00000010,
+            ProjectionDirty = 0x00000001,
+            FrustumDirty    = 0x00000002,
         };
 
         Frustum m_Frustum;

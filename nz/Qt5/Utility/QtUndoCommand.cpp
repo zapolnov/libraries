@@ -43,7 +43,7 @@ namespace Z
             Fn m_Repeat;
             Fn m_Revert;
 
-            using QtUndoCommand::QtUndoCommand;
+            Command(const QString& text, QUndoCommand* command = nullptr) : QtUndoCommand(text, command) {}
 
             void repeat() final override { if (m_Repeat) m_Repeat(); }
             void revert() final override { if (m_Revert) m_Revert(); }

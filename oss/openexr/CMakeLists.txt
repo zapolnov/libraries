@@ -2,7 +2,13 @@
 cmake_minimum_required(VERSION 3.1)
 project(OpenEXR)
 
-if(NOT MSVC)
+if(MSVC)
+    add_definitions(/wd4018)
+    add_definitions(/wd4244)
+    add_definitions(/wd4305)
+    add_definitions(/wd4800)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+else()
     add_definitions(-w)
 endif()
 

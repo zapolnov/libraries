@@ -6,7 +6,12 @@ if(WIN32)
     add_definitions(-DWIN32)
 endif()
 
-if(NOT MSVC)
+if(MSVC)
+    add_definitions(/wd4018)
+    add_definitions(/wd4244)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+    add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
+else()
     add_definitions(-w)
 endif()
 
@@ -49,6 +54,7 @@ source_group("Source Files\\mif" FILES ${mif_files})
 source_group("Source Files\\pgx" FILES ${pgx_files})
 source_group("Source Files\\pnm" FILES ${pnm_files})
 source_group("Source Files\\ras" FILES ${ras_files})
+source_group("Generated Files" FILES "${CMAKE_CURRENT_BINARY_DIR}/jasper/jas_config.h")
 
 add_library(libjasper STATIC ${EXCLUDE_FROM_ALL}
     "${CMAKE_CURRENT_BINARY_DIR}/jasper/jas_config.h"

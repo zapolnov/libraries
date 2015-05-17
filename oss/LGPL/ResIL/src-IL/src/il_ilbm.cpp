@@ -96,7 +96,7 @@ typedef struct
 
 ILboolean iIsValidIlbm(SIO* io)
 {
-    int start;
+    ILint64 start;
     ILboolean   is_LBM;
     Uint8 magic[4+4+4];
 
@@ -121,7 +121,7 @@ static ILboolean load_ilbm(ILimage* image)
     struct { Uint8 r; Uint8 g; Uint8 b; } scratch_pal[MAXCOLORS];
     ILenum      format; /* IL_RGB (ham or 24bit) or IL_COLOUR_INDEX */
 
-    int start;
+    ILint64 start;
     Uint8       id[4], pbm, colormap[MAXCOLORS*3], *MiniBuf, *ptr, count, color, msk;
     Uint32      size, bytesloaded, nbcolors;
     Uint32      i, j, bytesperline, nbplanes, plane, h;

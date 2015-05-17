@@ -7,6 +7,11 @@ if(Z_OPENGL_FOUND)
     set(ILUT_USE_OPENGL TRUE)
 endif()
 
+if(MSVC)
+    add_definitions(/wd4018)
+    add_definitions(/wd4244)
+endif()
+
 include(CheckIncludeFile)
 check_include_file(mm_malloc.h HAVE_MM_MALLOC_H)
 
@@ -80,3 +85,4 @@ target_include_directories(ResIL BEFORE PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src
 z_target_link_opengl(ResIL)
 
 target_link_libraries(ResIL libopenexr libjasper libtiff libmng libpng libjpeg lcms2)
+target_compile_definitions(ResIL PUBLIC IL_STATIC_LIB)

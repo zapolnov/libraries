@@ -48,6 +48,7 @@ namespace Z
         void undo() final override;
         void redo() final override;
 
-        Q_DISABLE_COPY(QtUndoCommand)
+        QtUndoCommand(const QtUndoCommand&) = delete;
+        QtUndoCommand& operator=(const QtUndoCommand&) = delete;
     };
 }

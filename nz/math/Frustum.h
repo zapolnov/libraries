@@ -40,7 +40,7 @@ namespace Z
             Near = 5,
         };
 
-        static constexpr size_t NUM_PLANES = 6;
+        static const size_t NUM_PLANES = 6;
         Plane planes[NUM_PLANES];
 
         Frustum() {}

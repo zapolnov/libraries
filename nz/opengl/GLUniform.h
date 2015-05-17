@@ -39,7 +39,7 @@ namespace Z
 
     namespace GLUniformName
     {
-        #define Z_GL_UNIFORM(NAME, STRING, TYPE) static constexpr const char* NAME = STRING;
+        #define Z_GL_UNIFORM(NAME, STRING, TYPE) extern const char* const NAME;
         #include "GLUniform.def"
         #undef Z_GL_UNIFORM
 

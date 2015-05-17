@@ -147,7 +147,6 @@ include(CheckFunctionExists)
 check_function_exists("finite" HAVE_FINITE)
 check_function_exists("getcwd" HAVE_GETCWD)
 check_function_exists("getwd" HAVE_GETWD)
-check_function_exists("hypot" HAVE_HYPOT)
 check_function_exists("copysign" HAVE_COPYSIGN)
 check_function_exists("round" HAVE_ROUND)
 check_function_exists("realpath" HAVE_REALPATH)
@@ -227,6 +226,7 @@ check_c_source_compiles("#include <sys/types.h>\n#include <sys/socket.h>\nint ma
 check_c_source_compiles("#include <time.h>\nint main() { return altzone; }\n" HAVE_ALTZONE)
 check_c_source_compiles("#include <netdb.h>\nint main() { void* p = hstrerror; hstrerror(0); return 0; }\n" HAVE_HSTRERROR)
 check_c_source_compiles("#include <unistd.h>\nint main() { void*p = fdatasync; fdatasync(0); return 0; }\n" HAVE_FDATASYNC)
+check_c_source_compiles("#include <math.h>\nint main() { double x = hypot(0.0, 0.0); return (int)x; }\n" HAVE_HYPOT)
 
 check_c_source_compiles("
     #include <stdarg.h>

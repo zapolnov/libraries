@@ -18,8 +18,8 @@
 #include "il_bits.h"
 #include <algorithm>
 
-#ifndef _WIN32
-#define min(x,y) ((x) < (y) ? (x) : (y))
+#ifdef min
+#undef min
 #endif
 
 // Wrap it just in case...

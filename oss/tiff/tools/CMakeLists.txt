@@ -20,6 +20,7 @@ add_executable(ppm2tiff ${EXCLUDE_FROM_ALL} ppm2tiff.c)
 target_link_libraries(ppm2tiff libtiff)
 
 add_executable(ras2tiff ${EXCLUDE_FROM_ALL} ras2tiff.c rasterfile.h)
+source_group("Source Files" FILES ras2tiff.c rasterfile.h)
 target_link_libraries(ras2tiff libtiff)
 
 add_executable(raw2tiff ${EXCLUDE_FROM_ALL} raw2tiff.c)

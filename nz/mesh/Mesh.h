@@ -37,7 +37,7 @@ namespace Z
     class Mesh
     {
     public:
-        static constexpr size_t MAX_BONES_PER_VERTEX = 4;
+        static const size_t MAX_BONES_PER_VERTEX = 4;
 
         struct Element
         {

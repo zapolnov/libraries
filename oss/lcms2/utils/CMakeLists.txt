@@ -2,9 +2,11 @@
 include_directories(common)
 
 add_library(lcms2_utils_common ${EXCLUDE_FROM_ALL} common/utils.h common/vprf.c common/xgetopt.c)
+source_group("Source Files" FILES common/utils.h common/vprf.c common/xgetopt.c)
 target_link_libraries(lcms2_utils_common lcms2)
 
 add_executable(jpgicc ${EXCLUDE_FROM_ALL} jpgicc/iccjpeg.c jpgicc/iccjpeg.h jpgicc/jpgicc.c)
+source_group("Source Files" FILES jpgicc/iccjpeg.c jpgicc/iccjpeg.h jpgicc/jpgicc.c)
 target_link_libraries(jpgicc lcms2 lcms2_utils_common libjpeg)
 
 add_executable(linkicc ${EXCLUDE_FROM_ALL} linkicc/linkicc.c)

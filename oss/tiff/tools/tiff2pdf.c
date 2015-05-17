@@ -56,6 +56,10 @@
 extern int getopt(int, char**, char*);
 #endif
 
+#ifdef _MSC_VER
+#define snprintf _snprintf
+#endif
+
 #ifndef EXIT_SUCCESS
 # define EXIT_SUCCESS	0
 #endif

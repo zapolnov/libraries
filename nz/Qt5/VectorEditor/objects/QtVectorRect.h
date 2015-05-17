@@ -59,14 +59,14 @@ namespace Z
 
     private:
         enum {
-            ChangingX       = 0b00000000001,
-            ChangingY       = 0b00000000010,
-            ChangingWidth   = 0b00000000100,
-            ChangingHeight  = 0b00000001000,
-            ChangingTL      = 0b00000010000,
-            ChangingTR      = 0b00000100000,
-            ChangingBL      = 0b00001000000,
-            ChangingBR      = 0b00010000000,
+            ChangingX       = 0x00000001,
+            ChangingY       = 0x00000002,
+            ChangingWidth   = 0x00000004,
+            ChangingHeight  = 0x00000008,
+            ChangingTL      = 0x00000010,
+            ChangingTR      = 0x00000020,
+            ChangingBL      = 0x00000040,
+            ChangingBR      = 0x00000080,
         };
 
         QtVectorObject* m_Object;

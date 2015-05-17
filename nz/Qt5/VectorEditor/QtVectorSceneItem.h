@@ -82,13 +82,13 @@ namespace Z
 
     private:
         enum {
-            ChangingX           = 0b0000000001,
-            ChangingY           = 0b0000000010,
-            ChangingRotation    = 0b0000000100,
-            ChangingScale       = 0b0000001000,
-            PreventUndoPos      = 0b0000010000,
-            PreventUndoRotation = 0b0000100000,
-            PreventUndoScale    = 0b0001000000,
+            ChangingX           = 0x00000001,
+            ChangingY           = 0x00000002,
+            ChangingRotation    = 0x00000004,
+            ChangingScale       = 0x00000008,
+            PreventUndoPos      = 0x00000010,
+            PreventUndoRotation = 0x00000020,
+            PreventUndoScale    = 0x00000040,
         };
 
         QtVectorScene* m_Scene;

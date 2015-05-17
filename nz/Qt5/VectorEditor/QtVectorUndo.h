@@ -39,7 +39,7 @@ namespace Z
         PropertyChange,
     };
 
-    constexpr int UNDO_AUTOMERGE_SECONDS = 3;
+    const int UNDO_AUTOMERGE_SECONDS = 3;
 
     void addUndoCommandForProperty(QtVectorScene* scene, QtPropertyListItem* property,
         const QVariant& oldValue, const QVariant& newValue, bool allowMerge);

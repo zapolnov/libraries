@@ -91,7 +91,7 @@ ILint64 ILAPIENTRY iDefaultRead(SIO* io, void *Buffer, ILuint Size, ILuint Numbe
 
 ILint64 ILAPIENTRY iDefaultSeek(SIO* io, ILint64 Offset, ILuint Mode)
 {
-	return fseek((FILE*)(io->handle), Offset, Mode);
+	return fseek((FILE*)(io->handle), long(Offset), Mode);
 }
 
 
@@ -362,7 +362,7 @@ ILint64 ILAPIENTRY iSeekFile(SIO* io, ILint64 Offset, ILuint Mode)
 {
 	if (Mode == IL_SEEK_SET)
 		Offset += io->ReadFileStart;  // This allows us to use IL_SEEK_SET in the middle of a file.
-	return fseek((FILE*) io->handle, Offset, Mode);
+	return fseek((FILE*) io->handle, long(Offset), Mode);
 }
 
 
@@ -459,7 +459,7 @@ ILint64 ILAPIENTRY iWriteLump(const void *Buffer, ILuint Size, ILuint Number, SI
 	size_t toCopy = Size * Number;
 
 	if (io->rwPos + toCopy > io->lumpSize)
-		toCopy = io->lumpSize - io->rwPos;
+		toCopy = size_t(io->lumpSize - io->rwPos);
 
 	memcpy(outP, inP, toCopy);
 	io->rwPos += toCopy;

@@ -88,4 +88,6 @@
 #undef RESTRICT_KEYWORD
 #cmakedefine WORDS_BIGENDIAN 1
 
+#ifndef _MSC_VER
 #define register
+#endif

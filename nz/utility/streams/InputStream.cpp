@@ -37,8 +37,8 @@ namespace Z
             if (atEnd())
                 break;
 
-            size_t haveBytes = bytesAvailable();
-            size_t bytesToRead = std::min(size, haveBytes);
+            uint64_t haveBytes = bytesAvailable();
+            size_t bytesToRead = size_t(std::min(uint64_t(size), haveBytes));
             if (!read(p, bytesToRead))
                 return false;
 

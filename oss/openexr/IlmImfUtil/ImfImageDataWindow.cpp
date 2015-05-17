@@ -80,6 +80,7 @@ dataWindowForFile (const Header &hdr, const Image &img, DataWindowSource dws)
 
         assert (false);
     }
+    return Box2i();
 }
 
 

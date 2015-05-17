@@ -19,7 +19,7 @@
 // Chunk type, data and functions:
 typedef struct _iff_chunk {
 	ILuint	tag;
-	ILuint	start;
+	ILint64	start;
 	ILuint	size;
 	ILuint	chunkType;
 } iff_chunk;

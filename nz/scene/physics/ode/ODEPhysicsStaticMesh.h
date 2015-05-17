@@ -30,7 +30,7 @@ namespace Z
     class ODEPhysicsStaticMesh : public SceneMesh
     {
     public:
-        static const unsigned long CATEGORY_BIT = 0b0000001;
+        static const unsigned long CATEGORY_BIT = 0x00000001;
 
         ODEPhysicsStaticMesh(const ODEPhysicsWorld* world, GLResourceManager& resourceManager, const MeshPtr& mesh);
         ~ODEPhysicsStaticMesh();

@@ -29,7 +29,7 @@ namespace Z
     class BufferedInputStream : public InputStream
     {
     public:
-        static constexpr size_t DEFAULT_BUFFER_SIZE = 65536;
+        static const size_t DEFAULT_BUFFER_SIZE = 65536;
 
         BufferedInputStream(const InputStreamPtr& stream);
         BufferedInputStream(InputStreamPtr&& stream);

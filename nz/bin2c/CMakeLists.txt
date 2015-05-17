@@ -22,6 +22,10 @@
 
 cmake_minimum_required(VERSION 3.1)
 
+if(MSVC)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+endif()
+
 add_executable(bin2c ${EXCLUDE_FROM_ALL} main.cpp bin2c.cpp bin2c.h)
 source_group("Source Files" FILES main.cpp bin2c.cpp bin2c.h)
 target_link_libraries(bin2c zlib)

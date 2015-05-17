@@ -27,6 +27,10 @@ namespace Z
 {
     namespace GLUniformName
     {
+        #define Z_GL_UNIFORM(NAME, STRING, TYPE) const char* const NAME = STRING;
+        #include "GLUniform.def"
+        #undef Z_GL_UNIFORM
+
         const char* forUniform(GLUniform uniform)
         {
             switch (uniform)

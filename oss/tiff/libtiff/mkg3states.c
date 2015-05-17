@@ -42,7 +42,7 @@
 #include "tif_fax3.h"
 
 #ifndef HAVE_GETOPT
-extern int getopt(int, char**, char*);
+extern int getopt(int, char* const*, const char*);
 #endif
 
 #define	streq(a,b)	(strcmp(a,b) == 0)

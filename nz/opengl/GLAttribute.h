@@ -36,7 +36,7 @@ namespace Z
 
     namespace GLAttributeName
     {
-        #define Z_GL_ATTRIBUTE(NAME, STRING) static constexpr const char* NAME = STRING;
+        #define Z_GL_ATTRIBUTE(NAME, STRING) extern const char* const NAME;
         #include "GLAttribute.def"
         #undef Z_GL_ATTRIBUTE
 

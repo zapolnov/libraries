@@ -4,6 +4,7 @@ project(libmng C)
 
 if(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+    add_definitions(/wd4101)
 endif()
 
 configure_file(config.h.in "${CMAKE_CURRENT_BINARY_DIR}/config.h")
