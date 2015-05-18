@@ -24,6 +24,8 @@
 
 #ifdef Z_TARGET_QT5
  #include "qt5/main.h"
-#else
+#elif defined(Z_TARGET_DUMMY)
  #include "dummy/main.h"
+#else
+ #error "No target macro defined. Please include TargetPlatform.cmake in your CMakeLists.txt"
 #endif
