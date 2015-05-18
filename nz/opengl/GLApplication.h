@@ -46,7 +46,7 @@ namespace Z
 
         static GLApplicationPtr create();
 
-        FileSystemList& fileSystems() const { return *m_FileSystemList; }
+        const FileSystemListPtr& fileSystems() const { return m_FileSystemList; }
 
         GLResourceManager& resourceManager() { return m_ResourceManager; }
         const GLResourceManager& resourceManager() const { return m_ResourceManager; }

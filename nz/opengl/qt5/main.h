@@ -31,9 +31,9 @@ int main(int argc, char** argv)
     QApplication app(argc, argv);
 
     Z::GLApplicationPtr application = Z::GLApplication::create();
-    application->fileSystems().add(std::make_shared<Z::QtFileSystem>(app.applicationDirPath()));
-    application->fileSystems().add(std::make_shared<Z::QtFileSystem>(":/"));
-    application->fileSystems().add(std::make_shared<Z::QtFileSystem>("."));
+    application->fileSystems()->add(std::make_shared<Z::QtFileSystem>(app.applicationDirPath()));
+    application->fileSystems()->add(std::make_shared<Z::QtFileSystem>(":/"));
+    application->fileSystems()->add(std::make_shared<Z::QtFileSystem>("."));
 
     Z::GLWindowDelegate delegate(application);
     Z::QtOpenGLWindow window(&delegate);
