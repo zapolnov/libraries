@@ -136,4 +136,43 @@ namespace Z
         src.m_Height = 0;
         return *this;
     }
+
+    float Image::luminanceAt(int x, int y) const
+    {
+        if (x < 0 || y < 0 || x >= m_Width || y >= m_Height)
+            return 0.0f;
+
+        switch (m_Format)
+        {
+        case Unknown:
+            break;
+
+        case Luminance8:
+            return float(m_Data[y * m_Width + x]) / 255.0f;
+
+        case LuminanceAlpha8: {
+            size_t offset = (y * m_Width + x) * 2;
+            return float(m_Data[offset]) / 255.0f;
+            }
+
+        case RGB8: {
+            size_t offset = (y * m_Width + x) * 3;
+            float r = float(m_Data[offset + 0]) / 255.0f;
+            float g = float(m_Data[offset + 1]) / 255.0f;
+            float b = float(m_Data[offset + 2]) / 255.0f;
+            return 0.2126f * r + 0.7152f * g + 0.0722f * b;
+            }
+
+        case RGBA8: {
+            size_t offset = (y * m_Width + x) * 4;
+            float r = float(m_Data[offset + 0]) / 255.0f;
+            float g = float(m_Data[offset + 1]) / 255.0f;
+            float b = float(m_Data[offset + 2]) / 255.0f;
+            return 0.2126f * r + 0.7152f * g + 0.0722f * b;
+            }
+        }
+
+        Z_ASSERT_MSG(false, "Unsupported image format.");
+        return 0.0f;
+    }
 }

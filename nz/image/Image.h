@@ -57,6 +57,8 @@ namespace Z
         int width() const { return m_Width; }
         int height() const { return m_Height; }
 
+        float luminanceAt(int x, int y) const;
+
     private:
         std::unique_ptr<uint8_t[]> m_Data;
         size_t m_DataSize;
