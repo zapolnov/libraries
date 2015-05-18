@@ -1,8 +1,8 @@
 
-configure_file(half/half.h "${CMAKE_CURRENT_BINARY_DIR}/include/OpenEXR/half.h" COPYONLY)
-configure_file(half/halfFunction.h "${CMAKE_CURRENT_BINARY_DIR}/include/OpenEXR/halfFunction.h" COPYONLY)
-configure_file(half/halfExport.h "${CMAKE_CURRENT_BINARY_DIR}/include/OpenEXR/halfExport.h" COPYONLY)
-configure_file(half/halfLimits.h "${CMAKE_CURRENT_BINARY_DIR}/include/OpenEXR/halfLimits.h" COPYONLY)
+configure_file(Half/half.h "${CMAKE_CURRENT_BINARY_DIR}/include/OpenEXR/half.h" COPYONLY)
+configure_file(Half/halfFunction.h "${CMAKE_CURRENT_BINARY_DIR}/include/OpenEXR/halfFunction.h" COPYONLY)
+configure_file(Half/halfExport.h "${CMAKE_CURRENT_BINARY_DIR}/include/OpenEXR/halfExport.h" COPYONLY)
+configure_file(Half/halfLimits.h "${CMAKE_CURRENT_BINARY_DIR}/include/OpenEXR/halfLimits.h" COPYONLY)
 configure_file(Iex/IexBaseExc.h "${CMAKE_CURRENT_BINARY_DIR}/include/OpenEXR/IexBaseExc.h" COPYONLY)
 configure_file(Iex/IexMathExc.h "${CMAKE_CURRENT_BINARY_DIR}/include/OpenEXR/IexMathExc.h" COPYONLY)
 configure_file(Iex/IexThrowErrnoExc.h "${CMAKE_CURRENT_BINARY_DIR}/include/OpenEXR/IexThrowErrnoExc.h" COPYONLY)

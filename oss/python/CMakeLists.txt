@@ -23,7 +23,7 @@
 cmake_minimum_required(VERSION 3.1)
 project(python)
 
-include(../../nz/CMake/WriteFile.cmake)
+include(../../nz/cmake/WriteFile.cmake)
 include(CMake/Configure.cmake)
 include_directories(Include "${CMAKE_CURRENT_BINARY_DIR}")
 

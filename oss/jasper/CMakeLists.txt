@@ -78,4 +78,9 @@ target_include_directories(libjasper BEFORE PUBLIC
     "${CMAKE_CURRENT_BINARY_DIR}"
 )
 
+find_library(m m)
+if(m)
+    target_link_libraries(libjasper ${m})
+endif()
+
 add_subdirectory(src/appl)

@@ -22,6 +22,7 @@
 #include "bin2c.h"
 #include <cstring>
 #include <cstdio>
+#include <cerrno>
 #include <sstream>
 #include <vector>
 

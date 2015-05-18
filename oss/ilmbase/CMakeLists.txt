@@ -2,6 +2,8 @@
 cmake_minimum_required(VERSION 3.1)
 project(ilmbase)
 
+find_package(Threads)
+
 if(MSVC)
     add_definitions(/wd4018)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
@@ -66,3 +68,5 @@ target_include_directories(ilmbase PRIVATE BEFORE
     "${CMAKE_CURRENT_SOURCE_DIR}/IlmThread"
     "${CMAKE_CURRENT_SOURCE_DIR}/Imath"
 )
+
+target_link_libraries(ilmbase ${CMAKE_THREAD_LIBS_INIT})

@@ -22,7 +22,7 @@
 
 #pragma once
 #include "GLBuffer.h"
-#include "Mesh/VertexFormat.h"
+#include "mesh/VertexFormat.h"
 
 namespace Z
 {

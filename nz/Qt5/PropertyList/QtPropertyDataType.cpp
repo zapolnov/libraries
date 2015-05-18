@@ -22,7 +22,7 @@
 #include "QtPropertyDataType.h"
 #include "QtPropertyListItem.h"
 #include <QStyle>
-#include <QStyleOPtionButton>
+#include <QStyleOptionButton>
 #include <QLineEdit>
 #include <QCheckBox>
 #include <QSpinBox>

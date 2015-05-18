@@ -14,4 +14,9 @@ add_library(lcms2 STATIC ${EXCLUDE_FROM_ALL}
 
 target_include_directories(lcms2 BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
+find_library(m m)
+if(m)
+    target_link_libraries(lcms2 ${m})
+endif()
+
 add_subdirectory(utils)

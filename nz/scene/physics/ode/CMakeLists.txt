@@ -21,6 +21,7 @@
 #
 
 cmake_minimum_required(VERSION 3.1)
+include(../../../cmake/Qt5.cmake)
 
 file(GLOB source_files *.cpp *.h)
 
