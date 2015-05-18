@@ -22,6 +22,7 @@
 #include "GLMaterial.h"
 #include "GLResourceManager.h"
 #include "yaml/YamlParser.h"
+#include "yaml/YamlMappingVisitor.h"
 #include "utility/debug.h"
 #include <functional>
 #include <unordered_map>
@@ -167,7 +168,7 @@ namespace Z
 
     bool GLMaterial::load(InputStream* stream)
     {
-        // Keep old resources resident until this function returns
+        // Keep old resources resident until this method returns
         GLProgramPtr oldProgram = std::move(m_Program);
         GLTexturePtr oldDiffuseMap = std::move(m_DiffuseMap);
         (void)oldProgram;
@@ -177,7 +178,6 @@ namespace Z
 
         YamlErrorPtr error;
         YamlNode rootNode = yamlParseStream(stream, error);
-
         if (error) {
             Z_LOG("Unable to parse file \"" << stream->name() << "\": " << *error);
             return false;
@@ -186,52 +186,24 @@ namespace Z
         struct Context
         {
             GLMaterial* material;
-            InputStream* stream;
             GLResourceManager* resourceManager;
-            std::string baseDir;
-
-            std::string nodeToPath(const YamlNode& node) const
-            {
-                std::string value = node.toString();
-                size_t length = value.length();
-                if (length > 0 && value[0] == '/')
-                    return value.substr(1);
-                else {
-                    std::string localFileName = baseDir + value;
-                    if (resourceManager->fileSystem()->fileExists(localFileName))
-                        return localFileName;
-                    return value;
-                }
-            }
-
-            bool nodeToTextureWrap(const YamlNode& node, GL::Enum& value) const
-            {
-                std::string str = node.toString();
-                if (str == "clamp_to_edge") {
-                    value = GL::CLAMP_TO_EDGE;
-                    return true;
-                }
-                if (str == "repeat") {
-                    value = GL::REPEAT;
-                    return true;
-                }
-                return false;
-            }
-
-            void logError(const YamlNode& node, const std::string& message)
-            {
-                Z_LOG("Unable to parse file \"" << stream->name() << "\": at line " << node.line() << ": " << message);
-            }
+            FileSystemPtr fileSystem;
         };
 
-        static const std::unordered_map<std::string, std::function<bool(Context* C, const YamlNode&)>> handlers = {
-            { "shader", [](Context* C, const YamlNode& node) -> bool {
-                C->material->m_Program = C->resourceManager->loadProgram(C->nodeToPath(node));
+        static const YamlMappingVisitor::EnumValues<GL::Enum> enumTextureWrap = {
+            { "clamp_to_edge", GL::CLAMP_TO_EDGE },
+            { "repeat", GL::REPEAT },
+        };
+
+        typedef YamlMappingVisitorEx<Context> Visitor;
+        static const Visitor::HandlerMap handlers = {
+            { "shader", [](Context* C, Visitor* V, const YamlNode& node) -> bool {
+                C->material->m_Program = C->resourceManager->loadProgram(V->nodeToPath(C->fileSystem, node));
                 return true;
             }},
 
-            { "diffuseMap", [](Context* C, const YamlNode& node) -> bool {
-                C->material->m_DiffuseMap = C->resourceManager->loadTexture(C->nodeToPath(node));
+            { "diffuseMap", [](Context* C, Visitor* V, const YamlNode& node) -> bool {
+                C->material->m_DiffuseMap = C->resourceManager->loadTexture(V->nodeToPath(C->fileSystem, node));
                 if (C->material->m_DiffuseMap) {
                     C->material->m_DiffuseMap->setWrapS(C->material->m_DiffuseWrapS);
                     C->material->m_DiffuseMap->setWrapT(C->material->m_DiffuseWrapT);
@@ -239,69 +211,41 @@ namespace Z
                 return true;
             }},
 
-            { "diffuseWrapS", [](Context* C, const YamlNode& node) -> bool {
-                if (!C->nodeToTextureWrap(node, C->material->m_DiffuseWrapS))
+            { "diffuseWrapS", [](Context* C, Visitor* V, const YamlNode& node) -> bool {
+                if (!V->nodeToEnum(node, C->material->m_DiffuseWrapS, enumTextureWrap))
                     return false;
                 if (C->material->m_DiffuseMap)
                     C->material->m_DiffuseMap->setWrapS(C->material->m_DiffuseWrapS);
                 return true;
             }},
 
-            { "diffuseWrapT", [](Context* C, const YamlNode& node) -> bool {
-                if (!C->nodeToTextureWrap(node, C->material->m_DiffuseWrapT))
+            { "diffuseWrapT", [](Context* C, Visitor* V, const YamlNode& node) -> bool {
+                if (!V->nodeToEnum(node, C->material->m_DiffuseWrapT, enumTextureWrap))
                     return false;
                 if (C->material->m_DiffuseMap)
                     C->material->m_DiffuseMap->setWrapT(C->material->m_DiffuseWrapT);
                 return true;
             }},
 
-            { "cullFace", [](Context* C, const YamlNode& node) -> bool {
-                auto value = node.toBool();
-                if (value == Z::YamlNode::Indeterminate)
-                    return false;
-                C->material->m_CullFace = (value == Z::YamlNode::True);
-                return true;
+            { "cullFace", [](Context* C, Visitor* V, const YamlNode& node) -> bool {
+                return V->nodeToBool(node, C->material->m_CullFace);
             }},
 
-            { "depthTest", [](Context* C, const YamlNode& node) -> bool {
-                auto value = node.toBool();
-                if (value == Z::YamlNode::Indeterminate)
-                    return false;
-                C->material->m_DepthTest = (value == Z::YamlNode::True);
-                return true;
+            { "depthTest", [](Context* C, Visitor* V, const YamlNode& node) -> bool {
+                return V->nodeToBool(node, C->material->m_DepthTest);
             }},
 
-            { "invisible", [](Context* C, const YamlNode& node) -> bool {
-                auto value = node.toBool();
-                if (value == Z::YamlNode::Indeterminate)
-                    return false;
-                C->material->m_Invisible = (value == Z::YamlNode::True);
-                return true;
+            { "invisible", [](Context* C, Visitor* V, const YamlNode& node) -> bool {
+                return V->nodeToBool(node, C->material->m_Invisible);
             }},
         };
 
         Context context;
         context.material = this;
-        context.stream = stream;
         context.resourceManager = resourceManager();
+        context.fileSystem = context.resourceManager->fileSystem();
 
-        const std::string& fileName = stream->name();
-        size_t index = fileName.rfind('/');
-        context.baseDir = (index == std::string::npos ? std::string() : fileName.substr(0, index + 1));
-
-        for (const auto& option : rootNode.toMapping()) {
-            auto it = handlers.find(option.first);
-            if (it == handlers.end()) {
-                context.logError(option.second, "unknown option \"" + option.first + "\".");
-                return false;
-            }
-
-            if (!it->second(&context, option.second)) {
-                context.logError(option.second, "invalid value for option \"" + option.first + "\".");
-                return false;
-            }
-        }
-
-        return true;
+        Visitor visitor(&context, stream->name(), rootNode, handlers);
+        return visitor.visit();
     }
 };

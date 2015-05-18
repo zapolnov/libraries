@@ -20,6 +20,7 @@
  * THE SOFTWARE.
  */
 #include "YamlParser.h"
+#include "utility/streams/FileInputStream.h"
 #include <yaml.h>
 #include <unordered_map>
 #include <cstdio>
@@ -371,6 +372,11 @@ namespace Z
     {
         YamlParser parser(error);
 
+        if (!stream) {
+            error.reset(new std::string("Invalid stream."));
+            return YamlNode();
+        }
+
         if (!parser.openStream(stream))
             return YamlNode();
 
@@ -378,5 +384,44 @@ namespace Z
             return YamlNode();
 
         return parser.rootNode();
+    }
+
+    YamlNode yamlParseFile(const FileReaderPtr& reader, YamlErrorPtr& error)
+    {
+        YamlParser parser(error);
+
+        if (!reader) {
+            error.reset(new std::string("Invalid file."));
+            return YamlNode();
+        }
+
+        FileInputStream stream(reader);
+        if (!parser.openStream(&stream))
+            return YamlNode();
+
+        if (!parser.parse())
+            return YamlNode();
+
+        return parser.rootNode();
+    }
+
+    YamlNode yamlParseFile(const FileSystemPtr& fileSystem, const std::string& fileName, YamlErrorPtr& error)
+    {
+        YamlParser parser(error);
+
+        if (!fileSystem) {
+            error.reset(new std::string("Invalid filesystem."));
+            return YamlNode();
+        }
+
+        FileReaderPtr reader = fileSystem->openFile(fileName);
+        if (!reader) {
+            std::stringstream ss;
+            ss << "Unable to open file \"" << fileName << "\".";
+            error.reset(new std::string(ss.str()));
+            return YamlNode();
+        }
+
+        return yamlParseFile(reader, error);
     }
 }
