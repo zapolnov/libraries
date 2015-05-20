@@ -29,6 +29,7 @@
 /* Only needed for MSVC++ unless extended to actually do something =) */
 #if defined(_WIN32) && defined(_MSC_VER)
 
+#if 0
 #ifndef IL_STATIC_LIB
 BOOL APIENTRY DllMain(HANDLE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
 {
@@ -41,6 +42,7 @@ BOOL APIENTRY DllMain(HANDLE hModule, DWORD ul_reason_for_call, LPVOID lpReserve
 	return TRUE;
 }
 
+#endif
 #endif
 #endif
 

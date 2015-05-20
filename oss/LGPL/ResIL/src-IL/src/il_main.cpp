@@ -14,6 +14,7 @@
 #include "il_internal.h"
 
 /* Only needed for MSVC++ unless extended to actually do something =) */
+#if 0
 #if defined(_WIN32) && defined(_MSC_VER)
 BOOL APIENTRY DllMain(HANDLE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
 {
@@ -25,6 +26,7 @@ BOOL APIENTRY DllMain(HANDLE hModule, DWORD ul_reason_for_call, LPVOID lpReserve
 
 	return TRUE;
 }
+#endif
 #endif
 
 
