@@ -83,15 +83,15 @@ namespace Z
             size_t index = parentFileName.rfind('/');
             std::string parentDir = (index == std::string::npos ? std::string() : parentFileName.substr(0, index + 1));
             std::string localFileName = parentDir + filename;
-            if (resourceManager()->fileSystem()->fileExists(localFileName)) {
+            if (FileSystem::defaultFileSystem()->fileExists(localFileName)) {
                 Z_LOG(" - include file \"" << localFileName << "\".");
-                file = resourceManager()->fileSystem()->openFile(localFileName);
+                file = FileSystem::defaultFileSystem()->openFile(localFileName);
             }
         }
 
         if (!file) {
             Z_LOG(" - include file \"" << filename << "\".");
-            file = resourceManager()->fileSystem()->openFile(filename);
+            file = FileSystem::defaultFileSystem()->openFile(filename);
         }
 
         return std::make_shared<FileInputStream>(file);

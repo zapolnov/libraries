@@ -26,7 +26,6 @@
 #include "GLMesh.h"
 #include "GLMaterial.h"
 #include "GLSkeletonAnimatedMesh.h"
-#include "utility/FileSystem.h"
 #include <atomic>
 #include <mutex>
 #include <unordered_map>
@@ -41,10 +40,8 @@ namespace Z
     class GLResourceManager
     {
     public:
-        explicit GLResourceManager(const FileSystemPtr& fileSystem);
+        GLResourceManager();
         virtual ~GLResourceManager();
-
-        const FileSystemPtr& fileSystem() const { return m_FileSystem; }
 
         void unloadAllResources();
         void shutdown();
@@ -81,7 +78,6 @@ namespace Z
         class SkeletonAnimatedMesh;
         class Material;
 
-        FileSystemPtr m_FileSystem;
         std::recursive_mutex m_Mutex;
         std::unordered_map<std::string, std::weak_ptr<Program>> m_Programs;
         std::unordered_map<std::string, std::weak_ptr<Texture>> m_Textures;

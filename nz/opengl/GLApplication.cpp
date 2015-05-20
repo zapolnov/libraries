@@ -30,12 +30,10 @@ extern const unsigned char z_shaders_zip[];
 namespace Z
 {
     GLApplication::GLApplication()
-        : m_FileSystemList(std::make_shared<FileSystemList>())
-        , m_ResourceManager(m_FileSystemList)
     {
         FileReaderPtr reader =
             std::make_shared<StaticMemoryFile>(z_shaders_zip, z_shaders_zip_size, "builtin:shaders.zip");
-        m_FileSystemList->add(new ZipFileSystem(std::move(reader)));
+        FileSystem::defaultFileSystem()->add(new ZipFileSystem(std::move(reader)));
     }
 
     void GLApplication::initializeGL(int width, int height)

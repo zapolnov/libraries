@@ -187,7 +187,6 @@ namespace Z
         {
             GLMaterial* material;
             GLResourceManager* resourceManager;
-            FileSystemPtr fileSystem;
         };
 
         static const YamlMappingVisitor::EnumValues<GL::Enum> enumTextureWrap = {
@@ -198,12 +197,12 @@ namespace Z
         typedef YamlMappingVisitorEx<Context> Visitor;
         static const Visitor::HandlerMap handlers = {
             { "shader", [](Context* C, Visitor* V, const YamlNode& node) -> bool {
-                C->material->m_Program = C->resourceManager->loadProgram(V->nodeToPath(C->fileSystem, node));
+                C->material->m_Program = C->resourceManager->loadProgram(V->nodeToPath(node));
                 return true;
             }},
 
             { "diffuseMap", [](Context* C, Visitor* V, const YamlNode& node) -> bool {
-                C->material->m_DiffuseMap = C->resourceManager->loadTexture(V->nodeToPath(C->fileSystem, node));
+                C->material->m_DiffuseMap = C->resourceManager->loadTexture(V->nodeToPath(node));
                 if (C->material->m_DiffuseMap) {
                     C->material->m_DiffuseMap->setWrapS(C->material->m_DiffuseWrapS);
                     C->material->m_DiffuseMap->setWrapT(C->material->m_DiffuseWrapT);
@@ -243,7 +242,6 @@ namespace Z
         Context context;
         context.material = this;
         context.resourceManager = resourceManager();
-        context.fileSystem = context.resourceManager->fileSystem();
 
         Visitor visitor(&context, stream->name(), rootNode, handlers);
         return visitor.visit();

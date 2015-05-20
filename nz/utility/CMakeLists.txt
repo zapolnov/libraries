@@ -23,7 +23,7 @@
 cmake_minimum_required(VERSION 3.1)
 
 if(MSVC)
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS=1)
 endif()
 
 file(GLOB streams_sources streams/*.cpp streams/*.h)

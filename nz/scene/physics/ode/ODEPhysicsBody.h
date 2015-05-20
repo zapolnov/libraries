@@ -23,7 +23,6 @@
 #pragma once
 #include "ODEPhysicsWorld.h"
 #include "mesh/Mesh.h"
-#include "utility/FileSystem.h"
 #include <scene/SceneNode.h>
 #include <vector>
 

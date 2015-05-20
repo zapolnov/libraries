@@ -24,15 +24,16 @@
 #include "YamlNode.h"
 #include "utility/streams/InputStream.h"
 #include "utility/streams/FileReader.h"
-#include "utility/FileSystem.h"
 #include <string>
 #include <memory>
 
 namespace Z
 {
     using YamlErrorPtr = std::unique_ptr<std::string>;
+    /*
     YamlNode yamlParseFile(const std::string& file, YamlErrorPtr& error);
+    */
     YamlNode yamlParseStream(InputStream* stream, YamlErrorPtr& error);
     YamlNode yamlParseFile(const FileReaderPtr& reader, YamlErrorPtr& error);
-    YamlNode yamlParseFile(const FileSystemPtr& fileSystem, const std::string& fileName, YamlErrorPtr& error);
+    YamlNode yamlParseFile(const std::string& fileName, YamlErrorPtr& error);
 }

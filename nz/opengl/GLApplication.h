@@ -22,7 +22,6 @@
 
 #pragma once
 #include "GLResourceManager.h"
-#include "utility/FileSystemList.h"
 #include "input/KeyCode.h"
 #include <memory>
 #include <unordered_set>
@@ -45,8 +44,6 @@ namespace Z
         virtual ~GLApplication() = default;
 
         static GLApplicationPtr create();
-
-        const FileSystemListPtr& fileSystems() const { return m_FileSystemList; }
 
         GLResourceManager& resourceManager() { return m_ResourceManager; }
         const GLResourceManager& resourceManager() const { return m_ResourceManager; }
@@ -100,7 +97,6 @@ namespace Z
         virtual void runFrame(double time) = 0;
 
     private:
-        FileSystemListPtr m_FileSystemList;
         GLResourceManager m_ResourceManager;
         bool m_ReloadingResources = false;
         bool m_Suspended = false;

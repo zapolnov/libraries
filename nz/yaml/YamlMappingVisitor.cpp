@@ -21,6 +21,7 @@
  */
 #include "YamlMappingVisitor.h"
 #include "utility/debug.h"
+#include "utility/FileSystem.h"
 #include <sstream>
 
 namespace Z
@@ -58,7 +59,7 @@ namespace Z
         return true;
     }
 
-    std::string YamlMappingVisitor::nodeToPath(const FileSystemPtr& fileSystem, const YamlNode& node)
+    std::string YamlMappingVisitor::nodeToPath(const YamlNode& node)
     {
         std::string value = node.toString();
         size_t length = value.length();
@@ -66,7 +67,7 @@ namespace Z
             return value.substr(1);
         else {
             std::string localFileName = baseDir() + value;
-            if (fileSystem->fileExists(localFileName))
+            if (FileSystem::defaultFileSystem()->fileExists(localFileName))
                 return localFileName;
             return value;
         }

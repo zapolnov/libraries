@@ -21,6 +21,7 @@
  */
 #include "YamlParser.h"
 #include "utility/streams/FileInputStream.h"
+#include "utility/FileSystem.h"
 #include <yaml.h>
 #include <unordered_map>
 #include <cstdio>
@@ -355,6 +356,7 @@ namespace
 
 namespace Z
 {
+    /*
     YamlNode yamlParseFile(const std::string& file, YamlErrorPtr& error)
     {
         YamlParser parser(error);
@@ -367,6 +369,7 @@ namespace Z
 
         return parser.rootNode();
     }
+    */
 
     YamlNode yamlParseStream(InputStream* stream, YamlErrorPtr& error)
     {
@@ -405,16 +408,11 @@ namespace Z
         return parser.rootNode();
     }
 
-    YamlNode yamlParseFile(const FileSystemPtr& fileSystem, const std::string& fileName, YamlErrorPtr& error)
+    YamlNode yamlParseFile(const std::string& fileName, YamlErrorPtr& error)
     {
         YamlParser parser(error);
 
-        if (!fileSystem) {
-            error.reset(new std::string("Invalid filesystem."));
-            return YamlNode();
-        }
-
-        FileReaderPtr reader = fileSystem->openFile(fileName);
+        FileReaderPtr reader = FileSystem::defaultFileSystem()->openFile(fileName);
         if (!reader) {
             std::stringstream ss;
             ss << "Unable to open file \"" << fileName << "\".";

@@ -23,6 +23,7 @@
 #include "GLResource.h"
 #include "utility/streams/FileInputStream.h"
 #include "utility/streams/BufferedInputStream.h"
+#include "utility/FileSystem.h"
 #include "utility/debug.h"
 #include "image/ImageReader.h"
 #include "mesh/MeshReader.h"
@@ -46,7 +47,7 @@ namespace Z
         {
             GLProgram::reload();
 
-            FileReaderPtr reader = resourceManager()->fileSystem()->openFile(m_FileName);
+            FileReaderPtr reader = FileSystem::defaultFileSystem()->openFile(m_FileName);
             if (reader) {
                 FileInputStreamPtr stream = std::make_shared<FileInputStream>(reader);
                 BufferedInputStream buffer(std::move(stream));
@@ -98,7 +99,7 @@ namespace Z
         {
             GLTexture::reload();
 
-            FileReaderPtr reader = resourceManager()->fileSystem()->openFile(m_FileName);
+            FileReaderPtr reader = FileSystem::defaultFileSystem()->openFile(m_FileName);
             ImagePtr image = ImageReader::read(reader);
             upload(0, image);
         }
@@ -123,9 +124,9 @@ namespace Z
         {
             GLMaterial::reload();
 
-            FileReaderPtr reader = resourceManager()->fileSystem()->openFile(m_FileName);
+            FileReaderPtr reader = FileSystem::defaultFileSystem()->openFile(m_FileName);
             if (!reader)
-                reader = resourceManager()->fileSystem()->openFile("shaders/dummy.material");
+                reader = FileSystem::defaultFileSystem()->openFile("shaders/dummy.material");
             FileInputStream stream(reader);
             load(&stream);
         }
@@ -151,7 +152,7 @@ namespace Z
         {
             GLMesh::reload();
 
-            FileReaderPtr reader = resourceManager()->fileSystem()->openFile(m_FileName);
+            FileReaderPtr reader = FileSystem::defaultFileSystem()->openFile(m_FileName);
             MeshPtr mesh = MeshReader::read(reader, m_VertexFormat, MeshReader::DontReadSkeleton);
             initFromMesh(mesh);
         }
@@ -200,7 +201,7 @@ namespace Z
         {
             GLSkeletonAnimatedMesh::reload();
 
-            FileReaderPtr reader = resourceManager()->fileSystem()->openFile(m_FileName);
+            FileReaderPtr reader = FileSystem::defaultFileSystem()->openFile(m_FileName);
             MeshPtr mesh = MeshReader::read(reader, m_VertexFormat);
             initFromMesh(mesh);
         }
@@ -212,9 +213,8 @@ namespace Z
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    GLResourceManager::GLResourceManager(const FileSystemPtr& fileSystem)
-        : m_FileSystem(fileSystem)
-        , m_ReloadingResources(false)
+    GLResourceManager::GLResourceManager()
+        : m_ReloadingResources(false)
     {
     }
 

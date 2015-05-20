@@ -22,7 +22,6 @@
 
 #pragma once
 #include "YamlNode.h"
-#include "utility/FileSystem.h"
 #include <memory>
 #include <string>
 #include <initializer_list>
@@ -42,7 +41,7 @@ namespace Z
         void print(const YamlNode& node, const std::string& message);
 
         bool nodeToBool(const YamlNode& node, bool& result) const;
-        std::string nodeToPath(const FileSystemPtr& fileSystem, const YamlNode& node);
+        std::string nodeToPath(const YamlNode& node);
 
         template <class TYPE> using EnumValues = std::initializer_list<std::pair<std::string, TYPE>>;
         template <class TYPE> bool nodeToEnum(const YamlNode& node, TYPE& result, const EnumValues<TYPE>& values) const
