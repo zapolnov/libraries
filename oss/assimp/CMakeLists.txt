@@ -2,24 +2,9 @@
 cmake_minimum_required(VERSION 3.1)
 project(assimp)
 
-include(CheckCXXCompilerFlag)
-if(MSVC)
-    add_definitions(-D_SCL_SECURE_NO_WARNINGS)
-    check_cxx_compiler_flag("/W0" HAVE_MSVC_WARNING_LEVEL_0)
-    if(HAVE_MSVC_WARNING_LEVEL_0)
-        string(REGEX REPLACE "/W[0-4]" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W0")
-    endif()
-    check_cxx_compiler_flag("/w" HAVE_MSVC_DISABLE_ALL_WARNINGS)
-    if(HAVE_MSVC_DISABLE_ALL_WARNINGS)
-        string(REGEX REPLACE "/W[1-4]" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /w")
-    endif()
-else()
-    check_cxx_compiler_flag("-w" HAVE_CXX_DISABLE_ALL_WARNINGS)
-    if(HAVE_CXX_DISABLE_ALL_WARNINGS)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w")
-    endif()
-endif()
+include(../../nz/cmake/DisableWarnings.cmake)
+include(../../nz/cmake/SetSourceGroups.cmake)
+z_disable_warnings()
 
 set(GIT_BRANCH "master")
 set(GIT_COMMIT_HASH 0)
@@ -34,43 +19,31 @@ if(ASSIMP_NO_EXPORT)
     add_definitions(-DASSIMP_BUILD_NO_EXPORT)
 endif(ASSIMP_NO_EXPORT)
 
+file(GLOB source_files
+    RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    code/*.cpp
+    code/*.h
+    code/BoostWorkaround/boost/math/*.hpp
+    code/BoostWorkaround/boost/tuple/*.hpp
+    code/BoostWorkaround/boost/*.hpp
+    contrib/ConvertUTF/*.c contrib/ConvertUTF/*.h
+    contrib/clipper/*.cpp contrib/clipper/*.hpp
+    contrib/irrXML/*.cpp contrib/irrXML/*.h
+    contrib/poly2tri/poly2tri/common/*.cc
+    contrib/poly2tri/poly2tri/common/*.h
+    contrib/poly2tri/poly2tri/sweep/*.cc
+    contrib/poly2tri/poly2tri/sweep/*.h
+    contrib/poly2tri/poly2tri/*.h
+)
 
-file(GLOB code_files code/*.cpp code/*.h)
 file(GLOB code_inl_files code/*.inl)
-file(GLOB boost_math_files code/BoostWorkaround/boost/math/*.hpp)
-file(GLOB boost_tuple_files code/BoostWorkaround/boost/tuple/*.hpp)
-file(GLOB boost_files code/BoostWorkaround/boost/*.hpp)
-file(GLOB cvtutf_files contrib/ConvertUTF/*.c contrib/ConvertUTF/*.h)
-file(GLOB clipper_files contrib/clipper/*.cpp contrib/clipper/*.hpp)
-file(GLOB irrxml_files contrib/irrXML/*.cpp contrib/irrXML/*.h)
-file(GLOB poly2tri_common_files contrib/poly2tri/poly2tri/common/*.cc contrib/poly2tri/poly2tri/common/*.h)
-file(GLOB poly2tri_sweep_files contrib/poly2tri/poly2tri/sweep/*.cc contrib/poly2tri/poly2tri/sweep/*.h)
-file(GLOB poly2tri_files contrib/poly2tri/poly2tri/*.h)
-
-source_group("Source Files\\code" FILES ${code_files} ${code_inl_files})
-source_group("Source Files\\code\\BoostWorkaround\\boost\\math" FILES ${boost_math_files})
-source_group("Source Files\\code\\BoostWorkaround\\boost\\tuple" FILES ${boost_tuple_files})
-source_group("Source Files\\code\\BoostWorkaround\\boost" FILES ${boost_files})
-source_group("Source Files\\contrib\\ConvertUTF" FILES ${cvtutf_files})
-source_group("Source Files\\contrib\\clipper" FILES ${clipper_files})
-source_group("Source Files\\contrib\\irrXML" FILES ${irrxml_files})
-source_group("Source Files\\contrib\\poly2tri\\poly2tri" FILES ${poly2tri_files})
-source_group("Source Files\\contrib\\poly2tri\\poly2tri\\common" FILES ${poly2tri_common_files})
-source_group("Source Files\\contrib\\poly2tri\\poly2tri\\sweep" FILES ${poly2tri_sweep_files})
 set_source_files_properties(${code_inl_files} PROPERTIES HEADER_FILE_ONLY TRUE)
 
+z_set_source_groups(${source_files} ${code_inl_files})
+
 add_library(libassimp STATIC ${EXCLUDE_FROM_ALL}
-    ${code_files}
+    ${source_files}
     ${code_inl_files}
-    ${boost_math_files}
-    ${boost_tuple_files}
-    ${boost_files}
-    ${cvtutf_files}
-    ${clipper_files}
-    ${irrxml_files}
-    ${poly2tri_files}
-    ${poly2tri_common_files}
-    ${poly2tri_sweep_files}
 )
 
 target_include_directories(libassimp BEFORE PUBLIC "${CMAKE_CURRENT_BINARY_DIR}" include)
