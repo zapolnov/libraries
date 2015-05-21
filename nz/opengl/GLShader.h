@@ -46,5 +46,8 @@ namespace Z
     private:
         GL::UInt m_Handle;
         GL::Enum m_Type;
+
+        GLShader(const GLShader&) = delete;
+        GLShader& operator=(const GLShader&) = delete;
     };
 }
