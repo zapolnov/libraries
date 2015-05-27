@@ -1,5 +1,5 @@
 
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.2)
 project(tiff)
 
 add_definitions(-D__STDC_FORMAT_MACROS=1)

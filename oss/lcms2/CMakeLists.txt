@@ -1,5 +1,5 @@
 
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.2)
 project(lcms2 C)
 
 file(GLOB source_files src/*.c src/*.h)

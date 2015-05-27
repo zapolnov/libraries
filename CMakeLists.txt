@@ -20,7 +20,7 @@
 # THE SOFTWARE.
 #
 
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.2)
 
 option(Z_BUILD_ALL "Build all libraries" OFF)
 IF(Z_BUILD_ALL)

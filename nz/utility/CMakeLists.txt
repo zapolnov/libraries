@@ -20,7 +20,7 @@
 # THE SOFTWARE.
 #
 
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.2)
 
 if(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS=1)
