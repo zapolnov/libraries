@@ -245,6 +245,14 @@ public:
 	int Row() const			{ return location.row + 1; }
 	int Column() const		{ return location.col + 1; }	///< See Row()
 
+	/** Return a pointer to the Document this node lives in.
+		Returns null if not in a document.
+	*/
+	virtual const TiXmlDocument* GetDocument() const = 0;
+	TiXmlDocument* GetDocument() {
+		return const_cast< TiXmlDocument* >( (const_cast< const TiXmlBase* >(this))->GetDocument() );
+	}
+
 	void  SetUserData( void* user )			{ userData = user; }	///< Set a pointer to arbitrary user data.
 	void* GetUserData()						{ return userData; }	///< Get a pointer to arbitrary user data.
 	const void* GetUserData() const 		{ return userData; }	///< Get a pointer to arbitrary user data.
@@ -873,6 +881,14 @@ public:
 	}
 	void Print( FILE* cfile, int depth, TIXML_STRING* str ) const;
 
+	/** Return a pointer to the Document this node lives in.
+		Returns null if not in a document.
+	*/
+	const TiXmlDocument* GetDocument() const { return document; }
+	TiXmlDocument* GetDocument() {
+		return const_cast< TiXmlDocument* >( (const_cast< const TiXmlAttribute* >(this))->GetDocument() );
+	}
+
 	// [internal use]
 	// Set the document pointer so the attribute can report errors.
 	void SetDocument( TiXmlDocument* doc )	{ document = doc; }
@@ -954,6 +970,11 @@ public:
 	TiXmlElement& operator=( const TiXmlElement& base );
 
 	virtual ~TiXmlElement();
+
+	/** Given an attribute name, GetAttribute() returns the attribute
+		of that name, or null if none exists.
+	*/
+	TiXmlAttribute* GetAttribute( const char* name ) const;
 
 	/** Given an attribute name, Attribute() returns the value
 		for the attribute of that name, or null if none exists.
@@ -1426,6 +1447,12 @@ public:
 		file location. Streaming may be added in the future.
 	*/
 	bool LoadFile( FILE*, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING );
+	/** Loads XML from the given buffer.
+		Please note that this method modifies the input buffer!
+		Returns true if successful.
+	*/
+	bool LoadBuffer( const char *buf, size_t length, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING );
+	bool LoadBuffer( char *buf, size_t length, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING );
 	/// Save a file using the given FILE*. Returns true if successful.
 	bool SaveFile( FILE* ) const;
 

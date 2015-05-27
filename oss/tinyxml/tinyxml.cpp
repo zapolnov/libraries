@@ -574,6 +574,12 @@ void TiXmlElement::ClearThis()
 }
 
 
+TiXmlAttribute* TiXmlElement::GetAttribute( const char* name ) const
+{
+	return attributeSet.Find( name );
+}
+
+
 const char* TiXmlElement::Attribute( const char* name ) const
 {
 	const TiXmlAttribute* node = attributeSet.Find( name );
@@ -667,7 +673,7 @@ int TiXmlElement::QueryIntAttribute( const char* name, int* ival ) const
 }
 
 
-int TiXmlElement::QueryUnsignedAttribute( const char* name, unsigned* value ) const
+int TiXmlElement::QueryUnsignedAttribute( const char* name, unsigned* value_ ) const
 {
 	const TiXmlAttribute* node = attributeSet.Find( name );
 	if ( !node )
@@ -675,7 +681,7 @@ int TiXmlElement::QueryUnsignedAttribute( const char* name, unsigned* value ) co
 
 	int ival = 0;
 	int result = node->QueryIntValue( &ival );
-	*value = (unsigned)ival;
+	*value_ = (unsigned)ival;
 	return result;
 }
 
@@ -1029,6 +1035,7 @@ bool TiXmlDocument::LoadFile( FILE* file, TiXmlEncoding encoding )
 	}
 	*/
 
+	bool result;
 	char* buf = new char[ length+1 ];
 	buf[0] = 0;
 
@@ -1037,6 +1044,38 @@ bool TiXmlDocument::LoadFile( FILE* file, TiXmlEncoding encoding )
 		SetError( TIXML_ERROR_OPENING_FILE, 0, 0, TIXML_ENCODING_UNKNOWN );
 		return false;
 	}
+
+	try
+	{
+		result = LoadBuffer(buf, length, encoding);
+	}
+	catch (...)
+	{
+		delete [] buf;
+		throw;
+	}
+
+	delete [] buf;
+
+	return result;
+}
+
+bool TiXmlDocument::LoadBuffer( const char *buf, size_t length, TiXmlEncoding encoding )
+{
+	// Delete the existing data
+	Clear();
+	location.Clear();
+
+	Parse( buf, 0, encoding );
+
+	return !Error();
+}
+
+bool TiXmlDocument::LoadBuffer( char *buf, size_t length, TiXmlEncoding encoding )
+{
+	// Delete the existing data
+	Clear();
+	location.Clear();
 
 	// Process the buffer in place to normalize new lines. (See comment above.)
 	// Copies from the 'p' to 'q' pointer, where p can advance faster if
@@ -1076,7 +1115,6 @@ bool TiXmlDocument::LoadFile( FILE* file, TiXmlEncoding encoding )
 
 	Parse( buf, 0, encoding );
 
-	delete [] buf;
 	return !Error();
 }
 
