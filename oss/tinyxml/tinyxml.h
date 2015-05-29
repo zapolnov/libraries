@@ -976,6 +976,11 @@ public:
 	*/
 	TiXmlAttribute* GetAttribute( const char* name ) const;
 
+	/** Given an attribute name, GetAttribute() returns the attribute
+		of that name, or null if none exists.
+	*/
+	TiXmlAttribute* GetAttribute( const std::string& name ) const { return GetAttribute(name.c_str()); }
+
 	/** Given an attribute name, Attribute() returns the value
 		for the attribute of that name, or null if none exists.
 	*/
