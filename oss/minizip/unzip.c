@@ -730,6 +730,8 @@ local int unz64local_GetCurrentFileInfoInternal(unzFile file, unz_file_info64 *p
     uLong uL;
     ZPOS64_T uL64;
 
+    (void)i;
+
     if (file == NULL)
         return UNZ_PARAMERROR;
     s = (unz64_s*)file;
