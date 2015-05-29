@@ -1593,10 +1593,12 @@ ILboolean iLoadDdsCubemapInternal(ILimage* baseImage, DDSHEAD * header, ILuint C
 				currImage = il2GetFace(baseImage, i);
 			}
 
-			if (!ReadData(io, header, CompData))
+			DDSHEAD headerCopy = *header;
+
+			if (!ReadData(io, &headerCopy, CompData))
 				return IL_FALSE;
 
-			if (!AllocImage(baseImage, header, CompFormat, CompData, Has16BitComponents)) {
+			if (!AllocImage(currImage, &headerCopy, CompFormat, CompData, Has16BitComponents)) {
 				if (CompData) {
 					ifree(CompData);
 					CompData = NULL;
@@ -1606,7 +1608,7 @@ ILboolean iLoadDdsCubemapInternal(ILimage* baseImage, DDSHEAD * header, ILuint C
 
 			currImage->CubeFlags = CubemapDirections[i];
 
-			if (!DdsDecompress(currImage, header, CompFormat, CompData)) {
+			if (!DdsDecompress(currImage, &headerCopy, CompFormat, CompData)) {
 				if (CompData) {
 					ifree(CompData);
 					CompData = NULL;
@@ -1614,7 +1616,7 @@ ILboolean iLoadDdsCubemapInternal(ILimage* baseImage, DDSHEAD * header, ILuint C
 				return IL_FALSE;
 			}
 
-			if (!ReadMipmaps(currImage, header, CompFormat, CompData, Has16BitComponents, io)) {
+			if (!ReadMipmaps(currImage, &headerCopy, CompFormat, CompData, Has16BitComponents, io)) {
 				if (CompData) {
 					ifree(CompData);
 					CompData = NULL;
