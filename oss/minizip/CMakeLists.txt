@@ -29,7 +29,12 @@ if(MSVC)
     add_definitions(/wd4244 /wd4267 /wd4456)
 endif()
 
-add_definitions(-DHAVE_AES)
+option(Z_MINIZIP_ENABLE_ENCRYPTION "Enable AES encryption in minizip." YES)
+
+if(Z_MINIZIP_ENABLE_ENCRYPTION)
+    add_definitions(-DHAVE_AES)
+endif()
+
 add_definitions(-DHAVE_BZIP2)
 
 set(libunzip_source_files
@@ -54,8 +59,12 @@ set(libzip_source_files
 
 source_group("Source Files" FILES ${libzip_source_files} ${libunzip_source_files})
 
-file(GLOB aes_files aes/*.c aes/*.h)
-source_group("Source Files\\aes" FILES ${aes_files})
+if(NOT Z_MINIZIP_ENABLE_ENCRYPTION)
+    set(aes_files)
+else()
+    file(GLOB aes_files aes/*.c aes/*.h)
+    source_group("Source Files\\aes" FILES ${aes_files})
+endif()
 
 add_library(libunzip STATIC ${EXCLUDE_FROM_ALL}
     ${libunzip_source_files}
