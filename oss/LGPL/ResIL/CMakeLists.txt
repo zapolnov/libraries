@@ -91,6 +91,5 @@ target_include_directories(ResIL BEFORE PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/incl
 target_include_directories(ResIL BEFORE PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
 target_include_directories(ResIL BEFORE PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src-IL/include")
 target_include_directories(ResIL BEFORE PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src-ILU/include")
-z_target_link_opengl(ResIL)
 
 target_link_libraries(ResIL libopenexr libjasper libtiff libmng libpng libjpeg lcms2)
