@@ -1,33 +1,43 @@
+#
+# Copyright (c) 2015 Nikolay Zapolnov (zapolnov@gmail.com)
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+#
 
 cmake_minimum_required(VERSION 3.2)
-project(glew)
+project(glew C)
 
 include(../../nz/cmake/OpenGL.cmake)
+include(../../nz/cmake/SetSourceGroups.cmake)
+
+file(GLOB source_files RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" include/GL/*.h src/*.c)
+z_set_source_groups(${source_files})
+add_library(libglew STATIC EXCLUDE_FROM_ALL ${source_files})
 
 if(Z_OPENGL_FOUND)
-
-    add_definitions(-DGLEW_BUILD)
-
-    set(include_files
-        include/GL/glew.h
-        include/GL/glxew.h
-        include/GL/wglew.h
-    )
-
-    set(source_files
-        src/glew.c
-    )
-
-    source_group("Source Files\\include" FILES ${include_files})
-    source_group("Source Files\\src" FILES ${source_files})
-
-    add_library(glew STATIC ${EXCLUDE_FROM_ALL}
-        ${include_files}
-        ${source_files}
-    )
-
-    target_include_directories(glew PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
-    target_compile_definitions(glew PUBLIC GLEW_STATIC GLEW_NO_GLU)
-    z_target_link_opengl(glew)
-
+    set_source_files_properties(src/dummy.c PROPERTIES HEADER_FILE_ONLY TRUE)
+else()
+    set_source_files_properties(src/glew.c PROPERTIES HEADER_FILE_ONLY TRUE)
 endif()
+
+set_target_properties(libglew PROPERTIES OUTPUT_NAME "glew")
+target_include_directories(libglew PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
+target_compile_definitions(libglew PRIVATE GLEW_BUILD)
+target_compile_definitions(libglew PUBLIC GLEW_STATIC GLEW_NO_GLU)
+z_target_link_opengl(libglew)

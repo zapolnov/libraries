@@ -31,5 +31,5 @@ add_library(NZZipFS STATIC ${EXCLUDE_FROM_ALL}
 source_group("Source Files" FILES ${source_files})
 
 set_target_properties(NZZipFS PROPERTIES CXX_STANDARD 11)
-target_link_libraries(NZZipFS NZUtility libminizip)
+target_link_libraries(NZZipFS NZUtility libunzip)
 target_include_directories(NZZipFS BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")

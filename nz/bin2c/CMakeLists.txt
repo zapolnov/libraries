@@ -28,4 +28,4 @@ endif()
 
 add_executable(bin2c ${EXCLUDE_FROM_ALL} main.cpp bin2c.cpp bin2c.h)
 source_group("Source Files" FILES main.cpp bin2c.cpp bin2c.h)
-target_link_libraries(bin2c zlib)
+target_link_libraries(bin2c libz)

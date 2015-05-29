@@ -91,7 +91,7 @@ add_library(pythoncore STATIC ${EXCLUDE_FROM_ALL}
 
 source_group("Source Files\\PC" FILES PC/config.c)
 
-target_link_libraries(pythoncore zlib ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(pythoncore libz ${CMAKE_THREAD_LIBS_INIT})
 if(LIBM)
     target_link_libraries(pythoncore ${LIBM})
 endif()
