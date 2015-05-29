@@ -21,7 +21,7 @@
 #
 
 cmake_minimum_required(VERSION 3.2)
-project(byacc)
+project(byacc C)
 
 if(MSVC)
     add_definitions(-D_CRT_SECURE_NO_DEPRECATE=1)
