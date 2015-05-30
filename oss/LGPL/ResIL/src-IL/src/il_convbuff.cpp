@@ -409,7 +409,7 @@ ILAPI void* ILAPIENTRY ilConvertBuffer(ILuint SizeOfData, ILenum SrcFormat, ILen
 					break;
 
 				case IL_ALPHA:
-					NewData = (ILubyte*)ialloc(NumPix * BpcDest / 3);
+					NewData = (ILubyte*)ialloc(NumPix * BpcDest);
 					CHECK_ALLOC();
 					memset(NewData, 0, NumPix * BpcDest);
 					break;
