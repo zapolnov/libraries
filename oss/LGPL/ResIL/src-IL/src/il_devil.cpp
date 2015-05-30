@@ -960,7 +960,7 @@ ILAPI ILboolean ILAPIENTRY il2CopyImageAttr(ILimage *Dest, ILimage *Src)
 	Dest->OffX = Src->OffX;
 	Dest->OffY = Src->OffY;
 	
-	return IL_TRUE/*iCopySubImages(Dest, Src)*/;
+	return iCopySubImages(Dest, Src);
 }
 
 
@@ -1172,9 +1172,9 @@ ILboolean ILAPIENTRY il2CopyImage(ILimage* aSource, ILimage* aTarget)
 		return IL_FALSE;
 	}
 	
+	il2CopyImageAttr(aTarget, aSource);
 	il2TexImage(aTarget, aSource->Width, aSource->Height, aSource->Depth, aSource->Bpp, 
 		aSource->Format, aSource->Type, aSource->Data);
-	il2CopyImageAttr(aTarget, aSource);
 	
 	return IL_TRUE;
 }
