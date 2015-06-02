@@ -1,0 +1,734 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0029)http://keyj.emphy.de/minimp3/ -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>KeyJ's Blog  : Blog Archive   » Honey, I shrunk the MP3 decoder</title>
+<meta name="generator" content="WordPress 4.2.2">
+
+<link href="./minimp3_files/css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="./minimp3_files/style.css" type="text/css">
+<link rel="alternate" type="application/rss+xml" title="KeyJ&#39;s Blog RSS Feed" href="http://keyj.emphy.de/feed/">
+<link rel="pingback" href="http://keyj.emphy.de/xmlrpc.php">
+
+<style type="text/css">
+	body { background:#d8d0b8 url("http://keyj.emphy.de/wp-content/themes/keyj2/sidebar.png") repeat-y; }
+	@media print {
+		body { background:white; margin:0; }
+	}
+</style>
+
+<link rel="alternate" type="application/rss+xml" title="KeyJ&#39;s Blog » Honey, I shrunk the MP3 decoder Comments Feed" href="http://keyj.emphy.de/minimp3/feed/">
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"http:\/\/s.w.org\/images\/core\/emoji\/72x72\/","ext":".png","source":{"wpemoji":"http:\/\/keyj.emphy.de\/wp-includes\/js\/wp-emoji.js?ver=4.2.2","twemoji":"http:\/\/keyj.emphy.de\/wp-includes\/js\/twemoji.js?ver=4.2.2"}};
+			( function( window, document, settings ) {
+	var src, ready;
+
+	/**
+	 * Detect if the browser supports rendering emoji or flag emoji. Flag emoji are a single glyph
+	 * made of two characters, so some browsers (notably, Firefox OS X) don't support them.
+	 *
+	 * @since 4.2.0
+	 *
+	 * @param type {String} Whether to test for support of "simple" or "flag" emoji.
+	 * @return {Boolean} True if the browser can render emoji, false if it cannot.
+	 */
+	function browserSupportsEmoji( type ) {
+		var canvas = document.createElement( 'canvas' ),
+			context = canvas.getContext && canvas.getContext( '2d' );
+
+		if ( ! context || ! context.fillText ) {
+			return false;
+		}
+
+		/*
+		 * Chrome on OS X added native emoji rendering in M41. Unfortunately,
+		 * it doesn't work when the font is bolder than 500 weight. So, we
+		 * check for bold rendering support to avoid invisible emoji in Chrome.
+		 */
+		context.textBaseline = 'top';
+		context.font = '600 32px Arial';
+
+		if ( type === 'flag' ) {
+			/*
+			 * This works because the image will be one of three things:
+			 * - Two empty squares, if the browser doesn't render emoji
+			 * - Two squares with 'G' and 'B' in them, if the browser doesn't render flag emoji
+			 * - The British flag
+			 *
+			 * The first two will encode to small images (1-2KB data URLs), the third will encode
+			 * to a larger image (4-5KB data URL).
+			 */
+			context.fillText( String.fromCharCode( 55356, 56812, 55356, 56807 ), 0, 0 );
+			return canvas.toDataURL().length > 3000;
+		} else {
+			/*
+			 * This creates a smiling emoji, and checks to see if there is any image data in the
+			 * center pixel. In browsers that don't support emoji, the character will be rendered
+			 * as an empty square, so the center pixel will be blank.
+			 */
+			context.fillText( String.fromCharCode( 55357, 56835 ), 0, 0 );
+			return context.getImageData( 16, 16, 1, 1 ).data[0] !== 0;
+		}
+	}
+
+	function addScript( src ) {
+		var script = document.createElement( 'script' );
+
+		script.src = src;
+		script.type = 'text/javascript';
+		document.getElementsByTagName( 'head' )[0].appendChild( script );
+	}
+
+	settings.supports = {
+		simple: browserSupportsEmoji( 'simple' ),
+		flag:   browserSupportsEmoji( 'flag' )
+	};
+
+	settings.DOMReady = false;
+	settings.readyCallback = function() {
+		settings.DOMReady = true;
+	};
+
+	if ( ! settings.supports.simple || ! settings.supports.flag ) {
+		ready = function() {
+			settings.readyCallback();
+		};
+
+		if ( document.addEventListener ) {
+			document.addEventListener( 'DOMContentLoaded', ready, false );
+			window.addEventListener( 'load', ready, false );
+		} else {
+			window.attachEvent( 'onload', ready );
+			document.attachEvent( 'onreadystatechange', function() {
+				if ( 'complete' === document.readyState ) {
+					settings.readyCallback();
+				}
+			} );
+		}
+
+		src = settings.source || {};
+
+		if ( src.concatemoji ) {
+			addScript( src.concatemoji );
+		} else if ( src.wpemoji && src.twemoji ) {
+			addScript( src.twemoji );
+			addScript( src.wpemoji );
+		}
+	}
+
+} )( window, document, window._wpemojiSettings );
+		</script><script src="./minimp3_files/twemoji.js" type="text/javascript"></script><script src="./minimp3_files/wp-emoji.js" type="text/javascript"></script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://keyj.emphy.de/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://keyj.emphy.de/wp-includes/wlwmanifest.xml"> 
+<link rel="prev" title="TD saved the day" href="http://keyj.emphy.de/td-saved-the-day/">
+<link rel="next" title="Going retro" href="http://keyj.emphy.de/going-retro/">
+<meta name="generator" content="WordPress 4.2.2">
+<link rel="canonical" href="./minimp3_files/minimp3.html">
+<link rel="shortlink" href="http://keyj.emphy.de/?p=59">
+</head>
+<body>
+<div id="page">
+
+<div id="logo">
+	<div>Welcome to the website of</div>
+	<a href="http://keyj.emphy.de/"><img src="./minimp3_files/logo.png" width="156" height="80" alt="KeyJ"></a>
+</div>
+
+<ul id="sidebar">
+
+<li id="search-3" class="widget widget_search"><form method="get" id="searchform" action="http://keyj.emphy.de/">
+<div><input type="text" value="" name="s" id="s">
+<input type="submit" id="searchsubmit" value="Search">
+</div>
+</form>
+</li>
+<li id="pages-3" class="widget widget_pages"><h2 class="widgettitle">Pages</h2>
+		<ul>
+			<li class="page_item page-item-2"><a href="http://keyj.emphy.de/about/">About me</a></li>
+<li class="page_item page-item-35 page_item_has_children"><a href="http://keyj.emphy.de/projects/">Projects</a>
+<ul class="children">
+	<li class="page_item page-item-37"><a href="http://keyj.emphy.de/projects/demoscene/">Demoscene</a></li>
+	<li class="page_item page-item-612"><a href="http://keyj.emphy.de/projects/tools-scripts/">Tools &amp; Scripts</a></li>
+	<li class="page_item page-item-36"><a href="http://keyj.emphy.de/projects/old-stuff/">Old Stuff</a></li>
+	<li class="page_item page-item-41"><a href="http://keyj.emphy.de/projects/studies/">Studies</a></li>
+</ul>
+</li>
+		</ul>
+		</li>
+<li id="archives-3" class="widget widget_archive"><h2 class="widgettitle">Archives</h2>
+		<label class="screen-reader-text" for="archives-dropdown-3">Archives</label>
+		<select id="archives-dropdown-3" name="archive-dropdown" onchange="document.location.href=this.options[this.selectedIndex].value;">
+			
+			<option value="">Select Month</option>
+				<option value="http://keyj.emphy.de/2014/05/"> May 2014 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2012/11/"> November 2012 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2012/05/"> May 2012 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2012/02/"> February 2012 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2011/09/"> September 2011 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2011/06/"> June 2011 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2011/02/"> February 2011 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2011/01/"> January 2011 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2010/06/"> June 2010 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2010/04/"> April 2010 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2010/02/"> February 2010 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2010/01/"> January 2010 &nbsp;(2)</option>
+	<option value="http://keyj.emphy.de/2009/12/"> December 2009 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2009/09/"> September 2009 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2009/08/"> August 2009 &nbsp;(2)</option>
+	<option value="http://keyj.emphy.de/2009/04/"> April 2009 &nbsp;(3)</option>
+	<option value="http://keyj.emphy.de/2009/02/"> February 2009 &nbsp;(4)</option>
+	<option value="http://keyj.emphy.de/2009/01/"> January 2009 &nbsp;(3)</option>
+	<option value="http://keyj.emphy.de/2008/12/"> December 2008 &nbsp;(2)</option>
+	<option value="http://keyj.emphy.de/2008/08/"> August 2008 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2008/06/"> June 2008 &nbsp;(2)</option>
+	<option value="http://keyj.emphy.de/2008/04/"> April 2008 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2007/12/"> December 2007 &nbsp;(2)</option>
+	<option value="http://keyj.emphy.de/2007/10/"> October 2007 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2007/09/"> September 2007 &nbsp;(2)</option>
+	<option value="http://keyj.emphy.de/2007/08/"> August 2007 &nbsp;(2)</option>
+	<option value="http://keyj.emphy.de/2007/07/"> July 2007 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2007/05/"> May 2007 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2007/04/"> April 2007 &nbsp;(2)</option>
+	<option value="http://keyj.emphy.de/2007/03/"> March 2007 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2007/02/"> February 2007 &nbsp;(3)</option>
+	<option value="http://keyj.emphy.de/2007/01/"> January 2007 &nbsp;(4)</option>
+	<option value="http://keyj.emphy.de/2006/12/"> December 2006 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2006/10/"> October 2006 &nbsp;(3)</option>
+	<option value="http://keyj.emphy.de/2006/09/"> September 2006 &nbsp;(3)</option>
+	<option value="http://keyj.emphy.de/2006/08/"> August 2006 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2006/07/"> July 2006 &nbsp;(2)</option>
+	<option value="http://keyj.emphy.de/2006/06/"> June 2006 &nbsp;(3)</option>
+	<option value="http://keyj.emphy.de/2006/05/"> May 2006 &nbsp;(3)</option>
+	<option value="http://keyj.emphy.de/2006/04/"> April 2006 &nbsp;(7)</option>
+	<option value="http://keyj.emphy.de/2006/03/"> March 2006 &nbsp;(6)</option>
+	<option value="http://keyj.emphy.de/2006/02/"> February 2006 &nbsp;(10)</option>
+	<option value="http://keyj.emphy.de/2006/01/"> January 2006 &nbsp;(5)</option>
+
+		</select>
+</li>
+<li id="categories-3" class="widget widget_categories"><h2 class="widgettitle">Categories</h2>
+		<ul>
+	<li class="cat-item cat-item-6"><a href="http://keyj.emphy.de/category/computer-fun/" title="Funny, interesting or absurd findings and hacks.">Computer Fun</a>
+<ul class="children">
+	<li class="cat-item cat-item-12"><a href="http://keyj.emphy.de/category/computer-fun/demoscene/" title="Anything that has to do with the demoscene.">Demoscene</a>
+	<ul class="children">
+	<li class="cat-item cat-item-13"><a href="http://keyj.emphy.de/category/computer-fun/demoscene/party-reports/" title="Reports from demoscene parties I&#39;ve been attending.">Party Reports</a>
+</li>
+	</ul>
+</li>
+	<li class="cat-item cat-item-10"><a href="http://keyj.emphy.de/category/computer-fun/hacks/" title="Sometimes useless, sometimes useful, but always interesting software I wrote in my free time.">Hacks</a>
+	<ul class="children">
+	<li class="cat-item cat-item-11"><a href="http://keyj.emphy.de/category/computer-fun/hacks/ipod/" title="Anything that has to do with iPod hacking.">iPod</a>
+</li>
+	</ul>
+</li>
+</ul>
+</li>
+	<li class="cat-item cat-item-1"><a href="http://keyj.emphy.de/category/misc/" title="Everything that doesn&#39;t fit into the other categories.">Other</a>
+</li>
+	<li class="cat-item cat-item-8"><a href="http://keyj.emphy.de/category/personal/" title="Stuff that has to do with myself or with friends of mine.">Personal</a>
+</li>
+	<li class="cat-item cat-item-46"><a href="http://keyj.emphy.de/category/reviews/" title="Reviews of (or rants about) new technology (software or hardware), movies, or whatever is worth writing a review for :)">Reviews</a>
+</li>
+		</ul>
+</li>
+<li id="ctc-3" class="widget ctc"><h2 class="widgettitle">Tags</h2>
+<div class="ctc"><a href="http://keyj.emphy.de/tag/4k/" class="ctc-tag tag-link-65" title="5 topics" rel="tag" style="font-size: 9.8181818181818pt; color: #00008d;">4k</a>
+<a href="http://keyj.emphy.de/tag/apple/" class="ctc-tag tag-link-35" title="5 topics" rel="tag" style="font-size: 9.8181818181818pt; color: #00008d;">Apple</a>
+<a href="http://keyj.emphy.de/tag/benchmark/" class="ctc-tag tag-link-18" title="4 topics" rel="tag" style="font-size: 8.9090909090909pt; color: #000096;">benchmark</a>
+<a href="http://keyj.emphy.de/tag/blog/" class="ctc-tag tag-link-77" title="9 topics" rel="tag" style="font-size: 13.454545454545pt; color: #00006b;">blog</a>
+<a href="http://keyj.emphy.de/tag/breakpoint/" class="ctc-tag tag-link-15" title="4 topics" rel="tag" style="font-size: 8.9090909090909pt; color: #000096;">Breakpoint</a>
+<a href="http://keyj.emphy.de/tag/demoscene/" class="ctc-tag tag-link-12" title="14 topics" rel="tag" style="font-size: 18pt; color: #000040;">Demoscene</a>
+<a href="http://keyj.emphy.de/tag/evoke/" class="ctc-tag tag-link-28" title="4 topics" rel="tag" style="font-size: 8.9090909090909pt; color: #000096;">Evoke</a>
+<a href="http://keyj.emphy.de/tag/games/" class="ctc-tag tag-link-30" title="4 topics" rel="tag" style="font-size: 8.9090909090909pt; color: #000096;">games</a>
+<a href="http://keyj.emphy.de/tag/graphics/" class="ctc-tag tag-link-39" title="5 topics" rel="tag" style="font-size: 9.8181818181818pt; color: #00008d;">graphics</a>
+<a href="http://keyj.emphy.de/tag/h264/" class="ctc-tag tag-link-17" title="6 topics" rel="tag" style="font-size: 10.727272727273pt; color: #000085;">H.264</a>
+<a href="http://keyj.emphy.de/tag/impressive/" class="ctc-tag tag-link-26" title="3 topics" rel="tag" style="font-size: 8pt; color: #00009f;">Impressive</a>
+<a href="http://keyj.emphy.de/tag/ipod/" class="ctc-tag tag-link-11" title="8 topics" rel="tag" style="font-size: 12.545454545455pt; color: #000073;">iPod</a>
+<a href="http://keyj.emphy.de/tag/jpeg/" class="ctc-tag tag-link-87" title="4 topics" rel="tag" style="font-size: 8.9090909090909pt; color: #000096;">JPEG</a>
+<a href="http://keyj.emphy.de/tag/linux/" class="ctc-tag tag-link-47" title="7 topics" rel="tag" style="font-size: 11.636363636364pt; color: #00007c;">Linux</a>
+<a href="http://keyj.emphy.de/tag/mpui/" class="ctc-tag tag-link-66" title="4 topics" rel="tag" style="font-size: 8.9090909090909pt; color: #000096;">MPUI</a>
+<a href="http://keyj.emphy.de/tag/opengl/" class="ctc-tag tag-link-43" title="4 topics" rel="tag" style="font-size: 8.9090909090909pt; color: #000096;">OpenGL</a>
+<a href="http://keyj.emphy.de/tag/rant/" class="ctc-tag tag-link-49" title="14 topics" rel="tag" style="font-size: 18pt; color: #000040;">rant</a>
+<a href="http://keyj.emphy.de/tag/repear/" class="ctc-tag tag-link-25" title="3 topics" rel="tag" style="font-size: 8pt; color: #00009f;">rePear</a>
+<a href="http://keyj.emphy.de/tag/video/" class="ctc-tag tag-link-96" title="4 topics" rel="tag" style="font-size: 8.9090909090909pt; color: #000096;">video</a>
+<a href="http://keyj.emphy.de/tag/windows/" class="ctc-tag tag-link-41" title="5 topics" rel="tag" style="font-size: 9.8181818181818pt; color: #00008d;">Windows</a></div></li>
+		<li id="meta" class="widget widget_meta">			<h2 class="widgettitle">Meta</h2>
+			<ul>
+						<li><a href="http://keyj.emphy.de/wp-login.php">Log in</a></li>
+			<li><a href="http://keyj.emphy.de/feed/" title="Syndicate this site using RSS 2.0"><img src="./minimp3_files/rss2.png" width="31" height="12" border="0" alt="RSS"> Entries</a></li>
+			<li><a href="http://keyj.emphy.de/comments/feed/" title="Syndicate this site using RSS 2.0"><img src="./minimp3_files/rss2.png" width="31" height="12" border="0" alt="RSS"> Comments</a></li>
+						</ul>
+		</li>
+	
+
+</ul>
+
+<div id="content">
+
+			
+						
+			<div class="post" id="post-59">
+				<h1><a href="./minimp3_files/minimp3.html" rel="bookmark" title="Permanent Link to Honey, I shrunk the MP3 decoder">Honey, I shrunk the MP3 decoder</a></h1>
+				<div class="date">(January 28, 2007)</div>
+				
+				<div class="entry">
+					<p>A few months ago, I implemented a <a href="http://keyj.emphy.de/?p=50">minuscule MPEG Audio Layer II decoder</a>. While I still consider this as a cool hack, it’s not of too much use nowadays. Everyone uses MP3 or Vorbis; MPEG Audio Layer II is only used together with MPEG Video (think VCD, SVCD and DVB), but you usually don’t have MP2 audio files on your disk. So the aim was clear: I wanted to have an as-small-as-possible MP3 decoder, too.<br>
+<span id="more-59"></span><br>
+This time, I didn’t even try to implement it myself. Layer II was already hard to understand, but Layer III is about 3 to 5 times more complex. Considering the bad quality of the standard, I decided against a fresh reimplementation. Instead, I looked at the large pool of existing open-source decoding software.</p>
+<p>The most common MP3 decoder in the F/OSS world is mpg123 and the mpglib library based off it, so this was naturally my first choice. Digging deeper into the source, I found that it is too complex, hard to read and even harder to port. It is chock full of #ifdefs, uses assembler code and floating-point math all over the place and is quite big overall. So I checked the next alternative: FFmpeg. The MPEG Audio decoder of libavcodec is already implemented in a single file, so I used it as a starting point. I had to dig a bit through all the FFmpeg intricacies (to find out that the bitstream reader is actually a bunch of intertwined and largely redundant macros) to get it together, but finally it worked.</p>
+<p>The harder part was to make a really small Win32 executable. Creating a debug build in Visual C++ Express was quite easy, but the Release build without C runtime library dependencies took me quite some time to finish. The special problem were some weird floating-point operations like frexp() and pow() used during initialization. These operations don’t map directly to a x87 FPU instruction, so the compiler insisted on calling a library function. I needed to create a replacement of these two functions, but finding out how to implement them wasn’t trivial at all. Well, at least I learned a thing or two about floating-point assembler programming :)</p>
+<p>All in all, the result is roughly 1680 lines of code (not counting empty lines, comments and 600 lines of tables) that compile to a 28k executable. The fabulous executable compressor <a href="http://www.farbrausch.de/~fg/kkrunchy/">kkrunchy</a> manages to pack this down to a reasonable 13312 bytes. Not quite as small as the Layer II decoder, but OK. I guess that a carefully-designed full reimplementation would be possible in 8 or 10k, but I’ll leave it to someone else to do that.</p>
+<p>The small size comes at a cost, though. The FFmpeg MP3 decoder is neither fast nor bug-free. It uses around 1-2% CPU on my Athlon64 3000+ (fully optimized, of course), while other decoders can’t be measured at all (i.e. below 1%). An even greater problem is a bug in the huffmann decoder that renders some (but not all) silent parts in some (but not all) files wrong. I first thought that has to be a problem of my port, but it’s there in vanilla FFmpeg, too, so I’m writing a bug report and leave it to <a href="http://fabrice.bellard.free.fr/">Fabrice</a> and the others to fix it :)</p>
+<p><b>[Update 2007-02-05:</b> Two days ago, Michael Niedermayer (a lead FFmpeg developer) fixed the bug. Now minimp3 decodes all files correctly o/<b>]</b></p>
+<p>If you don’t mind the shortcomings of the current implementations, feel invited to try it or use it in your projects. My personal incentive was to get rid of bass.dll or fmod.dll when writing demos – but if anyone feels like implementing a full-featured graphical MP3 player in, say, 64k, I’d love to see that, too :)</p>
+<h2>Download</h2>
+<ul>
+<li><a href="http://keyj.emphy.de/files/projects/minimp3.tar.gz">minimp3.tar.gz</a> (51k) — the source code and compiled example application</li>
+</ul>
+				</div>
+		
+				<p class="postmetadata">Posted in <a href="http://keyj.emphy.de/category/computer-fun/" rel="category tag">Computer Fun</a>, <a href="http://keyj.emphy.de/category/computer-fun/hacks/" rel="category tag">Hacks</a> |   <a href="http://keyj.emphy.de/minimp3/#comments">23 Comments ...</a></p>
+			</div>
+	
+		
+		<div class="navigation">
+			<div></div>
+			<div></div>
+		</div>
+		
+	
+
+<!-- You can start editing here. -->
+
+	<h1 id="comments">23 Responses to »Honey, I shrunk the MP3 decoder«</h1>
+
+	<ul class="commentlist">
+
+	
+		<li class="alt" id="comment-3194">
+			<div class="cmthead">
+				<span class="author">Ben Laufer</span>
+				<span class="date">(2007-02-06 05:55)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>very cool, and drag and drop works on the exe :)</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3207">
+			<div class="cmthead">
+				<span class="author"><a href="http://www.pctipsworld.com/" rel="external nofollow" class="url">mente</a></span>
+				<span class="date">(2007-02-17 16:10)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>You would better use Vorbis. It has much better quality, than Mp3</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3380">
+			<div class="cmthead">
+				<span class="author"><a href="http://www.adrianboeing.com/" rel="external nofollow" class="url">aboeing</a></span>
+				<span class="date">(2007-08-12 07:02)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>simply awesome! although I would expect on windows it would be much smaller just to call the appropriate directshow functions to play the mp3. nevertheless, very kool! i’m glad you did this, as i didn’t want to use your mp2 for the very reasons you outlined here. great work!</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3381">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2007-08-12 22:00)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>aboeing: You’re right, just having DirectShow play a MP3 file is much simpler and smaller than this decoder. But it has some limitations, though:<br>
+1. Results vary depending on which MP3 decoder gets chosen. This would not be an issue if all decoders did their job well, but I remember that even the standard decoder that comes with Windows has some severe (audible!) bugs. I’m not going to say that minimp3 is bug-free (it’s certainly not), but it’s a fixed implementation you can test with and be sure that it sounds the same on any system.<br>
+2. As far as I know, DirectShow can’t play from memory chunks easily.<br>
+3. Finally, DirectShow isn’t exactly portable :)<br>
+Depending on what application you target at, these points might or might not apply for you. I developed minimp3 as part of a demo engine, and for this type of application, these three points matter :)</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3385">
+			<div class="cmthead">
+				<span class="author"><a href="http://www.adrianboeing.com/" rel="external nofollow" class="url">aboeing</a></span>
+				<span class="date">(2007-08-25 10:22)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Hey KeyJ,<br>
+Yes, I’ve had trouble with getting DirectShow to play from and TO memory chunks and it certainly isn’t portable. I’ll see if I can get your MP3 player going on an embedded device we do some research on and I’ll send you a link if it works :)<br>
+(I wasn’t aware DirectShows MP3 decoders were buggy, I’ll have to look in to that!)</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3386">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2007-08-25 10:50)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Well, every decoder is buggy at some point, I think :) But I remember hearing a suspiciously high amount of “blubs” in MP3s decoded with Windows Media Player when compared to WinAMP a while back. The problem might have been solved by now, but I learned my lesson already :)</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3508">
+			<div class="cmthead">
+				<span class="author">Mark</span>
+				<span class="date">(2008-11-07 07:05)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Great work on this tiny MP3 player.  How much work would be required to create a managed class wrapper, so this could be used within C#?</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3509">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2008-11-07 11:18)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Mark: Not much, I think … on the C side, it would mean that the decoder needs to be compiled into a DLL, and on the C# side, it would require some standard P/Invoke stuff, I guess. Frankly, I didn’t dig very deep into .NET yet, so I can’t say much more about this.</p>
+<p>Anyway, if you’re using C#, having a small native executable most likely isn’t one of your goals. So I rather recommend using some of the higher-level APIs like Windows Media / DirectShow or a ready-made third-party library like <a href="http://www.un4seen.com/bass.html" rel="nofollow">Bass.Net</a> might be a better choice.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3510">
+			<div class="cmthead">
+				<span class="author">Mark</span>
+				<span class="date">(2008-11-08 02:09)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>KeyJ: Thanks for your response.  I’ve already looked at DirectShow, but it’s rather difficult to use in C#.  Bass.Net looks like a great option however.  Another alternative I’ve found is a managed Ogg library (<a href="http://www.j-ogg.de/CsOgg.zip" rel="nofollow">http://www.j-ogg.de/CsOgg.zip</a>) that may suit my needs.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3590">
+			<div class="cmthead">
+				<span class="author">Aly</span>
+				<span class="date">(2009-12-31 04:39)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Your entry points for the library seem to have a bug.</p>
+<p>The mp3_decoder_t is typedef’d as:<br>
+typedef void* mp3_decoder_t;</p>
+<p>And rightly so, the main create function does this:<br>
+mp3_decoder_t mp3_create(void)<br>
+{<br>
+    // Something along the lines of:<br>
+    return calloc(mp3_context_t);<br>
+}</p>
+<p>Which is fine, since an mp3_context_t* is converted to a void*.</p>
+<p>However, the _decode function does this:<br>
+int mp3_decode(mp3_decoder_t *dec, void *buf, int bytes, signed short *out, mp3_info_t *info)</p>
+<p>Notice that the first parameter is an mp3_decoder_t*, which is effectively a void**. This parameter is then cast to an mp3_context_t* (which is wrong).</p>
+<p>Furthermore, mp3_done has the same flaw.</p>
+<p>This can be fixed by removing one pointer indirection to the mp3_done and mp3_decode function.</p>
+<p>Needless to say, the reason why the Windows example compiles and runs is b/c in the calling code, the mp3_decoder_t is passed, as opposed to mp3_decoder_t* (which would essentially crash if it did).</p>
+<p>Also, in the mp3_done function, there is no need to check for the pointer before free’ing. As per the C standard, free(NULL) is a no-op.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3668">
+			<div class="cmthead">
+				<span class="author">kohai</span>
+				<span class="date">(2010-05-04 16:56)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Dude, you rule ! I was wandering the net for a simple and LIGHT mp3 decoder : libmad, mpglib, oh god … then i found it ! </p>
+<p>Thx a bunch ! ( i added loop and stream from memory, now to implement simple fft )</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3686">
+			<div class="cmthead">
+				<span class="author">rakesh</span>
+				<span class="date">(2010-12-14 07:46)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>i downloaded minimp3.<br>
+while testing i found a bug in that.<br>
+for some mp3 files left side audio sound is good, but right side it is giving some noise(hsss sound) along with original sound</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3687">
+			<div class="cmthead">
+				<span class="author">technosaurus</span>
+				<span class="date">(2010-12-15 23:01)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Nice little mp3 player -works great with glibc and uclibc<br>
+(dietlibc works but it’s math library makes it sound “off”)</p>
+<p>Thought it would be a nice thing to have in busybox so:<br>
+I hacked it all down to a single file,<br>
+and added loop code to play a list of files,<br>
+ported it to busybox (patch is in their mail list)</p>
+<p><a href="http://www.mail-archive.com/busybox@busybox.net/msg12341.html" rel="nofollow">http://www.mail-archive.com/busybox@busybox.net/msg12341.html</a></p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3688">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2010-12-16 18:28)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>rakesh:</strong> Could you please provide a minimal example file that exhibits the problem?</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3839">
+			<div class="cmthead">
+				<span class="author">George</span>
+				<span class="date">(2013-01-28 12:48)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>This is great – the only MP3 decoder I could find that doesn’t require tons of libraries to function.</p>
+<p>Do you know how many bits the output PCM is? I can’t figure it out…</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3840">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2013-01-28 13:05)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>George:</strong> As the type (<code>signed short</code>) in the C declaration already hints at, it’s native-endian signed 16-bit integers. So far, so straightforward.<br>
+Make sure to point to a buffer of at least <code>MP3_MAX_SAMPLES_PER_FRAME</code> samples (not bytes) in the <code>mp3_decode</code> call. The actual number of bytes (not samples) decoded there is then returned in the <code>mp3_info_t</code> structure. And now that I read the header file again, I must agree that this is highly unlogical :)</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3844">
+			<div class="cmthead">
+				<span class="author">George</span>
+				<span class="date">(2013-02-25 15:53)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Martin,</p>
+<p>Thank you for your help – after far too many hours of my time I have managed to acheive real time MP3 decoding on an Altera FPGA development board, which makes use of your mini mp3 code. This is for my final year undergraduate University project (BEng Electronic Engineering). I have of course kept your code header in place and am acknowledging your code &amp; assistance in my final report. Thanks again. George.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3854">
+			<div class="cmthead">
+				<span class="author">tyousan</span>
+				<span class="date">(2013-04-10 14:36)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Hi, dude ! you’re awesome! I really admire your masterpiece!!!</p>
+<p>I’m a beginner in mp3 decodec territory.It’s so luck that I can find your code in the Internet to read and study.I downloaded your work, this easy to understand the main() function. Meanwhile ,I add some code to explain the ID3v2 tag(or frame) in the mp3 file to display the mp3 information. However, the decode part, especially the initial part is sort of obscure. So there are some code and the detail that I can’t understand in your shrunk code, like decode_init() part, I read some paper about mp3 decode before read your code, But you know, principle is principle , There did are some differences between the principle and the implementation.</p>
+<p>So, Would you mind releasing a comment-version for us, the beginners ,for learning(or explain some small but important functions what they works in the program).<br>
+Thank you every much.I am looking forward to your reply.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3855">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2013-04-10 15:28)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>tyousan:</strong> I’m not an expert either: While I implemented an <a href="http://keyj.emphy.de/kjmp2/" rel="nofollow">MPEG-Audio Layer II</a> (MP2) decoder myself, MP3 is already too cryptic for me. As I mentioned in the article, <code>minimp3</code> is <em>not</em> an original work by me, but a stripped-down version of the MP3 decoder from FFmpeg’s <code>libavcodec</code>.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3856">
+			<div class="cmthead">
+				<span class="author">tyousan</span>
+				<span class="date">(2013-04-11 12:38)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>KeyJ:</strong>thanks all the same.<br>
+If I have some questions on program,I will contact you by E-mail</p>
+<p>Danke！( This is the first German I learned :-) )</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3858">
+			<div class="cmthead">
+				<span class="author">gamecreature</span>
+				<span class="date">(2013-04-17 23:33)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Thank you very much for this nice implementation!!<br>
+It saved me a lot of time trying to cross-platform-compile other big-library solutions!<br>
+And this library does exactly what it needs to do :D</p>
+<p>(Maybe you should publish the sources to github)</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3918">
+			<div class="cmthead">
+				<span class="author">Nicu</span>
+				<span class="date">(2014-12-08 15:28)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Excellent, it’s written exactly how I like!<br>
+Thank you!</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3932">
+			<div class="cmthead">
+				<span class="author">olin</span>
+				<span class="date">(2015-02-14 01:53)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Hi,<br>
+thanks for the decoder. It plays really well. However it decodes some mp3 files into hissing noise. I suspect it may be corrupted mp3 file itself, however other players decode it correctly (or are able to detect the issue and ignore it). Would you mind testing the following sample ? <a href="http://jpst.it/wHsw" rel="nofollow">http://jpst.it/wHsw</a><br>
+use base64 -d text &gt; sample.zip<br>
+Thank you.</p>
+			</div>
+
+		</li>
+
+	
+	
+	</ul>
+
+ 
+
+
+<h1 id="respond">Post a Reply</h1>
+
+
+<form action="http://keyj.emphy.de/wp-comments-post.php" method="post" id="commentform">
+
+
+<p class="field"><input type="text" name="author" id="author" value="" size="22" tabindex="1">
+<label for="author">Name <em>(required)</em></label></p>
+
+<p class="field"><input type="text" name="email" id="email" value="" size="22" tabindex="2">
+<label for="email">Mail (will not be published) <em>(required)</em></label></p>
+
+<p class="field"><input type="text" name="url" id="url" value="" size="22" tabindex="3">
+<label for="url">Website</label></p>
+
+
+<p class="l"><small><strong>XHTML:</strong> You can use these tags: &lt;a href="" title=""&gt; &lt;abbr title=""&gt; &lt;acronym title=""&gt; &lt;b&gt; &lt;blockquote cite=""&gt; &lt;cite&gt; &lt;code&gt; &lt;del datetime=""&gt; &lt;em&gt; &lt;i&gt; &lt;q cite=""&gt; &lt;s&gt; &lt;strike&gt; &lt;strong&gt; </small></p>
+
+<p><textarea name="comment" id="comment" cols="100%" rows="10" tabindex="4" wrap="virtual"></textarea></p>
+
+<p class="field" id="captcha"><strong>Captcha:</strong><br>
+<label for="answer">Which number is <span>less</span>: <span>3</span> or <span>1</span>?<input type="hidden" name="seed" value="1433261425"><input type="hidden" name="captcha" value=""></label> &nbsp;
+<input type="text" name="answer" id="answer" value="" size="10" tabindex="5"></p>
+
+<p><input name="submit" type="submit" id="submit" tabindex="6" value="Submit Comment">
+<input type="hidden" name="comment_post_ID" value="59">
+</p>
+
+</form>
+
+
+
+</div>
+
+</div>
+
+<!-- 17 queries. 0.468 seconds. -->
+
+</body></html>
