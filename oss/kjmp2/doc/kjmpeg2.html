@@ -1,0 +1,983 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0027)http://keyj.emphy.de/kjmp2/ -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>KeyJ's Blog  : Blog Archive   » A MPEG Audio Layer II decoder in 4k</title>
+<meta name="generator" content="WordPress 4.2.2">
+
+<link href="./kjmpeg2_files/css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="./kjmpeg2_files/style.css" type="text/css">
+<link rel="alternate" type="application/rss+xml" title="KeyJ&#39;s Blog RSS Feed" href="http://keyj.emphy.de/feed/">
+<link rel="pingback" href="http://keyj.emphy.de/xmlrpc.php">
+
+<style type="text/css">
+	body { background:#d8d0b8 url("http://keyj.emphy.de/wp-content/themes/keyj2/sidebar.png") repeat-y; }
+	@media print {
+		body { background:white; margin:0; }
+	}
+</style>
+
+<link rel="alternate" type="application/rss+xml" title="KeyJ&#39;s Blog » A MPEG Audio Layer II decoder in 4k Comments Feed" href="http://keyj.emphy.de/kjmp2/feed/">
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"http:\/\/s.w.org\/images\/core\/emoji\/72x72\/","ext":".png","source":{"wpemoji":"http:\/\/keyj.emphy.de\/wp-includes\/js\/wp-emoji.js?ver=4.2.2","twemoji":"http:\/\/keyj.emphy.de\/wp-includes\/js\/twemoji.js?ver=4.2.2"}};
+			( function( window, document, settings ) {
+	var src, ready;
+
+	/**
+	 * Detect if the browser supports rendering emoji or flag emoji. Flag emoji are a single glyph
+	 * made of two characters, so some browsers (notably, Firefox OS X) don't support them.
+	 *
+	 * @since 4.2.0
+	 *
+	 * @param type {String} Whether to test for support of "simple" or "flag" emoji.
+	 * @return {Boolean} True if the browser can render emoji, false if it cannot.
+	 */
+	function browserSupportsEmoji( type ) {
+		var canvas = document.createElement( 'canvas' ),
+			context = canvas.getContext && canvas.getContext( '2d' );
+
+		if ( ! context || ! context.fillText ) {
+			return false;
+		}
+
+		/*
+		 * Chrome on OS X added native emoji rendering in M41. Unfortunately,
+		 * it doesn't work when the font is bolder than 500 weight. So, we
+		 * check for bold rendering support to avoid invisible emoji in Chrome.
+		 */
+		context.textBaseline = 'top';
+		context.font = '600 32px Arial';
+
+		if ( type === 'flag' ) {
+			/*
+			 * This works because the image will be one of three things:
+			 * - Two empty squares, if the browser doesn't render emoji
+			 * - Two squares with 'G' and 'B' in them, if the browser doesn't render flag emoji
+			 * - The British flag
+			 *
+			 * The first two will encode to small images (1-2KB data URLs), the third will encode
+			 * to a larger image (4-5KB data URL).
+			 */
+			context.fillText( String.fromCharCode( 55356, 56812, 55356, 56807 ), 0, 0 );
+			return canvas.toDataURL().length > 3000;
+		} else {
+			/*
+			 * This creates a smiling emoji, and checks to see if there is any image data in the
+			 * center pixel. In browsers that don't support emoji, the character will be rendered
+			 * as an empty square, so the center pixel will be blank.
+			 */
+			context.fillText( String.fromCharCode( 55357, 56835 ), 0, 0 );
+			return context.getImageData( 16, 16, 1, 1 ).data[0] !== 0;
+		}
+	}
+
+	function addScript( src ) {
+		var script = document.createElement( 'script' );
+
+		script.src = src;
+		script.type = 'text/javascript';
+		document.getElementsByTagName( 'head' )[0].appendChild( script );
+	}
+
+	settings.supports = {
+		simple: browserSupportsEmoji( 'simple' ),
+		flag:   browserSupportsEmoji( 'flag' )
+	};
+
+	settings.DOMReady = false;
+	settings.readyCallback = function() {
+		settings.DOMReady = true;
+	};
+
+	if ( ! settings.supports.simple || ! settings.supports.flag ) {
+		ready = function() {
+			settings.readyCallback();
+		};
+
+		if ( document.addEventListener ) {
+			document.addEventListener( 'DOMContentLoaded', ready, false );
+			window.addEventListener( 'load', ready, false );
+		} else {
+			window.attachEvent( 'onload', ready );
+			document.attachEvent( 'onreadystatechange', function() {
+				if ( 'complete' === document.readyState ) {
+					settings.readyCallback();
+				}
+			} );
+		}
+
+		src = settings.source || {};
+
+		if ( src.concatemoji ) {
+			addScript( src.concatemoji );
+		} else if ( src.wpemoji && src.twemoji ) {
+			addScript( src.twemoji );
+			addScript( src.wpemoji );
+		}
+	}
+
+} )( window, document, window._wpemojiSettings );
+		</script><script src="./kjmpeg2_files/twemoji.js" type="text/javascript"></script><script src="./kjmpeg2_files/wp-emoji.js" type="text/javascript"></script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://keyj.emphy.de/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://keyj.emphy.de/wp-includes/wlwmanifest.xml"> 
+<link rel="prev" title="Windows Vista RC1 reviewed" href="http://keyj.emphy.de/vista-rc1/">
+<link rel="next" title="Making of »nano«" href="http://keyj.emphy.de/making-of-nano/">
+<meta name="generator" content="WordPress 4.2.2">
+<link rel="canonical" href="./kjmpeg2_files/kjmpeg2.html">
+<link rel="shortlink" href="http://keyj.emphy.de/?p=50">
+</head>
+<body>
+<div id="page">
+
+<div id="logo">
+	<div>Welcome to the website of</div>
+	<a href="http://keyj.emphy.de/"><img src="./kjmpeg2_files/logo.png" width="156" height="80" alt="KeyJ"></a>
+</div>
+
+<ul id="sidebar">
+
+<li id="search-3" class="widget widget_search"><form method="get" id="searchform" action="http://keyj.emphy.de/">
+<div><input type="text" value="" name="s" id="s">
+<input type="submit" id="searchsubmit" value="Search">
+</div>
+</form>
+</li>
+<li id="pages-3" class="widget widget_pages"><h2 class="widgettitle">Pages</h2>
+		<ul>
+			<li class="page_item page-item-2"><a href="http://keyj.emphy.de/about/">About me</a></li>
+<li class="page_item page-item-35 page_item_has_children"><a href="http://keyj.emphy.de/projects/">Projects</a>
+<ul class="children">
+	<li class="page_item page-item-37"><a href="http://keyj.emphy.de/projects/demoscene/">Demoscene</a></li>
+	<li class="page_item page-item-612"><a href="http://keyj.emphy.de/projects/tools-scripts/">Tools &amp; Scripts</a></li>
+	<li class="page_item page-item-36"><a href="http://keyj.emphy.de/projects/old-stuff/">Old Stuff</a></li>
+	<li class="page_item page-item-41"><a href="http://keyj.emphy.de/projects/studies/">Studies</a></li>
+</ul>
+</li>
+		</ul>
+		</li>
+<li id="archives-3" class="widget widget_archive"><h2 class="widgettitle">Archives</h2>
+		<label class="screen-reader-text" for="archives-dropdown-3">Archives</label>
+		<select id="archives-dropdown-3" name="archive-dropdown" onchange="document.location.href=this.options[this.selectedIndex].value;">
+			
+			<option value="">Select Month</option>
+				<option value="http://keyj.emphy.de/2014/05/"> May 2014 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2012/11/"> November 2012 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2012/05/"> May 2012 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2012/02/"> February 2012 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2011/09/"> September 2011 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2011/06/"> June 2011 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2011/02/"> February 2011 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2011/01/"> January 2011 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2010/06/"> June 2010 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2010/04/"> April 2010 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2010/02/"> February 2010 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2010/01/"> January 2010 &nbsp;(2)</option>
+	<option value="http://keyj.emphy.de/2009/12/"> December 2009 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2009/09/"> September 2009 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2009/08/"> August 2009 &nbsp;(2)</option>
+	<option value="http://keyj.emphy.de/2009/04/"> April 2009 &nbsp;(3)</option>
+	<option value="http://keyj.emphy.de/2009/02/"> February 2009 &nbsp;(4)</option>
+	<option value="http://keyj.emphy.de/2009/01/"> January 2009 &nbsp;(3)</option>
+	<option value="http://keyj.emphy.de/2008/12/"> December 2008 &nbsp;(2)</option>
+	<option value="http://keyj.emphy.de/2008/08/"> August 2008 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2008/06/"> June 2008 &nbsp;(2)</option>
+	<option value="http://keyj.emphy.de/2008/04/"> April 2008 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2007/12/"> December 2007 &nbsp;(2)</option>
+	<option value="http://keyj.emphy.de/2007/10/"> October 2007 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2007/09/"> September 2007 &nbsp;(2)</option>
+	<option value="http://keyj.emphy.de/2007/08/"> August 2007 &nbsp;(2)</option>
+	<option value="http://keyj.emphy.de/2007/07/"> July 2007 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2007/05/"> May 2007 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2007/04/"> April 2007 &nbsp;(2)</option>
+	<option value="http://keyj.emphy.de/2007/03/"> March 2007 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2007/02/"> February 2007 &nbsp;(3)</option>
+	<option value="http://keyj.emphy.de/2007/01/"> January 2007 &nbsp;(4)</option>
+	<option value="http://keyj.emphy.de/2006/12/"> December 2006 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2006/10/"> October 2006 &nbsp;(3)</option>
+	<option value="http://keyj.emphy.de/2006/09/"> September 2006 &nbsp;(3)</option>
+	<option value="http://keyj.emphy.de/2006/08/"> August 2006 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2006/07/"> July 2006 &nbsp;(2)</option>
+	<option value="http://keyj.emphy.de/2006/06/"> June 2006 &nbsp;(3)</option>
+	<option value="http://keyj.emphy.de/2006/05/"> May 2006 &nbsp;(3)</option>
+	<option value="http://keyj.emphy.de/2006/04/"> April 2006 &nbsp;(7)</option>
+	<option value="http://keyj.emphy.de/2006/03/"> March 2006 &nbsp;(6)</option>
+	<option value="http://keyj.emphy.de/2006/02/"> February 2006 &nbsp;(10)</option>
+	<option value="http://keyj.emphy.de/2006/01/"> January 2006 &nbsp;(5)</option>
+
+		</select>
+</li>
+<li id="categories-3" class="widget widget_categories"><h2 class="widgettitle">Categories</h2>
+		<ul>
+	<li class="cat-item cat-item-6"><a href="http://keyj.emphy.de/category/computer-fun/" title="Funny, interesting or absurd findings and hacks.">Computer Fun</a>
+<ul class="children">
+	<li class="cat-item cat-item-12"><a href="http://keyj.emphy.de/category/computer-fun/demoscene/" title="Anything that has to do with the demoscene.">Demoscene</a>
+	<ul class="children">
+	<li class="cat-item cat-item-13"><a href="http://keyj.emphy.de/category/computer-fun/demoscene/party-reports/" title="Reports from demoscene parties I&#39;ve been attending.">Party Reports</a>
+</li>
+	</ul>
+</li>
+	<li class="cat-item cat-item-10"><a href="http://keyj.emphy.de/category/computer-fun/hacks/" title="Sometimes useless, sometimes useful, but always interesting software I wrote in my free time.">Hacks</a>
+	<ul class="children">
+	<li class="cat-item cat-item-11"><a href="http://keyj.emphy.de/category/computer-fun/hacks/ipod/" title="Anything that has to do with iPod hacking.">iPod</a>
+</li>
+	</ul>
+</li>
+</ul>
+</li>
+	<li class="cat-item cat-item-1"><a href="http://keyj.emphy.de/category/misc/" title="Everything that doesn&#39;t fit into the other categories.">Other</a>
+</li>
+	<li class="cat-item cat-item-8"><a href="http://keyj.emphy.de/category/personal/" title="Stuff that has to do with myself or with friends of mine.">Personal</a>
+</li>
+	<li class="cat-item cat-item-46"><a href="http://keyj.emphy.de/category/reviews/" title="Reviews of (or rants about) new technology (software or hardware), movies, or whatever is worth writing a review for :)">Reviews</a>
+</li>
+		</ul>
+</li>
+<li id="ctc-3" class="widget ctc"><h2 class="widgettitle">Tags</h2>
+<div class="ctc"><a href="http://keyj.emphy.de/tag/4k/" class="ctc-tag tag-link-65" title="5 topics" rel="tag" style="font-size: 9.8181818181818pt; color: #00008d;">4k</a>
+<a href="http://keyj.emphy.de/tag/apple/" class="ctc-tag tag-link-35" title="5 topics" rel="tag" style="font-size: 9.8181818181818pt; color: #00008d;">Apple</a>
+<a href="http://keyj.emphy.de/tag/benchmark/" class="ctc-tag tag-link-18" title="4 topics" rel="tag" style="font-size: 8.9090909090909pt; color: #000096;">benchmark</a>
+<a href="http://keyj.emphy.de/tag/blog/" class="ctc-tag tag-link-77" title="9 topics" rel="tag" style="font-size: 13.454545454545pt; color: #00006b;">blog</a>
+<a href="http://keyj.emphy.de/tag/breakpoint/" class="ctc-tag tag-link-15" title="4 topics" rel="tag" style="font-size: 8.9090909090909pt; color: #000096;">Breakpoint</a>
+<a href="http://keyj.emphy.de/tag/demoscene/" class="ctc-tag tag-link-12" title="14 topics" rel="tag" style="font-size: 18pt; color: #000040;">Demoscene</a>
+<a href="http://keyj.emphy.de/tag/evoke/" class="ctc-tag tag-link-28" title="4 topics" rel="tag" style="font-size: 8.9090909090909pt; color: #000096;">Evoke</a>
+<a href="http://keyj.emphy.de/tag/games/" class="ctc-tag tag-link-30" title="4 topics" rel="tag" style="font-size: 8.9090909090909pt; color: #000096;">games</a>
+<a href="http://keyj.emphy.de/tag/graphics/" class="ctc-tag tag-link-39" title="5 topics" rel="tag" style="font-size: 9.8181818181818pt; color: #00008d;">graphics</a>
+<a href="http://keyj.emphy.de/tag/h264/" class="ctc-tag tag-link-17" title="6 topics" rel="tag" style="font-size: 10.727272727273pt; color: #000085;">H.264</a>
+<a href="http://keyj.emphy.de/tag/impressive/" class="ctc-tag tag-link-26" title="3 topics" rel="tag" style="font-size: 8pt; color: #00009f;">Impressive</a>
+<a href="http://keyj.emphy.de/tag/ipod/" class="ctc-tag tag-link-11" title="8 topics" rel="tag" style="font-size: 12.545454545455pt; color: #000073;">iPod</a>
+<a href="http://keyj.emphy.de/tag/jpeg/" class="ctc-tag tag-link-87" title="4 topics" rel="tag" style="font-size: 8.9090909090909pt; color: #000096;">JPEG</a>
+<a href="http://keyj.emphy.de/tag/linux/" class="ctc-tag tag-link-47" title="7 topics" rel="tag" style="font-size: 11.636363636364pt; color: #00007c;">Linux</a>
+<a href="http://keyj.emphy.de/tag/mpui/" class="ctc-tag tag-link-66" title="4 topics" rel="tag" style="font-size: 8.9090909090909pt; color: #000096;">MPUI</a>
+<a href="http://keyj.emphy.de/tag/opengl/" class="ctc-tag tag-link-43" title="4 topics" rel="tag" style="font-size: 8.9090909090909pt; color: #000096;">OpenGL</a>
+<a href="http://keyj.emphy.de/tag/rant/" class="ctc-tag tag-link-49" title="14 topics" rel="tag" style="font-size: 18pt; color: #000040;">rant</a>
+<a href="http://keyj.emphy.de/tag/repear/" class="ctc-tag tag-link-25" title="3 topics" rel="tag" style="font-size: 8pt; color: #00009f;">rePear</a>
+<a href="http://keyj.emphy.de/tag/video/" class="ctc-tag tag-link-96" title="4 topics" rel="tag" style="font-size: 8.9090909090909pt; color: #000096;">video</a>
+<a href="http://keyj.emphy.de/tag/windows/" class="ctc-tag tag-link-41" title="5 topics" rel="tag" style="font-size: 9.8181818181818pt; color: #00008d;">Windows</a></div></li>
+		<li id="meta" class="widget widget_meta">			<h2 class="widgettitle">Meta</h2>
+			<ul>
+						<li><a href="http://keyj.emphy.de/wp-login.php">Log in</a></li>
+			<li><a href="http://keyj.emphy.de/feed/" title="Syndicate this site using RSS 2.0"><img src="./kjmpeg2_files/rss2.png" width="31" height="12" border="0" alt="RSS"> Entries</a></li>
+			<li><a href="http://keyj.emphy.de/comments/feed/" title="Syndicate this site using RSS 2.0"><img src="./kjmpeg2_files/rss2.png" width="31" height="12" border="0" alt="RSS"> Comments</a></li>
+						</ul>
+		</li>
+	
+
+</ul>
+
+<div id="content">
+
+			
+						
+			<div class="post" id="post-50">
+				<h1><a href="./kjmpeg2_files/kjmpeg2.html" rel="bookmark" title="Permanent Link to A MPEG Audio Layer II decoder in 4k">A MPEG Audio Layer II decoder in 4k</a></h1>
+				<div class="date">(September 19, 2006)</div>
+				
+				<div class="entry">
+					<p>Last week, I read a paper on how to partially encrypt MPEG Audio data. That is, modify an existing audio file that it is still syntactically correct, but sounds more or less broken. For example, imagine an online music shop that offers free, but partially encrypted music downloads: The files are in bad quality, and you have to pay to restore the full fidelity. But I digress.<br>
+The point is: that paper was inspiring. I decided to try the presented method using MPEG-1 Audio Layer II (»MP2«) as a basis. I chose this format because it’s the simplest audio compression scheme that is still in broad use today (for example VCD/SVCD, DAB and most prominently DVB). Layer III (»MP3«), AAC and Vorbis are considerably more complex. And, it just so happened that I got a copy of ISO 11172-3 (MPEG-1 Audio) on my hard disk :)<br>
+While working on the project, I thought that it’d be cooler to write a full decoder instead of this mere proof-of-concept »look what I can do to my MP2 files« hack. So I developed a small MPEG-1 Audio Layer II decoding library called <strong>kjmp2</strong> which eventually evolved into a less-than-4k MP2 player application …<br>
+<span id="more-50"></span></p>
+<h2>How MP2 works</h2>
+<p>Basically, MPEG Audio Layers I and II are built around a polyphase quadrature filter that transforms 32 consecutive time-domain samples into 32 frequency-domain values (»<strong>subband samples</strong>«). This process is performed over a 512-sample window. 36 of these 32-sample runs are packed together in one 1152-sample <strong>frame</strong>, which is the smallest atomic data unit in the stream that can be decoded independently.</p>
+<p>In the encoder, the subband samples are <strong>normalized</strong> and <strong>quantized</strong>. Normalization means that for 18 consecutive samples of each of the 32 subbands a <strong>scalefactor</strong> is stored. The sample values are then transmitted relative to the scalefactor. Quantization then clips these relative sample values to something between 2 and 16 bits. The quantization parameters are stored on a per-frame basis and are also kown as <strong>allocation</strong> information. Using allocation, subbands can also be eliminated completely. In fact, MP2 never transmits all 32 subbands: Even in the best case, the spectrum is cut off at subband 30 (which equals 20.6 kHz at a 44.1 kHz sample rate).</p>
+<p>Stereo data can either be represented as two completely independent channels or using the so-called <strong>joint stereo</strong> encoding. In this mode, all subbands below a certain threshold are encoded like normal independent stereo signals, while the upper subbands may have different scalefactors for the left and right channels, but share the same sample values. This process is called <strong>intensity stereo</strong> coding and basically generates a mono signal with some panning for the affected subbands.</p>
+<h2>Fighting with the standard</h2>
+<p>The ISO 11172-3 standard is quite old and presumably never existed in digital form. However, there are some Word documents flying around in the internet which are supposedly scanned and OCR’ed version of the original documents. This is very good, because the 512 reconstruction window coefficients (specified as decimal fractions, though the values are actually 17-bit integers divided by 65536) would have been a real pain to type in :)</p>
+<p>Other than that, the standard has some other flaws: While it gives a great overview of how the decoder works, it is sparse on details. Some things have to be derived from common sense or experience with other coding schemes (my video coding knowledge helped a lot there). On the other hand, there are also places with lots of redundant information, like long tables that turn out to follow a simple one-line rule. The most conspicuous example are the allocation tables: There are four huge tables, each covering a certain samplerate/bitrate range. The funny thing is that every two of them are completely identical, except for the cutoff subband. I substituted them by a 4-level hierarchical table and voilà, I got it down to 185 sparsely used bytes of table data.</p>
+<p>However, my biggest gripe was the specification of the renormalization process (the inverse of the quantization step). The wording from the standard, »a two’s complement integer with the MSB meaning -1«, wasn’t at all helpful. This was the only point during the whole implementation that I really looked at the ffmpeg source code to figure out what’s going on. The code there wasn’t really understandable either (the whole ffmpeg source is a mess!), but at least it gave me some clue on how to solve the puzzle myself. I ended up with an implementation that is neither the one from the standard, nor the one from ffmpeg – it’s simply what it ought to be: renormalization. Instead of doing some obscure binary fraction math, I just read the number from the bitstream and scale it from (0..2), (0..6), (0..30), (0..16382) or something like that to (-32768..32767). Period. And guess what? It works just as well.</p>
+<h2>The result</h2>
+<p>I got the basic decoder working after about 14 hours of work this weekend (not counting the sleep I had in the middle). To my great surprise, it worked from the start. There were some obvious errors like wrong loop indexes, but only one real logic error, which was easy to fix: The sound was too quiet by a factor of 1024. So the only thing that really went wrong is a miscalculation of the bit precision of my fixed-point integers. I adjusted some shifts here and there and finally I got a correct signal. Yesterday, I fixed two other obvious bugs, and now kjmp2 sounds reasonable on all input files I tested with.</p>
+<p>The final result is a library that consists of less than 400 code lines. To make the decoder usable, I also wrote example player applications for Linux and Windows. The Linux one uses OSS as output and is around 7 KiB (UPX’ed). The Windows version is substantially more interesting, though: Thanks to Crinkler, I got the whole application down to <strong>3.63 KiB</strong>! (And this is despite the fact that things like command line parsing and audio output are much harder to do in Win32 :)</p>
+<h2>2013 Update</h2>
+<p>Seven years after the initial version of kjmp2, I went back to the code and improved it a little bit. The scaling algorithm is now more standards compliant, there is support for MPEG-2 low sample rate streams and some data structures have been re-engineered to take even less space. As a result, the current Win32/Crinkler build is down to 3520 bytes.</p>
+<h2>Download</h2>
+<ul>
+<li><a href="http://keyj.emphy.de/files/projects/kjmp2.zip">kjmp2.zip</a> (19k) — the source code and compiled example applications</li>
+</ul>
+				</div>
+		
+				<p class="postmetadata">Posted in <a href="http://keyj.emphy.de/category/computer-fun/" rel="category tag">Computer Fun</a>, <a href="http://keyj.emphy.de/category/computer-fun/hacks/" rel="category tag">Hacks</a> |   <a href="http://keyj.emphy.de/kjmp2/#comments">38 Comments ...</a></p>
+			</div>
+	
+		
+		<div class="navigation">
+			<div></div>
+			<div></div>
+		</div>
+		
+	
+
+<!-- You can start editing here. -->
+
+	<h1 id="comments">38 Responses to »A MPEG Audio Layer II decoder in 4k«</h1>
+
+	<ul class="commentlist">
+
+	
+		<li class="alt" id="comment-2773">
+			<div class="cmthead">
+				<span class="author">Phil</span>
+				<span class="date">(2006-10-14 09:46)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>This is a great help!  I’m doing a pure hardware implementation of MPEG Layer II, and I’ve been using the ISO decoder code to check my output.  As a software guy (CS and math in college), that code is brutal to read, but even after paring it down and putting prints to check outputs of the stages, I prefer your code.  Truth is even though I’ve only got a little of the synth module left to write, your code is very valuable.  The fixed point alone is really helpful, since I only have fixed point multipliers on the FPGA I’m using.  And you had a nice insight about the 4 quantizer tables being treated as 2 with different subband cutoffs.  I’m trying to minimize resource utilization on the board, so every little bit helps.</p>
+<p>If you want to make your code a little tighter, I have a couple suggestions from my own hardware code.  First, the N window coefficients.  Since it’s a cosine wave with only 128 discrete points – cos(x*pi/64) – and the second half is the same as the first, you can get away with 64 values (32 if you use a quarter wave).  It works great in hardware, and if you’re not doing realtime decoding in software, the extra couple of instructions you incur from computing the right index for access isn’t going to hurt.</p>
+<p>On that note, the scalefactors are also just 3 values repeated over, multiplied by successively smaller powers of 2.  The first 3 are the 2nd, 3rd and 6th roots of 4.  Since you’re using fixed point, the right shifting is basically free.  As a software guy though, I’m sure you don’t like division and mod by 3.  Just an idea.</p>
+<p>Thanks again!</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3352">
+			<div class="cmthead">
+				<span class="author">Dennis</span>
+				<span class="date">(2007-05-15 16:05)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>I am attempting to use your mp2 player code to do error detection on MP2 files with limited results.  Most of them time, it works fine, but I have one  mp2 file that has a loud chirp in it that I am unable to detect with software.  All mp2 players will happily play this chirp so its not just your player.</p>
+<p>The mp2 file does not have CRC so I cannot use that.  I have added code to detect if frame_pos exceeds frame_size, code to detect unauthorized bitrate/mode combinations and code to detect if the current header is different from the previous.  Yet this chirp persists.</p>
+<p>Do you know of any way to detect this chirp?  I checked the mpeg specs and all it says to do is check the CRC which is not an option with this file.  If you can point me in the right direction, I would appreciate it.</p>
+<p>TIA</p>
+<p>Dennis.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3353">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2007-05-15 17:18)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>If the frame is syntactically correct (CRC OK, no overflows or underruns, no invalid VLC codes), I’m afraid you have no reliable way of checking for errors. You could do a sanity check on the scalefactors (most chirp-like distortions originate from broken scalefactors), but then again this would be just some kind of an educated guess on the correctness of the frame.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3354">
+			<div class="cmthead">
+				<span class="author">Dennis</span>
+				<span class="date">(2007-05-15 18:55)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Thanks for the tip. I have examined the scalefactors as you recommended.  There does seem to be a radical variation between the three groups and also radical variation from the previous scalefactor in the same group.  Other legitimate frames that I have examined do not show this wild variation. I’ll modify the code to look for that and post the results here.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3355">
+			<div class="cmthead">
+				<span class="author">Dennis</span>
+				<span class="date">(2007-05-17 13:14)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>I wrote a little routine to scan the scalefactors and flag any variation greater than 16 from the average.  This seems to work just fine and the chirps have been caught – the really bad ones anyway.  </p>
+<p>However, it does seem that using frame_pos to detect a buffer overflow is invalid.  Because of the way that get_bits() works, frame buf cannot be trusted to give an accurate size of the bits used.  To make this work, I just added a global counter to the get_bits() function and then divide by 8 just before I check for the error.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3357">
+			<div class="cmthead">
+				<span class="author">vik</span>
+				<span class="date">(2007-05-24 00:37)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Hey,<br>
+      I am trying to write a MP2 encoder and I am following the standard. The part where I am confused is normalization and need some help to understand how the decoder goes to renormalize it.<br>
+    ‘Instead of doing some obscure binary fraction math, I just read the number from the bitstream and scale it from (0..2), (0..6), (0..30), (0..16382) or something like that to (-32768..32767). Period. And guess what? It works just as well.’<br>
+       My question is how do I go from -32768 to 32767 to represent it in bits from 0..2, 0..6 etc. If it a floating point number say -12.345 then how do I represent it in binary. Should I ignore the fractional part??? Convert it into -12 and then change it to binary or use the floating number ??? Also, should I just be converting -12.34 to just 12( not even negative).<br>
+       The standard just says use the n most significant bits….But that changes drastically whether the no is decimal, positive or a floating negative number</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3358">
+			<div class="cmthead">
+				<span class="author"><a href="http://www.mikrocontroller.net/" rel="external nofollow" class="url">Andreas</a></span>
+				<span class="date">(2007-05-25 17:27)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Hi,</p>
+<p>the decoder doesn’t accept MP2 streams without CRC. Here’s the fix:<br>
+<code><br>
+-    ||  (frame[1] != 0xFD)  // no MPEG-1 Audio Layer II w/o redundancy?<br>
++    ||  ((frame[1] | 0x01) != 0xFD)  // no MPEG-1 Audio Layer II w/o redundancy?<br>
+</code></p>
+<p>Andreas</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3539">
+			<div class="cmthead">
+				<span class="author">Steve</span>
+				<span class="date">(2009-02-12 09:23)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Hi!</p>
+<p>Very nice work!!!</p>
+<p>Thx!</p>
+<p>G00đ ŁucK</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3561">
+			<div class="cmthead">
+				<span class="author">Sachin</span>
+				<span class="date">(2009-08-05 05:21)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Hi Martin,<br>
+I’m currently working on MPEG1 and require the ISO standards. I’ll be very greatful if you could send me the data which you have.</p>
+<p>Thanks and regards<br>
+Sachin</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3562">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2009-08-10 14:59)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Sachin: Unfortunately, I can’t send you the standards because it’s copyrighted material and I’m not legally allowed to give them away. However, sometimes they can be found flying around somewhere in the internet … ;)</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3566">
+			<div class="cmthead">
+				<span class="author">Yogesh</span>
+				<span class="date">(2009-09-15 22:05)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Hi!!<br>
+   Wonderful job done by you. I’m trying to develop an MPEG 1 Layer-II decoder in “Haskell”. Could you give me the code of your .exe file. It’ll make my work much easier. I’ll be very greatful…..<br>
+Thanks!</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3567">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2009-09-16 08:23)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Yogesh: The download link for the executable and the source is right on this page … :)</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3570">
+			<div class="cmthead">
+				<span class="author">Sachin</span>
+				<span class="date">(2009-09-17 19:53)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Hey Martin, Sachin here again.<br>
+How do i get the pulse code modulation (pcm) values from your code?</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3571">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2009-09-17 20:09)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Sachin: That’s explained in the header file (<code>kjmp2.h</code>). You just pass a pointer to some memory block you allocated for the output data to the <code>kjmp2_decode_frame()</code> function, and when this function returns, the decoded samples will be written there.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3582">
+			<div class="cmthead">
+				<span class="author">Musicontor</span>
+				<span class="date">(2009-10-24 11:15)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Hi Martin,</p>
+<p>It is a wonderful job that you have done here which revives the classical MPEG Audio Layer II (“MUSICAM”) spirit from the 90’s which I used to know, and still know very well. Lightweight software and hardware is the DNA of MPEG Audio Layer II and leads you to MP3 (although the latter is slightly more complex).</p>
+<p>I have to check your code when I have time because, although you have captured most of the “MUSICAM” ideas and technical tricks there may still be some possible fine improvements with great quality benefits. (did you implement correctly the 24 bit PCM samples and coefficients ?). Give me some time I have’nt read code since a long time.</p>
+<p>Do not hesitate to contact me if I can help to explain to you the fine mathematical  and hardware tricks of this decoder.</p>
+<p>Regards</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3585">
+			<div class="cmthead">
+				<span class="author"><a href="http://www.innescorp.com.au/" rel="external nofollow" class="url">Jeff Pages</a></span>
+				<span class="date">(2009-12-01 23:01)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>I’m wondering if the last entry in the fifth row of quant_lut_step4 should be 16 rather than 17, as Table 15 of the DAB standard (ETSI EN 300 401 V1.3.3 p.64) shows 32767 levels as the maximum, not 65535.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3586">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2009-12-02 11:22)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Jeff: You’re right, the table is wrong. Seems I’ve never tested the decoder with low-rate streams (48 kbps or less per channel).<br>
+Thank you for finding the bug!</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3588">
+			<div class="cmthead">
+				<span class="author">ext8086</span>
+				<span class="date">(2009-12-30 07:58)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Hello!<br>
+  I have been want to write a MP2 decoder two year, but I fail. Because I don’t understand the MP2 decode arithmetic(I have a 11172-3 pdf document).<br>
+  I very glad to see a passage called “A MPEG Audio Layer II decoder in 4k”, Although it has small code line, but I however don’t understand MP2 decode function carry out after see that passage.<br>
+  This problem are:<br>
+(1) In ISO11172-3, What meaning of the section “The first bit of each of the three codes has to be inverted, and the resulting numbers should be regarded as two’ss<br>
+complement fractional numbers, where the MSB represents the value -1″ ?<br>
+Can you explain detail for me? for example, I decode a 16-bits unsigned integer sample,  how to convert to float fractional number according to the ISO11172-3?</p>
+<p>(2) In Synthesis subband filter flow chart , the “shifing” step :<br>
+      for i=1023 downto 64 do<br>
+            V[i]=V[i-64]<br>
+     what are doing in this step? I think every element in the array V is 0,but it’s must be incorrect.</p>
+<p>(3) In Synthesis subband filter flow chart last step , Calculate 32 Samples are float number, how to convert to 16-bits PCM integer sample?</p>
+<p>Can you help me to understand the MP2 decode arithmetic? I thank you very much!</p>
+<p>Thanks!</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3589">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2009-12-30 14:11)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>It’s been a while since I read the standard in this detail, but here’s what I gather from the descriptions:</p>
+<p>(1) I remember that I didn’t fully understand this part of the spec, too. From the spec, I’d say it means “read a code, invert the first bit and then read it as a negative binary fraction”, i.e. the leftmost bit has a value of -1, the next is -1/2, the next one is -1/4 and so on. But if I remember correctly, what they actually mean is “interpret the code as a signed integer and scale it such that the smallest possible value is -1 and the largest possible value is +1″.</p>
+<p>(2) You’re right, initially all the values in <code>V[]</code> are zero and the shifting step does nothing. But the matrixing step that follows initializes <code>V[0..63]</code>, so the next time you come across the shifting step, it <em>will</em> do something useful :)</p>
+<p>(3) Typically, the resulting floating point numbers are scaled to be in the range -1…+1, so you need to multiply them by 32767 and apply some kind of rounding or dithering. Also be aware that some of the resulting samples might be out of range, so don’t forget to clip them, too.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3591">
+			<div class="cmthead">
+				<span class="author">ext8086</span>
+				<span class="date">(2010-01-06 15:35)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>“interpret the code as a signed integer and scale it such that the smallest possible value is -1 and the largest possible value is +1”</p>
+<p>how to scale it? Can you give a example?</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3592">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2010-01-06 16:40)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Well, it should be obvious – but I wasn’t quite right. I looked into the source code again and it seems that it’s not two’s complement arithmetic, but simply biased arithmetic, so the correct code should be something like:</p>
+<blockquote><p><code>int16_t adjust = (nlevels + 1) &gt;&gt; 1;<br>
+float scaled_value = (adjust - 1 - get_value_from_stream()) * (1.0f / adjust);</code></p></blockquote>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3595">
+			<div class="cmthead">
+				<span class="author">rossi</span>
+				<span class="date">(2010-02-18 13:30)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Thanks for your great job.<br>
+By the way, I’d like to use your decoder in my work but I found that your decoder does not support sampling freq of 24KHz.<br>
+Because I am not a expert in codec, I am not sure if I can fix that to support that sampling rate. If it’s not that difficult, could you give me a hint or a guide to make it possible?<br>
+Thanks in advance</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3596">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2010-02-18 13:45)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>rossi: That’s right, the decoder only supports MPEG-<strong>1</strong> Layer II, that is, sample rates of 48, 44.1 and 32 kHz. 24, 22.05 and 16 kHz would be MPEG-<strong>2</strong>, which is a different standard. I didn’t read it fully so I can’t say much about it, but ostensibly it’s just a few minor changes – MPEG-2 part 3 is actually more of a diff against MPEG-1 part 3 than a standard in its own right.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3644">
+			<div class="cmthead">
+				<span class="author">ext8086</span>
+				<span class="date">(2010-03-29 05:50)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Hello, I want to know the audio sample value is sign or unsign? I think the audio sample  is the source from audio voltage value(0-255 or 0-65535), so it’s unsign. But in audio decode program, it’s treat as sign. why?</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3645">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2010-03-29 11:01)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>ext8086: 16-bit audio samples are generally considered as signed values in the range of -32768..+32767. kjmp2 just follows this convention.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3689">
+			<div class="cmthead">
+				<span class="author">flying</span>
+				<span class="date">(2010-12-24 19:03)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Hello，I have a question, in matrixing,calculate V[0] to V[63, But in process of construction of U, use V[0] to V[31], V[32] to V[63] not to used,V[64] to V[1023] equal 0, why we still calculate :<br>
+U[(i &lt;V[ch][(table_idx + (i &lt;&lt; 7) + j + 96) &amp; 1023];</p>
+<p>why not U[(i &lt;&lt; 6) + j + 32] =0 ?</p>
+<p>even :<br>
+for(i=0;i&lt;32;i++)U[i]=V[i];</p>
+<p>Is This OK?  What it is wrong?</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3693">
+			<div class="cmthead">
+				<span class="author"><a href="http://www.danielcassidy.me.uk/" rel="external nofollow" class="url">Daniel Cassidy</a></span>
+				<span class="date">(2011-01-15 06:21)</span>
+											</div>
+
+			<div class="cmtbody">
+				<blockquote><p>
+I remember that I didn’t fully understand this part of the spec, too. From the spec, I’d say it means “read a code, invert the first bit and then read it as a negative binary fraction”, i.e. the leftmost bit has a value of -1, the next is -1/2, the next one is -1/4 and so on. But if I remember correctly, what they actually mean is “interpret the code as a signed integer and scale it such that the smallest possible value is -1 and the largest possible value is +1″.
+</p></blockquote>
+<p>It means that you flip the leftmost bit, and then the leftmost bit has a value of -1, the next 1/2, the next 1/4, and so on. Note that only the leftmost bit has a negative value. That’s how negative numbers work in two’s complement – the sign bit has a large negative value and every other bit has a positive value.</p>
+<p>In practice that is nearly the same as saying ‘treat the number as an unsigned integer and then scale it to the range (-1, 1)’. But actually, if you follow the spec exactly the range would be (-1, 1 – 2^(1-n)), where n is the number of bits. For example, for four bits the range is (-1, 0.875).</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3775">
+			<div class="cmthead">
+				<span class="author">GaryG</span>
+				<span class="date">(2011-06-09 00:34)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Hi, I tried to download the zip file and it was not there. I wonder if you could update the link. I assume the file did not get re-loaded after your server move. Have you though about using your insights to create an encoder? Thanks, Gary</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3776">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2011-06-09 07:52)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>GaryG:</strong> Thanks for the hint. A broken link was the culprit (in fact, the link was always wrong, it only worked by accident on the old installation). It’s fixed now.</p>
+<p>Creating an encoder is currently out of the question. Decoding is already non-trivial and, as it turns out, kjmp2 is <strong>not</strong> a correct, standard-compliant decoder (see Daniel Cassidy’s comment above). Encoding is a totally different thing altogether. While it’s relatively easy to write code that generates a <em>syntactically</em> correct MP2 stream, it’s extremely hard to make it sound good. And it requires a lot of theoretical background in signal processing – which I don’t have. I’m perfectly fine with image and video encoding, but audio is still (partly) magic to me :)</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3777">
+			<div class="cmthead">
+				<span class="author">GaryG</span>
+				<span class="date">(2011-06-10 19:00)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Hey, Thanks for fixing the link so quickly. I wanted to look at the code to help my understanding for an encoder-decoder that I want to put on an embedded system (ARM7 or ARM9) for higher quality voice. I may make it work only at 32Kbits mono. If I get anything to work I will share it with you, but don’t expect anything soon. The embedded system will act as a server and be available over TCP/IP and the code on the user end will run under windows (I have the TwoLame distribution for that end). The goal is to connect to a remote radio so I can play ham radio while away from home. I’m OK with the limitation for your code, and the tweeking needed to make it sound good. Thanks again, Gary</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3810">
+			<div class="cmthead">
+				<span class="author"><a href="http://www.reyware.us/" rel="external nofollow" class="url">dave allen</a></span>
+				<span class="date">(2012-03-14 19:10)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>would it be possible to normalize (adjust the levels of) an mp2 file by just tweaking the scalefactors?</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3811">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2012-03-14 20:11)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>Dave:</strong> Definitely. That’s what tools like <a href="http://mp3gain.sourceforge.net/" rel="nofollow">MP3Gain</a> do for Layer III, and it’s possible with Layer II as well.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3822">
+			<div class="cmthead">
+				<span class="author">thesame</span>
+				<span class="date">(2012-06-22 15:13)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Have you tried this on big-endian powerpc?</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3823">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2012-06-22 15:33)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>thesame:</strong> I didn’t try it on big-endian systems (because I don’t have one), but in theory, kjmp2 should be endianness-neutral.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3915">
+			<div class="cmthead">
+				<span class="author">Toni Helenius</span>
+				<span class="date">(2014-11-27 18:51)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Hi,</p>
+<p>just wanted to say thanks for this. I could not find anything that could decode low sample rate MP2 in the JAVA world. Yours was working and simple enough to convert to JAVA. Thank you!</p>
+<p>Only down-side is that all my samples are in MONO and I apparently get everything in stereo, thus increasing the overhead. But a minor inconvenience. Here, if anyone should need it:</p>
+<p><a href="https://github.com/tonihele/OpenDungeonKeeper/blob/master/src/toniarts/opendungeonkeeper/audio/plugins/decoder/Kjmp2.java" rel="nofollow">Java conversion</a></p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3917">
+			<div class="cmthead">
+				<span class="author">Toni Helenius</span>
+				<span class="date">(2014-11-30 12:18)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>And the MONO -&gt; STEREO issue was an ridiculously easy fix. Simple library!</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3923">
+			<div class="cmthead">
+				<span class="author">Coder</span>
+				<span class="date">(2015-01-31 08:19)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Hi KeyJ, I tried using your library and it’s really simple to use and integrate.</p>
+<p>But I’ve run into an issue regarding playback quality. On a sample sound I use, the decoder produces audible artifacts. This is visible both with the mp2play.exe and when decoding internally within my program.</p>
+<p>When playing the same file with another player (e.g. Media Player Classic) the playback is artifact free.</p>
+<p>I encoded the mp2 using ffmpeg. I tried the following sampling rates: 48000, 44100, 32000 and bitrates of 128k-384k with the same results. I also tried using different ffmpeg mp2 encoders: mp2, mp2fixed and libtwolame – same results.</p>
+<p>I’ve uploaded the original wav:<br>
+<a href="http://www.filedropper.com/bounce_1" rel="nofollow"> </a><a href="http://www.filedropper.com/bounce_1" rel="nofollow">http://www.filedropper.com/bounce_1</a></p>
+<p>The mp2:<br>
+<a href="http://www.filedropper.com/bounce" rel="nofollow"> </a><a href="http://www.filedropper.com/bounce" rel="nofollow">http://www.filedropper.com/bounce</a> </p>
+<p>And it’s encoded-decoded version with the artifacts ( 44100 pcm -&gt; 384k mp2(ffmpeg) -&gt; 44100 pcm(kjmp2) )<br>
+<a href="http://www.filedropper.com/bounce-dec" rel="nofollow"> </a><a href="http://www.filedropper.com/bounce-dec" rel="nofollow">http://www.filedropper.com/bounce-dec</a> </p>
+<p>Could you please give me a hint if this is fixable via ‘proper’ encoding? Or the artifacts are the tradeoff of the kjmp2 simplicity?</p>
+<p>Thanks!</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3925">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2015-02-02 21:36)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>Coder:</strong> Yes, kjmp2 is very noisy – the SNR may be as low as 20 dB. I’m not sure whether this is strictly a result of its simplicity – it might just be that I have a bug somewhere or my fixed-point computations are sub-optimal. Also, there’s no noise shaping of any kind.</p>
+			</div>
+
+		</li>
+
+	
+	
+	</ul>
+
+ 
+
+
+<h1 id="respond">Post a Reply</h1>
+
+
+<form action="http://keyj.emphy.de/wp-comments-post.php" method="post" id="commentform">
+
+
+<p class="field"><input type="text" name="author" id="author" value="" size="22" tabindex="1">
+<label for="author">Name <em>(required)</em></label></p>
+
+<p class="field"><input type="text" name="email" id="email" value="" size="22" tabindex="2">
+<label for="email">Mail (will not be published) <em>(required)</em></label></p>
+
+<p class="field"><input type="text" name="url" id="url" value="" size="22" tabindex="3">
+<label for="url">Website</label></p>
+
+
+<p class="l"><small><strong>XHTML:</strong> You can use these tags: &lt;a href="" title=""&gt; &lt;abbr title=""&gt; &lt;acronym title=""&gt; &lt;b&gt; &lt;blockquote cite=""&gt; &lt;cite&gt; &lt;code&gt; &lt;del datetime=""&gt; &lt;em&gt; &lt;i&gt; &lt;q cite=""&gt; &lt;s&gt; &lt;strike&gt; &lt;strong&gt; </small></p>
+
+<p><textarea name="comment" id="comment" cols="100%" rows="10" tabindex="4" wrap="virtual"></textarea></p>
+
+<p class="field" id="captcha"><strong>Captcha:</strong><br>
+<label for="answer">Which letter comes <span>later</span> in the alphabet: <span>C</span> or <span>T</span>?<input type="hidden" name="seed" value="1433261423"><input type="hidden" name="captcha" value=""></label> &nbsp;
+<input type="text" name="answer" id="answer" value="" size="10" tabindex="5"></p>
+
+<p><input name="submit" type="submit" id="submit" tabindex="6" value="Submit Comment">
+<input type="hidden" name="comment_post_ID" value="50">
+</p>
+
+</form>
+
+
+
+</div>
+
+</div>
+
+<!-- 17 queries. 0.554 seconds. -->
+
+</body></html>
