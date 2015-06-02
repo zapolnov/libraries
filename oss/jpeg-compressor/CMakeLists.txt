@@ -21,33 +21,22 @@
 #
 
 cmake_minimum_required(VERSION 3.2)
+project(jpeg-compressor C)
 
-add_subdirectory(libyaml)
-add_subdirectory(re2c)
-add_subdirectory(ucpp)
-add_subdirectory(zlib)
-add_subdirectory(libpng)
-add_subdirectory(glm)
-add_subdirectory(liquidfun)
-add_subdirectory(utf8_dfa)
-add_subdirectory(sqlite3)
-add_subdirectory(jpeg)
-add_subdirectory(bzip2)
-add_subdirectory(tinyxml)
-add_subdirectory(byacc)
-add_subdirectory(python)
-add_subdirectory(glew)
-add_subdirectory(minizip)
-add_subdirectory(assimp)
-add_subdirectory(ode)
-add_subdirectory(tiff)
-add_subdirectory(jasper)
-add_subdirectory(lcms2)
-add_subdirectory(libmng)
-add_subdirectory(ilmbase)
-add_subdirectory(openexr)
-add_subdirectory(LGPL/ResIL)
-add_subdirectory(LGPL/minimp3)
-add_subdirectory(kjmp2)
-add_subdirectory(nanojpeg)
-add_subdirectory(jpeg-compressor)
+# jpgd
+
+set(jpgd_source_files jpgd.cpp jpgd.h)
+source_group("Source Files" FILES ${jpgd_source_files})
+add_library(libjpgd STATIC ${EXCLUDE_FROM_ALL} ${jpgd_source_files})
+
+set_target_properties(libjpgd PROPERTIES OUTPUT_NAME "jpgd")
+target_include_directories(libjpgd BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
+
+# jpge
+
+set(jpge_source_files jpge.cpp jpge.h)
+source_group("Source Files" FILES ${jpge_source_files})
+add_library(libjpge STATIC ${EXCLUDE_FROM_ALL} ${jpge_source_files})
+
+set_target_properties(libjpge PROPERTIES OUTPUT_NAME "jpge")
+target_include_directories(libjpge BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
