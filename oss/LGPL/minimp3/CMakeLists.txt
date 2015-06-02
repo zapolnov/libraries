@@ -21,31 +21,12 @@
 #
 
 cmake_minimum_required(VERSION 3.2)
+project(minimp3 C)
 
-add_subdirectory(libyaml)
-add_subdirectory(re2c)
-add_subdirectory(ucpp)
-add_subdirectory(zlib)
-add_subdirectory(libpng)
-add_subdirectory(glm)
-add_subdirectory(liquidfun)
-add_subdirectory(utf8_dfa)
-add_subdirectory(sqlite3)
-add_subdirectory(jpeg)
-add_subdirectory(bzip2)
-add_subdirectory(tinyxml)
-add_subdirectory(byacc)
-add_subdirectory(python)
-add_subdirectory(glew)
-add_subdirectory(minizip)
-add_subdirectory(assimp)
-add_subdirectory(ode)
-add_subdirectory(tiff)
-add_subdirectory(jasper)
-add_subdirectory(lcms2)
-add_subdirectory(libmng)
-add_subdirectory(ilmbase)
-add_subdirectory(openexr)
-add_subdirectory(LGPL/ResIL)
-add_subdirectory(LGPL/minimp3)
-add_subdirectory(kjmp2)
+add_library(libminimp3 STATIC ${EXCLUDE_FROM_ALL}
+    minimp3.c
+    minimp3.h
+)
+
+set_target_properties(libminimp3 PROPERTIES OUTPUT_NAME "minimp3")
+target_include_directories(libminimp3 BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
