@@ -23,10 +23,9 @@
 cmake_minimum_required(VERSION 3.2)
 project(kjmp2 C)
 
-add_library(libkjmp2 STATIC ${EXCLUDE_FROM_ALL}
-    kjmp2.c
-    kjmp2.h
-)
+set(source_files kjmp2.c kjmp2.h)
+source_group("Source Files" FILES ${source_files})
+add_library(libkjmp2 STATIC ${EXCLUDE_FROM_ALL} ${source_files})
 
 set_target_properties(libkjmp2 PROPERTIES OUTPUT_NAME "kjmp2")
 target_include_directories(libkjmp2 BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")

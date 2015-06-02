@@ -69,7 +69,7 @@
 
 #ifdef LIBZIP
 
-uLong filetime(const char *filename, tm_zip *tmzip, uLong *dostime)
+uLong zipFileTime(const char *filename, tm_zip *tmzip, uLong *dostime)
 {
     int ret = 0;
 #ifdef _WIN32
@@ -348,7 +348,7 @@ int main(int argc, char *argv[])
             continue;
 
         /* Get information about the file on disk so we can store it in zip */
-        filetime(filenameinzip, &zi.tmz_date, &zi.dosDate);
+        zipFileTime(filenameinzip, &zi.tmz_date, &zi.dosDate);
 
         if ((password != NULL) && (err == ZIP_OK))
             err = get_file_crc(filenameinzip, buf, size_buf, &crcFile);

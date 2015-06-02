@@ -193,6 +193,8 @@ extern int ZEXPORT zipClose OF((zipFile file, const char* global_comment));
 
 /***************************************************************************/
 
+uLong zipFileTime(const char *filename, tm_zip *tmzip, uLong *dostime);
+
 #ifdef __cplusplus
 }
 #endif

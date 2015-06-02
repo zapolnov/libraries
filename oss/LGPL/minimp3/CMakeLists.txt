@@ -23,10 +23,9 @@
 cmake_minimum_required(VERSION 3.2)
 project(minimp3 C)
 
-add_library(libminimp3 STATIC ${EXCLUDE_FROM_ALL}
-    minimp3.c
-    minimp3.h
-)
+set(source_files minimp3.c minimp3.h)
+source_group("Source Files" FILES ${source_files})
+add_library(libminimp3 STATIC ${EXCLUDE_FROM_ALL} ${source_files})
 
 set_target_properties(libminimp3 PROPERTIES OUTPUT_NAME "minimp3")
 target_include_directories(libminimp3 BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
