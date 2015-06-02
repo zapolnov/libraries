@@ -1,0 +1,2113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0030)http://keyj.emphy.de/nanojpeg/ -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>KeyJ's Blog  : Blog Archive   » NanoJPEG: a compact JPEG decoder</title>
+<meta name="generator" content="WordPress 4.2.2">
+
+<link href="./nanojpeg_files/css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="./nanojpeg_files/style.css" type="text/css">
+<link rel="alternate" type="application/rss+xml" title="KeyJ&#39;s Blog RSS Feed" href="http://keyj.emphy.de/feed/">
+<link rel="pingback" href="http://keyj.emphy.de/xmlrpc.php">
+
+<style type="text/css">
+	body { background:#d8d0b8 url("http://keyj.emphy.de/wp-content/themes/keyj2/sidebar.png") repeat-y; }
+	@media print {
+		body { background:white; margin:0; }
+	}
+</style>
+
+<link rel="alternate" type="application/rss+xml" title="KeyJ&#39;s Blog » NanoJPEG: a compact JPEG decoder Comments Feed" href="http://keyj.emphy.de/nanojpeg/feed/">
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"http:\/\/s.w.org\/images\/core\/emoji\/72x72\/","ext":".png","source":{"wpemoji":"http:\/\/keyj.emphy.de\/wp-includes\/js\/wp-emoji.js?ver=4.2.2","twemoji":"http:\/\/keyj.emphy.de\/wp-includes\/js\/twemoji.js?ver=4.2.2"}};
+			( function( window, document, settings ) {
+	var src, ready;
+
+	/**
+	 * Detect if the browser supports rendering emoji or flag emoji. Flag emoji are a single glyph
+	 * made of two characters, so some browsers (notably, Firefox OS X) don't support them.
+	 *
+	 * @since 4.2.0
+	 *
+	 * @param type {String} Whether to test for support of "simple" or "flag" emoji.
+	 * @return {Boolean} True if the browser can render emoji, false if it cannot.
+	 */
+	function browserSupportsEmoji( type ) {
+		var canvas = document.createElement( 'canvas' ),
+			context = canvas.getContext && canvas.getContext( '2d' );
+
+		if ( ! context || ! context.fillText ) {
+			return false;
+		}
+
+		/*
+		 * Chrome on OS X added native emoji rendering in M41. Unfortunately,
+		 * it doesn't work when the font is bolder than 500 weight. So, we
+		 * check for bold rendering support to avoid invisible emoji in Chrome.
+		 */
+		context.textBaseline = 'top';
+		context.font = '600 32px Arial';
+
+		if ( type === 'flag' ) {
+			/*
+			 * This works because the image will be one of three things:
+			 * - Two empty squares, if the browser doesn't render emoji
+			 * - Two squares with 'G' and 'B' in them, if the browser doesn't render flag emoji
+			 * - The British flag
+			 *
+			 * The first two will encode to small images (1-2KB data URLs), the third will encode
+			 * to a larger image (4-5KB data URL).
+			 */
+			context.fillText( String.fromCharCode( 55356, 56812, 55356, 56807 ), 0, 0 );
+			return canvas.toDataURL().length > 3000;
+		} else {
+			/*
+			 * This creates a smiling emoji, and checks to see if there is any image data in the
+			 * center pixel. In browsers that don't support emoji, the character will be rendered
+			 * as an empty square, so the center pixel will be blank.
+			 */
+			context.fillText( String.fromCharCode( 55357, 56835 ), 0, 0 );
+			return context.getImageData( 16, 16, 1, 1 ).data[0] !== 0;
+		}
+	}
+
+	function addScript( src ) {
+		var script = document.createElement( 'script' );
+
+		script.src = src;
+		script.type = 'text/javascript';
+		document.getElementsByTagName( 'head' )[0].appendChild( script );
+	}
+
+	settings.supports = {
+		simple: browserSupportsEmoji( 'simple' ),
+		flag:   browserSupportsEmoji( 'flag' )
+	};
+
+	settings.DOMReady = false;
+	settings.readyCallback = function() {
+		settings.DOMReady = true;
+	};
+
+	if ( ! settings.supports.simple || ! settings.supports.flag ) {
+		ready = function() {
+			settings.readyCallback();
+		};
+
+		if ( document.addEventListener ) {
+			document.addEventListener( 'DOMContentLoaded', ready, false );
+			window.addEventListener( 'load', ready, false );
+		} else {
+			window.attachEvent( 'onload', ready );
+			document.attachEvent( 'onreadystatechange', function() {
+				if ( 'complete' === document.readyState ) {
+					settings.readyCallback();
+				}
+			} );
+		}
+
+		src = settings.source || {};
+
+		if ( src.concatemoji ) {
+			addScript( src.concatemoji );
+		} else if ( src.wpemoji && src.twemoji ) {
+			addScript( src.twemoji );
+			addScript( src.wpemoji );
+		}
+	}
+
+} )( window, document, window._wpemojiSettings );
+		</script><script src="./nanojpeg_files/twemoji.js" type="text/javascript"></script><script src="./nanojpeg_files/wp-emoji.js" type="text/javascript"></script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://keyj.emphy.de/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://keyj.emphy.de/wp-includes/wlwmanifest.xml"> 
+<link rel="prev" title="Breakpoint 2009 Party Report" href="http://keyj.emphy.de/bp09/">
+<link rel="next" title="I’m back" href="http://keyj.emphy.de/im-back/">
+<meta name="generator" content="WordPress 4.2.2">
+<link rel="canonical" href="./nanojpeg_files/nanojpeg.html">
+<link rel="shortlink" href="http://keyj.emphy.de/?p=137">
+</head>
+<body>
+<div id="page">
+
+<div id="logo">
+	<div>Welcome to the website of</div>
+	<a href="http://keyj.emphy.de/"><img src="./nanojpeg_files/logo.png" width="156" height="80" alt="KeyJ"></a>
+</div>
+
+<ul id="sidebar">
+
+<li id="search-3" class="widget widget_search"><form method="get" id="searchform" action="http://keyj.emphy.de/">
+<div><input type="text" value="" name="s" id="s">
+<input type="submit" id="searchsubmit" value="Search">
+</div>
+</form>
+</li>
+<li id="pages-3" class="widget widget_pages"><h2 class="widgettitle">Pages</h2>
+		<ul>
+			<li class="page_item page-item-2"><a href="http://keyj.emphy.de/about/">About me</a></li>
+<li class="page_item page-item-35 page_item_has_children"><a href="http://keyj.emphy.de/projects/">Projects</a>
+<ul class="children">
+	<li class="page_item page-item-37"><a href="http://keyj.emphy.de/projects/demoscene/">Demoscene</a></li>
+	<li class="page_item page-item-612"><a href="http://keyj.emphy.de/projects/tools-scripts/">Tools &amp; Scripts</a></li>
+	<li class="page_item page-item-36"><a href="http://keyj.emphy.de/projects/old-stuff/">Old Stuff</a></li>
+	<li class="page_item page-item-41"><a href="http://keyj.emphy.de/projects/studies/">Studies</a></li>
+</ul>
+</li>
+		</ul>
+		</li>
+<li id="archives-3" class="widget widget_archive"><h2 class="widgettitle">Archives</h2>
+		<label class="screen-reader-text" for="archives-dropdown-3">Archives</label>
+		<select id="archives-dropdown-3" name="archive-dropdown" onchange="document.location.href=this.options[this.selectedIndex].value;">
+			
+			<option value="">Select Month</option>
+				<option value="http://keyj.emphy.de/2014/05/"> May 2014 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2012/11/"> November 2012 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2012/05/"> May 2012 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2012/02/"> February 2012 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2011/09/"> September 2011 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2011/06/"> June 2011 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2011/02/"> February 2011 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2011/01/"> January 2011 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2010/06/"> June 2010 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2010/04/"> April 2010 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2010/02/"> February 2010 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2010/01/"> January 2010 &nbsp;(2)</option>
+	<option value="http://keyj.emphy.de/2009/12/"> December 2009 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2009/09/"> September 2009 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2009/08/"> August 2009 &nbsp;(2)</option>
+	<option value="http://keyj.emphy.de/2009/04/"> April 2009 &nbsp;(3)</option>
+	<option value="http://keyj.emphy.de/2009/02/"> February 2009 &nbsp;(4)</option>
+	<option value="http://keyj.emphy.de/2009/01/"> January 2009 &nbsp;(3)</option>
+	<option value="http://keyj.emphy.de/2008/12/"> December 2008 &nbsp;(2)</option>
+	<option value="http://keyj.emphy.de/2008/08/"> August 2008 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2008/06/"> June 2008 &nbsp;(2)</option>
+	<option value="http://keyj.emphy.de/2008/04/"> April 2008 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2007/12/"> December 2007 &nbsp;(2)</option>
+	<option value="http://keyj.emphy.de/2007/10/"> October 2007 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2007/09/"> September 2007 &nbsp;(2)</option>
+	<option value="http://keyj.emphy.de/2007/08/"> August 2007 &nbsp;(2)</option>
+	<option value="http://keyj.emphy.de/2007/07/"> July 2007 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2007/05/"> May 2007 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2007/04/"> April 2007 &nbsp;(2)</option>
+	<option value="http://keyj.emphy.de/2007/03/"> March 2007 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2007/02/"> February 2007 &nbsp;(3)</option>
+	<option value="http://keyj.emphy.de/2007/01/"> January 2007 &nbsp;(4)</option>
+	<option value="http://keyj.emphy.de/2006/12/"> December 2006 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2006/10/"> October 2006 &nbsp;(3)</option>
+	<option value="http://keyj.emphy.de/2006/09/"> September 2006 &nbsp;(3)</option>
+	<option value="http://keyj.emphy.de/2006/08/"> August 2006 &nbsp;(1)</option>
+	<option value="http://keyj.emphy.de/2006/07/"> July 2006 &nbsp;(2)</option>
+	<option value="http://keyj.emphy.de/2006/06/"> June 2006 &nbsp;(3)</option>
+	<option value="http://keyj.emphy.de/2006/05/"> May 2006 &nbsp;(3)</option>
+	<option value="http://keyj.emphy.de/2006/04/"> April 2006 &nbsp;(7)</option>
+	<option value="http://keyj.emphy.de/2006/03/"> March 2006 &nbsp;(6)</option>
+	<option value="http://keyj.emphy.de/2006/02/"> February 2006 &nbsp;(10)</option>
+	<option value="http://keyj.emphy.de/2006/01/"> January 2006 &nbsp;(5)</option>
+
+		</select>
+</li>
+<li id="categories-3" class="widget widget_categories"><h2 class="widgettitle">Categories</h2>
+		<ul>
+	<li class="cat-item cat-item-6"><a href="http://keyj.emphy.de/category/computer-fun/" title="Funny, interesting or absurd findings and hacks.">Computer Fun</a>
+<ul class="children">
+	<li class="cat-item cat-item-12"><a href="http://keyj.emphy.de/category/computer-fun/demoscene/" title="Anything that has to do with the demoscene.">Demoscene</a>
+	<ul class="children">
+	<li class="cat-item cat-item-13"><a href="http://keyj.emphy.de/category/computer-fun/demoscene/party-reports/" title="Reports from demoscene parties I&#39;ve been attending.">Party Reports</a>
+</li>
+	</ul>
+</li>
+	<li class="cat-item cat-item-10"><a href="http://keyj.emphy.de/category/computer-fun/hacks/" title="Sometimes useless, sometimes useful, but always interesting software I wrote in my free time.">Hacks</a>
+	<ul class="children">
+	<li class="cat-item cat-item-11"><a href="http://keyj.emphy.de/category/computer-fun/hacks/ipod/" title="Anything that has to do with iPod hacking.">iPod</a>
+</li>
+	</ul>
+</li>
+</ul>
+</li>
+	<li class="cat-item cat-item-1"><a href="http://keyj.emphy.de/category/misc/" title="Everything that doesn&#39;t fit into the other categories.">Other</a>
+</li>
+	<li class="cat-item cat-item-8"><a href="http://keyj.emphy.de/category/personal/" title="Stuff that has to do with myself or with friends of mine.">Personal</a>
+</li>
+	<li class="cat-item cat-item-46"><a href="http://keyj.emphy.de/category/reviews/" title="Reviews of (or rants about) new technology (software or hardware), movies, or whatever is worth writing a review for :)">Reviews</a>
+</li>
+		</ul>
+</li>
+<li id="ctc-3" class="widget ctc"><h2 class="widgettitle">Tags</h2>
+<div class="ctc"><a href="http://keyj.emphy.de/tag/4k/" class="ctc-tag tag-link-65" title="5 topics" rel="tag" style="font-size: 9.8181818181818pt; color: #00008d;">4k</a>
+<a href="http://keyj.emphy.de/tag/apple/" class="ctc-tag tag-link-35" title="5 topics" rel="tag" style="font-size: 9.8181818181818pt; color: #00008d;">Apple</a>
+<a href="http://keyj.emphy.de/tag/benchmark/" class="ctc-tag tag-link-18" title="4 topics" rel="tag" style="font-size: 8.9090909090909pt; color: #000096;">benchmark</a>
+<a href="http://keyj.emphy.de/tag/blog/" class="ctc-tag tag-link-77" title="9 topics" rel="tag" style="font-size: 13.454545454545pt; color: #00006b;">blog</a>
+<a href="http://keyj.emphy.de/tag/breakpoint/" class="ctc-tag tag-link-15" title="4 topics" rel="tag" style="font-size: 8.9090909090909pt; color: #000096;">Breakpoint</a>
+<a href="http://keyj.emphy.de/tag/demoscene/" class="ctc-tag tag-link-12" title="14 topics" rel="tag" style="font-size: 18pt; color: #000040;">Demoscene</a>
+<a href="http://keyj.emphy.de/tag/evoke/" class="ctc-tag tag-link-28" title="4 topics" rel="tag" style="font-size: 8.9090909090909pt; color: #000096;">Evoke</a>
+<a href="http://keyj.emphy.de/tag/games/" class="ctc-tag tag-link-30" title="4 topics" rel="tag" style="font-size: 8.9090909090909pt; color: #000096;">games</a>
+<a href="http://keyj.emphy.de/tag/graphics/" class="ctc-tag tag-link-39" title="5 topics" rel="tag" style="font-size: 9.8181818181818pt; color: #00008d;">graphics</a>
+<a href="http://keyj.emphy.de/tag/h264/" class="ctc-tag tag-link-17" title="6 topics" rel="tag" style="font-size: 10.727272727273pt; color: #000085;">H.264</a>
+<a href="http://keyj.emphy.de/tag/impressive/" class="ctc-tag tag-link-26" title="3 topics" rel="tag" style="font-size: 8pt; color: #00009f;">Impressive</a>
+<a href="http://keyj.emphy.de/tag/ipod/" class="ctc-tag tag-link-11" title="8 topics" rel="tag" style="font-size: 12.545454545455pt; color: #000073;">iPod</a>
+<a href="http://keyj.emphy.de/tag/jpeg/" class="ctc-tag tag-link-87" title="4 topics" rel="tag" style="font-size: 8.9090909090909pt; color: #000096;">JPEG</a>
+<a href="http://keyj.emphy.de/tag/linux/" class="ctc-tag tag-link-47" title="7 topics" rel="tag" style="font-size: 11.636363636364pt; color: #00007c;">Linux</a>
+<a href="http://keyj.emphy.de/tag/mpui/" class="ctc-tag tag-link-66" title="4 topics" rel="tag" style="font-size: 8.9090909090909pt; color: #000096;">MPUI</a>
+<a href="http://keyj.emphy.de/tag/opengl/" class="ctc-tag tag-link-43" title="4 topics" rel="tag" style="font-size: 8.9090909090909pt; color: #000096;">OpenGL</a>
+<a href="http://keyj.emphy.de/tag/rant/" class="ctc-tag tag-link-49" title="14 topics" rel="tag" style="font-size: 18pt; color: #000040;">rant</a>
+<a href="http://keyj.emphy.de/tag/repear/" class="ctc-tag tag-link-25" title="3 topics" rel="tag" style="font-size: 8pt; color: #00009f;">rePear</a>
+<a href="http://keyj.emphy.de/tag/video/" class="ctc-tag tag-link-96" title="4 topics" rel="tag" style="font-size: 8.9090909090909pt; color: #000096;">video</a>
+<a href="http://keyj.emphy.de/tag/windows/" class="ctc-tag tag-link-41" title="5 topics" rel="tag" style="font-size: 9.8181818181818pt; color: #00008d;">Windows</a></div></li>
+		<li id="meta" class="widget widget_meta">			<h2 class="widgettitle">Meta</h2>
+			<ul>
+						<li><a href="http://keyj.emphy.de/wp-login.php">Log in</a></li>
+			<li><a href="http://keyj.emphy.de/feed/" title="Syndicate this site using RSS 2.0"><img src="./nanojpeg_files/rss2.png" width="31" height="12" border="0" alt="RSS"> Entries</a></li>
+			<li><a href="http://keyj.emphy.de/comments/feed/" title="Syndicate this site using RSS 2.0"><img src="./nanojpeg_files/rss2.png" width="31" height="12" border="0" alt="RSS"> Comments</a></li>
+						</ul>
+		</li>
+	
+
+</ul>
+
+<div id="content">
+
+			
+						
+			<div class="post" id="post-137">
+				<h1><a href="./nanojpeg_files/nanojpeg.html" rel="bookmark" title="Permanent Link to NanoJPEG: a compact JPEG decoder">NanoJPEG: a compact JPEG decoder</a></h1>
+				<div class="date">(April 29, 2009)</div>
+				
+				<div class="entry">
+					<p>If you followed my works, you know that I like compact, single-file implementations of decoders for various media formats, and where such a thing doesn’t exist, I tend to <a href="http://keyj.emphy.de/?p=50">write</a> or at least <a href="http://keyj.emphy.de/?p=59">port</a> one myself. Now I’d like to add the third format to that list: Baseline JPEG images.<br>
+<span id="more-137"></span><br>
+There are already two decoders on the web that go by the name »Tiny JPEG Decoder«: <a href="http://www.stud.fit.vutbr.cz/~xpolok00/proj_tinyjpeg.htm.en.iso-8859-2">One of them</a> actually isn’t tiny at all, it’s nothing but a huge load of C++ bloat. <a href="http://www.saillard.org/programs_and_patches/tinyjpegdecoder/">Luc Saillard’s decoder</a> at least deserves its name somehow – I use it for my demo engine currently. It’s far from perfect, though – the color conversion code is awful, for example. It may be reasonably fast, but it’s bloated (dedicated conversion routines for every common format) and it lacks a proper chroma upsampling filter, resulting in ugly artifacts.</p>
+<p>Since I was writing a JPEG decoder for work anyway, I decided to write another one at home, too. My goals were compact code, reasonable quality (read: a proper upscaling filter is a must-have) and decent, but not necessarily good speed. I think I have achieved that. Here are the bullet points:</p>
+<ul>
+<li>decodes baseline JPEG only, no progressive or lossless JPEG</li>
+<li>supports 8-bit grayscale and YCbCr images, no 16 bit, CMYK or other color spaces</li>
+<li>supports any power-of-two chroma subsampling ratio</li>
+<li>supports restart markers</li>
+<li>the four points above mean that it <strong>should be able to decode all digital camera JPEG files</strong> and many other JPEG files</li>
+<li>below 900 lines of code (and that already includes over 200 lines of comments and empty lines!)</li>
+<li>converts YCbCr to RGB</li>
+<li>uses a bicubic chrominance upsampling filter (this is actually <em>better</em> than the mere bilinear filter of libjpeg!)</li>
+<li>a little slower than libjpeg</li>
+<li>memory requirements: ~512 KiB (static) + 1x the decoded image size for grayscale images or 2x the decoded image size for color images</li>
+<li>very simple API</li>
+<li>input: memory dumps of JPEG files</li>
+<li>output: memory dumps of raw, uncompressed 8-bit grayscale or 24-bit RGB pixels</li>
+<li>output format is compatible to the PGM/PPM file formats as well as OpenGL <code>GL_LUMINANCE8</code>/<code>GL_RGB8</code> texture formats</li>
+<li>not fault-tolerant – any bitstream error will stop the decoder immediately and return an error to the application</li>
+<li>100% pure C code</li>
+<li>no warnings with GCC 4.3 <code>-pedantic</code> and MSVC <code>/W3</code></li>
+<li>32-bit integer arithmetic only</li>
+<li>supposed to be endianness independent</li>
+<li>64-bit clean</li>
+<li><strong>not</strong> thread-safe</li>
+<li>platform-independent</li>
+<li>includes some provisions to build ultra-small Win32 executables</li>
+<li>open source (free-beer, but maybe not really free-speech software)</li>
+<li>single C file</li>
+<li><span style="text-decoration:line-through;">batteries</span> example program included</li>
+</ul>
+<p style="margin-bottom:0;">If you want to check it out, here is it:</p>
+<p style="margin-top:0; margin-left:20pt; font-size:110%; font-weight:bold;"><a href="http://svn.emphy.de/nanojpeg/trunk/nanojpeg/nanojpeg.c">nanojpeg.c</a></p>
+<p style="margin-bottom:0;">The code compiles to less than 6 kB of x86 code; with a suitable <code>main()</code> function that doesn’t use any C runtime library calls, it’s easily possible to create a 8 KiB Win32 executable that does what the built-in example program does: Decode a JPEG file to PGM or PPM. (Well, almost. The Win32-only version lacks error messages :) This can be reduced further by using <a href="http://crinkler.net/">Crinkler</a>, and voilà: Here’s a working JPEG decompression program for Windows in just 4072 bytes:</p>
+<p style="margin-top:0; margin-bottom:0; margin-left:20pt; font-size:110%; font-weight:bold;"><a href="http://svn.emphy.de/nanojpeg/trunk/nanojpeg/win32/nanojpeg_crinkler.exe">nanojpeg_crinkler.exe</a></p>
+<h3>Ports to other programming languages</h3>
+<p>Other people have been busy porting NanoJPEG to other languages. Here is a list of all ports that have been contributed so far:</p>
+<ul>
+<li><a href="http://www.h4ck3r.net/2009/12/02/mini-jpeg-decoder/">C++ port</a> by Scott Graham, consisting of just a single header file (only <code>.h</code>, no <code>.cpp</code>)</li>
+<li><a href="http://www.emix8.org/static.php?page=nanoJpeg">Object Pascal (Delphi) port</a> by Ville Krumlinde</li>
+<li><a href="https://github.com/sullerandras/nanojpeg-python">Python port</a> by Andras Suller</li>
+<li><a href="http://sourceforge.net/projects/onanjpeg/">Oberon-2 port</a> by CeeKay</li>
+<li><a href="https://github.com/Deathspike/NanoJPEG.NET">C# port</a> by Roel van Uden</li>
+<li><a href="https://github.com/graysonlang/ascorelib/blob/master/Code/ascorelib/src/org/ascorelib/images/JPEGDecoder.as">ActionScript port</a> by Grayson Lang</li>
+</ul>
+<p>Finally, there’s <a href="http://svn.emphy.de/nanojpeg/trunk/ujpeg/">my own port</a> to (thread-safe) C and C++, called »µJPEG«, that adds a second bicubic chroma scaler for co-sited chroma samples (detected at runtime by examining the file’s Exif information), makes the scaler selectable at runtime and adds a »no decoding« mode where only the headers are examined to detect the image size.</p>
+<h3>Updates</h3>
+<p><strong>2010-05-12:</strong> After a little delay of just (*cough*) two months, I updated nanojpeg.c to version 1.1. It fixes two compiler warnings with newer GCCs and, most importantly, a bug that caused NanoJPEG to reject valid files where the number of macroblocks is divisible by the restart interval – oops :)<br>
+Note that the new release is just an update of the C file, the example .exe file is still based on version 1.0.</p>
+<p><strong>2011-06-25:</strong> NanoJPEG now has an SVN repository: <a href="http://svn.emphy.de/nanojpeg/">http://svn.emphy.de/nanojpeg/</a>.</p>
+<p><strong>2012-02-18:</strong> Folkert van Heusden found and fixed a bug which caused NanoJPEG to generate syntax errors for valid streams that used 0xFFFF-style padding. The fix is incorporated in the updated version 1.2.</p>
+				</div>
+		
+				<p class="postmetadata">Posted in <a href="http://keyj.emphy.de/category/computer-fun/" rel="category tag">Computer Fun</a>, <a href="http://keyj.emphy.de/category/computer-fun/hacks/" rel="category tag">Hacks</a> |   <a href="http://keyj.emphy.de/nanojpeg/#comments">108 Comments ...</a></p>
+			</div>
+	
+		
+		<div class="navigation">
+			<div></div>
+			<div></div>
+		</div>
+		
+	
+
+<!-- You can start editing here. -->
+
+	<h1 id="comments">108 Responses to »NanoJPEG: a compact JPEG decoder«</h1>
+
+	<ul class="commentlist">
+
+	
+		<li class="alt" id="comment-3559">
+			<div class="cmthead">
+				<span class="author"><a href="http://www.syntaxparty.org/" rel="external nofollow" class="url">cTrix</a></span>
+				<span class="date">(2009-06-18 18:57)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Wow.  That is impressive for 6k!  Looking forward to seeing what you guys present at Evoke ;-)</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3563">
+			<div class="cmthead">
+				<span class="author"><a href="http://www.emix8.org/" rel="external nofollow" class="url">VilleK</a></span>
+				<span class="date">(2009-08-14 20:47)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Great work! I could really use this. Only need to port it to Pascal first :)</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3573">
+			<div class="cmthead">
+				<span class="author">Don</span>
+				<span class="date">(2009-09-29 20:55)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>How can this be used to resize a jpg? What extra code would have to be written to use the data parsed by nanojpeg to resize a jpg and create that new file?</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3574">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2009-09-30 08:59)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Don: Well, it would need a scaler and a file writer, obviously ;)</p>
+<p>Depending on what exactly is required, a scaler can be anything between 100 and a few 1000 lines. If you restrict yourself to weighted-average downscaling and no upscaling, you may make it in the aforementioned 100 lines.</p>
+<p>The file writer is another tough question: If all you need is uncompressed BMP, TGA or PPM, you might make it in under 50 lines. If you want PNG or JPEG, however, it will be much more. A JPEG encoder, for example, will be roughly the same size as the decoder, maybe a little more. A PNG encoder will be even larger because it requires a more or less full reimplementation of zlib.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3575">
+			<div class="cmthead">
+				<span class="author">Don</span>
+				<span class="date">(2009-09-30 16:28)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>I am adding this conversation to this comment section in case anyone else ever wonders about this stuff. :)</p>
+<blockquote><p>Depending on what exactly is required, a scaler can be anything between 100 and a few 1000 lines. If you restrict yourself to weighted-average downscaling and no upscaling, you may make it in the aforementioned 100 lines.</p></blockquote>
+<p>I just need simple resizing as I’m doing it to a much smaller size and don’t need amazing perfection in the image. But what I’m not sure about is how I do this scaling. What data do I change? Where can i find information on exactly what pieces to work with (qtables? huffman?) and what gets discarded and what arrays of info are changed. Do you think you could give me a little direction with this?</p>
+<blockquote><p>A JPEG encoder, for example, will be roughly the same size as the decoder, maybe a little more.</p></blockquote>
+<p>I need either a JPEG or PNG but if it’s a JPEG, isn’t it just writing everything back out in the same order? So, I write the JPEG “magic code”, then the qtables, sof, huffman, etc. Or am I missing something?</p>
+<blockquote><p>However, note that you can’t write a general-purpose JPEG resizer based on NanoJPEG…It will not even decode all JPEG files from digital cameras 100% correctly, because it doesn’t have an Exif parser and silently assumes centered chroma subsampling.</p></blockquote>
+<p>I’m going to be using this on image files from a Palm Pre. Any idea how I:</p>
+<p>1. Find out if it is correctly decoding them?<br>
+2. Find out info on adding in the proper reading of Exif info?</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3576">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2009-10-01 08:47)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Don: »Weighted average downscaling« simply means taking the average of the original pixels that make up a target pixel. It’s weighted because you may end up dividing source pixels in the middle and you have to consider that in the averaging step.</p>
+<p>However, it seems that what you really want is downscaling right in the JPEG domain. In fact, JPEG makes it possible to reduce an image by 1/2, 1/4 and 1/8 without decoding all the pixels first. If you want 1/8 only, it’s <em>really</em> simple: Just use the DC value directly as the pixel value and don’t perform the IDCT at all. You still need to decode the AC coefficients though, because otherwise you wouldn’t know where to find the next DC coefficient, so all the Huffman stuff needs to be kept. You can reduce the quantization tables to the DC component, though.</p>
+<p>Creating a JPEG file from the downscaled file isn’t just a matter of rearranging some bits – after all, you just created a completely new (smaller) image. So nothing saves you from performing the DCTs, quantization and Huffman coding, I’m afraid.</p>
+<p>You can get the official Exif standard for free at <a href="http://www.cipa.jp/english/hyoujunka/kikaku/cipa_e_kikaku_list.html" rel="nofollow">the CIPA website</a>.<br>
+As I mentioned in the previous comment, NanoJPEG correctly decodes images with <code>YCbCrPositioning</code> set to <code>centered</code>. I just had a look at example photos from the Palm Pre, and it seems to use centered positioning indeed, so everything is fine :)</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3577">
+			<div class="cmthead">
+				<span class="author"><a href="http://galileo-app.com/" rel="external nofollow" class="url">molind</a></span>
+				<span class="date">(2009-10-01 12:49)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Hello, i try to use your nanojpeg in my application but compared to basic libpng and internal jpeg decoder it was much slower.</p>
+<p>for example i decode 100 images 256×256 (map tiles)<br>
+average speed | 16 seconds | 8 seconds | 6 seconds<br>
+library       | nanojpeg   | Quartz2D  | libjpeg (compiled with -03)</p>
+<p>but your code interface was exactly what i want. especially compared to libjpeg or libpng.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3578">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2009-10-01 16:44)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>molind: You’re right, NanoJPEG is anything but fast. That wasn’t the design goal anyway – it is optimized for code size and simplicity, not for speed.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3581">
+			<div class="cmthead">
+				<span class="author">yrt</span>
+				<span class="date">(2009-10-20 16:10)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>I would like implement a jpeg decoder into an embedded system, with only one predefined format to decode, and it seems that the RAM quantity requested by nanojpeg is too big !<br>
+Is it possible to reduce it, specially the “vlctab[4][65536]” array ?<br>
+Thanks.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3583">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2009-10-28 18:30)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>yrt: The <code>vlctab</code> array is the main part of the Huffman decoder. With this array, the decoder can directly look up any Huffman code in just a few clock cycles. There are two ways to reduce the memory required for this table (none of which I’m going to implement, because it’s a non-issue on most systems):</p>
+<p>First, the array can be reduced to look only, say, 8 or 12 bits instead of 16 into the bitstream. The base tables would then shrink to 256 or 4096 entries each, but additional tables (of size 256 or 16, respectively) would be required for longer codes. The number of additional tables required is, however, not constant and determined by the JPEG file itself. In the worst case (which is completely unrealistic, though), the tables could even be <em>larger</em> than the original table. Also, decoding would be a little bit slower and you would need some kind of <code>malloc()</code>, which may also be problematic on embedded systems.</p>
+<p>The other option would be storing the Huffman code book as a tree and parse it bit for bit. This would not require much memory (should be possible in 512 or 768 bytes per table), but it would be really extremely slow.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3597">
+			<div class="cmthead">
+				<span class="author">Mohsin</span>
+				<span class="date">(2010-02-23 01:19)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Hello KeyJ, </p>
+<p>great work! I was looking for a tiny JpegDecoder and this is the one I could use in my application. I am very new in image processing programming. Therefore, I would like to ask you that if you have any flow control diagram of NanoJPEG applicaiton then please send me (or upload here). Then it would be easier as well as helpful for me to adapt in your application in a short time.</p>
+<p>Thank you.<br>
+With best regards,</p>
+<p>Mohsin Reza<br>
+Dresden, Germany<br>
+e-mail: <a href="mailto:smmohsin.reza@gmail.com">smmohsin.reza@gmail.com</a></p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3598">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2010-02-23 08:39)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Mohsin: Sorry, I don’t have a control flow diagram of the decoder – it would be very complex anyway. You could use source code analysis or profiling tools to get a call graph at least, but again, I doubt that this would be very useful.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3624">
+			<div class="cmthead">
+				<span class="author">genk</span>
+				<span class="date">(2010-03-01 16:22)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>I was very glad for your program. I would like to translate to Pascal but I do not know in C programming. More details to me uncertain. I do not have any C compiler. Could you send me the translation of the program without compression (8 KiB The Win32 executable)? I would check with a disassembler, what exactly does a C line.<br>
+thank you very much</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3625">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2010-03-01 16:42)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>genk:</strong> The argument »I don’t have a C compiler« doesn’t count. GCC is available for free on almost any conceivable platform. If you’re on Windows, there’s additionally Microsoft Visual C++ Express Edition, lcc-win32, Digital Mars, Pelles C and perhaps a few others. Furthermore, I can’t think of a harder way of learning C than reading code in a disassembler ;)</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3626">
+			<div class="cmthead">
+				<span class="author">genk</span>
+				<span class="date">(2010-03-01 17:43)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>I don’t know programming in C, but I know very good in assembly. If I download a free compiler, I’m still not going to understand the C.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3627">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2010-03-01 19:13)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>genk:</strong> But if you have a compiler, you can compile the code to assembly and see what the compiler did, line for line. This is what <code>gcc -S</code> does, for example.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3628">
+			<div class="cmthead">
+				<span class="author">genk</span>
+				<span class="date">(2010-03-01 20:49)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>OK. Thanks.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3650">
+			<div class="cmthead">
+				<span class="author">Proto</span>
+				<span class="date">(2010-03-29 16:52)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>awesome work dood, using this in an embedded project &amp; its a charm :)</p>
+<p>have optimised it a bit more for speed, it now operates on average around 3x as fast as original</p>
+<p>once again thanks</p>
+<p>:*)</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3669">
+			<div class="cmthead">
+				<span class="author">shaw</span>
+				<span class="date">(2010-05-12 03:52)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Hello KenJ,</p>
+<p>I save a jpeg file with photoshop CS4 (baseline standard in photoshop’s option). But nenojpeg can’t decode it. It’s error code is NJ_SYNTAX_ERROR.<br>
+Can you give me any suggestion about this problem?<br>
+Thanks!</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3670">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2010-05-12 08:08)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>shaw:</strong> That’s interesting – I could understand if NanoJPEG threw NJ_UNSUPPROTED, but NJ_SYNTAX_ERROR is strange indeed. Could you send me a file that exhibits the problem, preferrably <a href="mailto:martin.fiedler@gmx.net" rel="nofollow">via e-mail</a>?</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3671">
+			<div class="cmthead">
+				<span class="author">shaw</span>
+				<span class="date">(2010-05-12 09:00)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>I’ve sent the test file to your email.<br>
+Thanks!</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3672">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2010-05-12 10:08)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>shaw:</strong> This bug is actually already fixed in NanoJPEG 1.1, but even though this version is already two months old, I somehow missed to upload it :( I’ll post the update tonight.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3673">
+			<div class="cmthead">
+				<span class="author">shaw</span>
+				<span class="date">(2010-05-14 02:29)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>I’ve tried it and it works well.<br>
+Thanks!</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3676">
+			<div class="cmthead">
+				<span class="author">rajendra</span>
+				<span class="date">(2010-08-20 10:56)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>hi KeyJ,<br>
+I just wanted to understand the code.<br>
+why are there no comments on many portions of the code ?</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3677">
+			<div class="cmthead">
+				<span class="author">rajendra</span>
+				<span class="date">(2010-08-24 06:01)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>does any one have the comments ??</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3678">
+			<div class="cmthead">
+				<span class="author">rajendra</span>
+				<span class="date">(2010-09-09 06:14)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Is there a way to by-pass the CHROMA_FILTER in the subroutine CONVERT.. ? It is taking bulk of the computation time..<br>
+I am actually trying to optimiza the code for speed..</p>
+<p>any suggestions on this ?</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3679">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2010-09-09 18:32)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>rajendra:</strong> There is, and it’s in fact one of the few places of NanoJPEG that <em>are</em> nicely documented :)<br>
+Just define <code>NJ_CHROMA_FILTER=0</code> at compile time and NanoJPEG will use a much faster upsampling algorithm at the expense of greatly reduced quality.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3681">
+			<div class="cmthead">
+				<span class="author">rajendra</span>
+				<span class="date">(2010-09-13 08:05)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Thank U</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3707">
+			<div class="cmthead">
+				<span class="author"><a href="http://www.emix8.org/" rel="external nofollow" class="url">VilleK</a></span>
+				<span class="date">(2011-03-10 14:27)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Thanks again for this. I’ve now <a href="http://www.emix8.org/static.php?page=nanoJpeg" rel="nofollow">ported the code to Delphi</a>.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3733">
+			<div class="cmthead">
+				<span class="author">Chris</span>
+				<span class="date">(2011-05-03 12:34)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Hey, looks like a nice little decoder there.</p>
+<p>I’m trying to get deeper into it myself and thought your decoder would be a nice place to start. I’m going through the code and trying to understand each step you make (not that easy without any comments though :-D).</p>
+<p>I’m currently at the SOF0 marker and I’m having trouble understanding one part:</p>
+<p>        c-&gt;width = (nj.width * c-&gt;ssx + ssxmax – 1) / ssxmax;<br>
+        c-&gt;stride = (c-&gt;width + 7) &amp; 0x7FFFFFF8;<br>
+        c-&gt;height = (nj.height * c-&gt;ssy + ssymax – 1) / ssymax;<br>
+        c-&gt;stride = nj.mbwidth * nj.mbsizex * c-&gt;ssx / ssxmax;</p>
+<p>Why is the stride not equal to the width of the component? Why are the width and height of the component not equal to the size of the image? What does the second line do?</p>
+<p>Cheers,</p>
+<p>Chris</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3734">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2011-05-03 12:47)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>Chris:</strong> This has to do with two things: the 8×8 block size and chroma subsampling. The component widths and heights are derived from the image widths and heights and the component’s subsampling factor (relative to the total subsampling factor). For example, if you have a YCbCr 4:2:0 image of 123×456 pixels, this code sets the width and height of the chroma planes to 62×228 pixels. However, since JPEG deals with macroblocks consisting of 8×8 pixel blocks all the time, we need to decode (and, for the sake of simplicity, store) additional pixels if the numbers don’t fit. In our example, a macroblock is 16×16 pixels (8×8 pixels for chroma), so our 123×456 image would actually be encoded as 128×464 pixels. The arithmetic makes sure that there’s enough space in the component buffers.</p>
+<p>The second line is indeed useless, it’s a remnant of an earlier version of the code that used a different way to compute the stride. What it basically does is align the width to the next multiple of 8.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3735">
+			<div class="cmthead">
+				<span class="author">Chris</span>
+				<span class="date">(2011-05-03 13:51)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Yes, indeed the image would be encoded as 128×464 pixels. So, in your example the width and height of the Y plane would be set to 128×464 pixels and the width and height of the CbCr planes would be set to 64×232 pixels. That is also the memory that is reserved by</p>
+<p>if (!(c-&gt;pixels = njAllocMem(c-&gt;stride * (nj.mbheight * nj.mbsizey * c-&gt;ssy / ssymax)))) njThrow(NJ_OUT_OF_MEM);</p>
+<p>But c-&gt;width/c-&gt;height are set to 184/684 for Y and 123/456 for Cb and Cr. These values are greater than or equal to the original image size. So how can there be any upsampling? Or am I getting this code completely wrong? :-D</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3736">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2011-05-03 14:24)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>Chris:</strong> Where does the 184×684 figure come from? As far as I see it, we have<br>
+</p><blockquote>
+<pre>nj.width, nj.height = 123, 456
+luma c-&gt;ssx, c-&gt;ssy = 2, 2
+chroma c-&gt;ssx, c-&gt;ssy = 1, 1
+ssxmax, ssymax = 2, 2
+nj.mbsizex, nj.mbsizey = 16, 16
+nj.mbwidth = (nj.width + nj.mbsizex - 1) / nj.mbsizex
+           = (123 + 15) / 16 = <strong>8</strong>
+nj.mbheight = (nj.height + nj.mbsizey - 1) / nj.mbsizey
+            = (456 + 15) / 16 = <strong>29</strong>
+luma c-&gt;width  = (nj.width * c-&gt;ssx + ssxmax - 1) / ssxmax
+               = (123 * 2 + 1) / 2 = <strong>123</strong>
+luma c-&gt;height = (nj.height * c-&gt;ssy + ssymax - 1) / ssymax
+               = (456 * 2 + 1) / 2 = <strong>456</strong>
+luma c-&gt;stride = nj.mbwidth * nj.mbsizex * c-&gt;ssx / ssxmax
+               = 8 * 16 * 2 / 2 = <strong>128</strong>
+luma alloc height = nj.mbheight * nj.mbsizey * c-&gt;ssy / ssymax
+                  = 29 * 16 * 2 / 2 = <strong>464</strong>
+chroma c-&gt;width  = (nj.width * c-&gt;ssx + ssxmax - 1) / ssxmax
+                 = (123 * 1 + 1) / 2 = <strong>62</strong>
+chroma c-&gt;height = (nj.height * c-&gt;ssy + ssymax - 1) / ssymax
+                 = (456 * 1 + 1) / 2 = <strong>228</strong>
+chroma c-&gt;stride = nj.mbwidth * nj.mbsizex * c-&gt;ssx / ssxmax
+                 = 8 * 16 * 1 / 2 = <strong>64</strong>
+chroma alloc height = nj.mbheight * nj.mbsizey * c-&gt;ssy / ssymax
+                    = 29 * 16 * 1 / 2 = <strong>232</strong></pre>
+</blockquote>
+<p>Summed up, that’s 123×456 visible pixels and 128×464 coded pixels for luma and 62×228 / 64×232 pixels for chroma. Seems all perfectly fine to me :)</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3737">
+			<div class="cmthead">
+				<span class="author">Chris</span>
+				<span class="date">(2011-05-03 14:34)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Sigh, I see where I went wrong… Precedence of operators… All that head breaking for nothing. Ah well at least I’m glad I understood the code immediatly and just didn’t know the correct c rules on operator precedence.</p>
+<p>Thanks for clearing this up for me and for the fast reply.</p>
+<p>I’ll come bother you again if I hit a wall again :-).</p>
+<p>Cheers</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3738">
+			<div class="cmthead">
+				<span class="author">Chris</span>
+				<span class="date">(2011-05-04 13:41)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Hello, I guess it’s harder then I thought to understand every aspect of your code.</p>
+<p>I’m currently at the DHT decoding, but I don’t get the spread and remain values. I’ve only seen the binary tree method, not the LUT method and can’t seem to find a proper explanation.</p>
+<p><em style="font-size:80%">[Code snippet removed by admin for the sake of brevity]</em></p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3739">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2011-05-04 14:06)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>Chris:</strong> The LUT-based VLC decoding method is very popular in software audio/video decoders. The rationale behind that is to avoid the branchy code to parse bits along a binary tree and convert that into a simple table lookup. When decoding a VLC code using this method, the next <em>n</em> bits are simply used as an index into a table containing 2^<em>n</em> <em>(length, value)</em> tuples. The <em>length</em> is required because the parser needs to know how many bits to actually consume. Codes shorter than <em>n</em> bits a repeated multiple times in the VLC LUT – 2^(<em>n</em>–<em>length</em>) times, to be precise. For example, if the codebook happens to have a code that is just one bit long, half of the VLC LUT contains that code.</p>
+<p>OK, but that’s the parsing side. Now let’s check how to construct such a table. In case of JPEG, it’s really simple: In the DHT marker segments, you have a 16-element list that describes how many <em>k</em>-bit codes there are, followed by the actual codebook values in order of ascending length and »literal« value. Let’s consider an example here: A code that maps 0→42, 100→37, 101→17, 110→123 would have the length values [1, 0, 3, 0, 0, …] – there’s one single-bit code and three 3-bit codes, the remainder of the code space (bit string 111 in this example) is unused. The values would be encoded as [42, 37, 17, 123].</p>
+<p>Construction of the LUT from these values is quite simple: First, all the lengths are read. Then, there’s a loop over all possible code lengths (1..16). Inside this loop there’s another loop that reads the code values. For each code value, the LUT is populated with 2^(16-<em>length</em>) entries – this is what the <code>spread</code> variable controls. The <code>remain</code> variable is just there to check if we have overrun the LUT due to a faulty (or malicious) Huffman table and to know how many »invalid« codes need to be generated at the end of the LUT.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3740">
+			<div class="cmthead">
+				<span class="author">Chris</span>
+				<span class="date">(2011-05-04 18:47)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>I understood how the table was made up, but what I didn’t understand was the spread used for each code. I didn’t understand why each code had to be copied so many times over. But reading further in the code made it clear. You actually read the compressed data in chuncks of 16-bit. That is why you need the spread to cover for the extra bits read.</p>
+<p>Makes sense now, cheers again for the explenation. Moving on to the next part :-).</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3741">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2011-05-04 19:09)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>Chris:</strong> A little correction so nobody who reads our discussion is confused: The stream is <em>not</em> read in chunks of 16 bits – it’s just that 16 bits are <em>examined</em> at once. If a code turns out to be just e.g. 2 bits, the bitstream position will only move 2 bits forward. So the 16-bit »chunks« you mentioned are actually overlapping.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3742">
+			<div class="cmthead">
+				<span class="author">Chris</span>
+				<span class="date">(2011-05-04 19:23)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Yes, indeed. Sorry for my simplified explanation. The 16 bits “read” are stored in a buffer and only the amount of bits equal to the size of the code are discarded. The next 16 bits “read” then come from the buffer and the stream combined and so on. That is why you have to remember the size of each code. Correct?</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3747">
+			<div class="cmthead">
+				<span class="author">Chris</span>
+				<span class="date">(2011-05-05 19:12)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Hey,</p>
+<p>I’m currently working on the DecodeBlock part of your code and I’m wondering why the following is needed</p>
+<p>coef += (code &gt;&gt; 4) + 1;</p>
+<p>instead of simply incrementing the coef.</p>
+<p>Cheers</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3748">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2011-05-05 19:27)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>Chris:</strong> That’s a part of the run/level decoder. The upper 4 bits of the code value specify the amount of zeros in the coefficient scan preceding the current coefficient.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3749">
+			<div class="cmthead">
+				<span class="author">Chris</span>
+				<span class="date">(2011-05-07 15:33)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Oh ok, didn’t know that. I must say that the JPEG docs are hard to figure out :-).</p>
+<p>I think I got most figured out. The only thing I still wonder is how where your IDCT function comes from. Using the COSUV method for now.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3750">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2011-05-07 17:29)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>Chris:</strong> The IDCT implementation I use is a port of one of the common IDCTs that are floating around the ‘net. It can be found in similar form in libmpeg2 (idct.c) and libavcodec (simple_idct.c).</p>
+<p>By the way, if Google is right about what »the COSUV method« means, you should really keep away from that, as it is almost an order of magnitude slower than most other IDCT algorithms (including the libmpeg2/libavcodec/NanoJPEG one).</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3758">
+			<div class="cmthead">
+				<span class="author">Jason</span>
+				<span class="date">(2011-05-12 00:25)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>This is great… how difficult would it be to add support for CMYK?  I’d like to port this to haXe in order to decode CMYK jpegs, which Flash does a very bad job of.</p>
+<p>Any hints would be great.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3760">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2011-05-12 07:53)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>Jason:</strong> That would be quite simple, it’s just a fourth color plane. The real magic about CMYK isn’t the compression, but the conversion: When you’re talking about Flash, you’re talking about something operating in RGB space, so you need to do a color space conversion from some CMYK color space to (s)RGB. I suspect that <em>this</em> is where Flash does a bad job; after all, you need some kind of color management system. So before trying to port NanoJPEG to ActionScript, make sure you have tried and working conversion code first.</p>
+<p>Another hint: If Flash gives you access to the four individual color planes after decoding (but prior to conversion), decent conversion code alone would already be sufficient for proper display. There would be no need to port a slow JPEG decoder to Flash at all :)</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3761">
+			<div class="cmthead">
+				<span class="author">Jason</span>
+				<span class="date">(2011-05-13 07:16)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>KeyJ, thanks for the hints.  You are correct about Flash CMYK-&gt;RGB color space conversion, there is no color profiling involved so the output is pretty awful.  Unfortunately, Flash does not provide raw component values so there is no option to roll your own color space conversion.  What I have been doing is using libjpeg (compiled with Alchemy) to decode CMYKs in Flash, then doing CMYK-&gt;sRGB conversion using a custom color profiler that utilizes two ICC profiles.  Works very well and the color is great.  The problem is Alchemy/libjpeg adds 300K of bytecode to my product.  I figure your decoder will compile down to about 3K worth of bytecode… huge footprint savings.  I kinda suspected it would be a matter of adding support for four color planes, and a proper color space conversion… thanks for confirming that.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3763">
+			<div class="cmthead">
+				<span class="author">Alex Galakhov</span>
+				<span class="date">(2011-05-15 20:36)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Great library! I’d like to include it into Barebox bootloader to show splash screens. Thank you!</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3769">
+			<div class="cmthead">
+				<span class="author">Alex Galakhov</span>
+				<span class="date">(2011-05-19 13:09)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>KeyJ, I found that Barebox is distributed under GNU GPL v2 while NanoJPEG isn’t. This point:</p>
+<p>“If anything other than configuration, indentation or comments have been<br>
+altered in the code, the original author(s) must receive a copy of the<br>
+modified code.”</p>
+<p>cannot be satisfied if the software is included as a part of larger project.</p>
+<p>Thus I ask you for a permission to include your code into the Git tree of Barebox under the terms of GNU General Public License version 2.</p>
+<p>Barebox is an open-source bootloader targeted for embedded systems. Its website is <a href="http://barebox.org/" rel="nofollow">http://barebox.org</a> . Since it is able to show splashscreens during OS kernel loading, a tiny JPEG decoder would be useful.</p>
+<p>The Barebox code repository is located at <a href="http://git.pengutronix.de/?p=barebox.git;a=summary" rel="nofollow">http://git.pengutronix.de/?p=barebox.git;a=summary</a> , and all further changes to your source code will be available here.</p>
+<p>Thank you in advance!</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3770">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2011-05-19 13:57)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>Alex:</strong> No problem. Permission is hereby granted to re-release NanoJPEG under GPLv2 as part of the Barebox project if the code’s origin is not misrepresented.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3772">
+			<div class="cmthead">
+				<span class="author">Alex Galakhov</span>
+				<span class="date">(2011-05-24 11:10)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>BTW, I found it’s very slow on ARM (almost 10 seconds to unpack 800×480 on a S3C2440). So probably I’ll have to modify the code to make it faster. You’ll receive a copy of course.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3773">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2011-05-24 11:40)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>Alex:</strong> The slowest part is most likely the chroma upsampling filter. Try to set NJ_CHROMA_FILTER=0 to see if that helps. Image quality will suffer, but for a boot screen on an embedded system, it should be OK.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3774">
+			<div class="cmthead">
+				<span class="author">Alex Galakhov</span>
+				<span class="date">(2011-05-29 21:03)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Tried gprof. Looks like that Huffman decoding takes 33% time (??!). Looks strange. I’ll try to switch to two-step 8+8 bit lookup instead of single 16-bit one. Also I’m experimenting with direct matrix multiplication IDCT. On an embedded system with poor-quality JPEG this may be faster than optimized IDCT due to sparse vectors. On a “normal” JPEG this should be much slower, of course.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3778">
+			<div class="cmthead">
+				<span class="author">Carsten Hansen</span>
+				<span class="date">(2011-06-19 19:14)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Could you tell me from where you have the bicubic chroma upsampling filters. The style with the macros is different from the rest of the code. So, my guess is that the filters originated from somewhere else.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3779">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2011-06-19 19:45)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>Carsten:</strong> No, the bicubic upsampling filter is completely written by me, too. It’s a standard bicubic filter and uses the formulas <a href="http://en.wikipedia.org/wiki/Bicubic#Bicubic_convolution_algorithm" rel="nofollow">found on Wikipedia</a>. I’m not completely sure which value I chose for the <em>a</em> parameter – if I have to guess, I’d say it was -0.75. The filter coefficient macros are there to change that parameter (relatively) quickly.</p>
+<p><em>Edit:</em> I just re-checked – it’s <em>a</em> = -0.5, i.e. a cubic Hermite spline. The coefficients were computed by a Python script that did some additional funky stuff with rounding to ensure that the coefficients add up to 128 in every case.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3782">
+			<div class="cmthead">
+				<span class="author">Jani</span>
+				<span class="date">(2011-07-28 22:39)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>In the block decoding there is this line:<br>
+if (!(code &amp; 0x0F) &amp;&amp; (code != 0xF0)) njThrow(NJ_SYNTAX_ERROR);<br>
+What is the purpose of this check? Shouldn’t the vlctab handle erroneous codes by setting bits to zero?</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3783">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2011-07-29 09:14)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>Jani:</strong> This is just a standard syntax check: According to the spec (and nicely illustrated in Figure F.1 of the JPEG standard), only the ‘run’ values 0 and 15 are defined for AC coefficient sizes of zero: 0 means ‘end of block’ and 15 means ‘zero run’ (i.e. a run of 15 zeroes without a nonzero coefficient inbetween). The 14 other possible values are undefined and hence (to my understanding) forbidden, which is why the code rejects them. If you remove the line, NanoJPEG would interpret them as zero runs, which wouldn’t hurt either.<br>
+You’re right in that I could theoretically reject such values right when constructing the VLC table, but I wouldn’t do that for two reasons: First, it’s too much hassle, and second, it may not even be the right thing to do. The standard forbids <em>using</em> the 14 invalid codes, but nothing says that you’re not allowed to put them into the Huffman tables anyway :)</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3793">
+			<div class="cmthead">
+				<span class="author">Sammartino</span>
+				<span class="date">(2011-10-27 14:44)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Hello Sir. I would like to know how do I extract the quantized data from jpeg file, before the IDCT process?</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3794">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2011-10-27 15:11)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>Sammartino:</strong> If you’re talking about NanoJPEG, you can get the data in <code>njDecodeBlock()</code>. Dequantized transform coefficients can be read from the <code>nj.block[]</code> array right after the decoding <code>do</code>…<code>while</code> loop ran. If you want quantized coefficients, you have to modify the code a bit further to get each value before it’s multiplied by its respective <code>nj.qtab[][]</code> item.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3795">
+			<div class="cmthead">
+				<span class="author">Sammartino</span>
+				<span class="date">(2011-10-27 23:15)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>I tried added file I/O operation after that loop and it seems that the value is not enough. For example, I process 256 * 256 size of image but the total count of the values is lesser than that.</p>
+<p>Here is the code </p>
+<p>    for (coef = 0;  coef &lt; 64;  coef += 8)<br>
+        njRowIDCT(&amp;nj.block[coef]);<br>
+    for (coef = 0;  coef stride);<br>
+    /**Add this to test my 256 * 256 image**/<br>
+    unsigned int i = 0;<br>
+    for(i = 0; i &lt; 256*256; i++)<br>
+        fprintf(fp, "%d \n", nj.block[i]);</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3796">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2011-10-28 08:40)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>Sammartino:</strong> Well, you can’t read 256×256 values from a block that’s 8×8 pixels in size ;)</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3797">
+			<div class="cmthead">
+				<span class="author">Sammartino</span>
+				<span class="date">(2011-10-29 02:26)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Thanks for point that out. But now my values is more than 256 * 256. How is that happening? Because it is supposed to be 65536 count of values, not 98034.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3798">
+			<div class="cmthead">
+				<span class="author">Sammartino</span>
+				<span class="date">(2011-10-29 03:43)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Here I added the code just after the do while loop. I am expecting the values to be same as the total pixel of the image yet it is more than that. Sorry, typo, it is 98304 not 98034.</p>
+<p>    do {<br>
+        value = njGetVLC(&amp;nj.vlctab[c-&gt;actabsel][0], &amp;code);<br>
+        if (!code) break;  // EOB<br>
+        if (!(code &amp; 0x0F) &amp;&amp; (code != 0xF0)) njThrow(NJ_SYNTAX_ERROR);<br>
+        coef += (code &gt;&gt; 4) + 1;<br>
+        if (coef &gt; 63) njThrow(NJ_SYNTAX_ERROR);<br>
+        nj.block[(int) njZZ[coef]] = value * nj.qtab[c-&gt;qtsel][coef];<br>
+    } while (coef &lt; 63);<br>
+       unsigned int i = 0;</p>
+<p>    //Add here the code here, expecting total line count is 65536//<br>
+    for(i = 0; i &lt; 64; i++)<br>
+        fprintf(fp, "%d \n", nj.block[i]);<br>
+    fclose(fp);</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3799">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2011-10-31 08:50)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>Sammartino:</strong> 98304 is the correct number for a 256×256-pixel YCbCr 4:2:0 color image, so everything seems to be fine. If you don’t want the chroma information, you can either filter out all chroma blocks (for example, by passing the component index <code>i</code> from <code>njDecodeScan</code> as an additional parameter to <code>njDecodeBlock</code> and only dumping stuff if <codde>i == 0) or use a grayscale image to begin with.</codde></p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3806">
+			<div class="cmthead">
+				<span class="author">Robert Girard</span>
+				<span class="date">(2011-12-16 18:08)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>I see that although the code footprint is very small, the RAM requirements are pretty steep for a modest embedded hardware environment. For example, the heap requirement for a 400 x 240 image are as follows:<br>
+njDecodeSOF c-&gt;pixels malloc size = 96000<br>
+njDecodeSOF c-&gt;pixels malloc size = 24000<br>
+njDecodeSOF c-&gt;pixels malloc size = 24000<br>
+njDecodeSOF nj.rgb malloc size = 288000<br>
+njUpsampleH out malloc size = 48000<br>
+njUpsampleV out malloc size = 96000<br>
+njUpsampleH out malloc size = 48000<br>
+njUpsampleV out malloc size = 96000<br>
+Total malloc size = 720000</p>
+<p>Also the non-heap memory for the struct nj_context_t is pretty big as well for a small scale deeply embedded microcontroller with 128k RAM total.</p>
+<p>Is there a way to modify the design to be able to use less than 40kbytes of RAM total???</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3807">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2011-12-17 18:14)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>Robert Girard:</strong> First of all, you should know that NanoJPEG isn’t meant to run on extremely memory-contrained embedded environments at all – it’s a zero-dependency, low-code-size decoder for machines without memory and performance constraints (read: PCs).</p>
+<p>That said, it is indeed possible to avoid the various per-plane memory buffers by interleaving decoding, chroma upsampling and color space conversion, though this is left as an exercise for the reader :) Regarding the VLC table, please read the my comment on <strong>yrt</strong>‘s request (2009-10-28 18:30).</p>
+<p>All things told, decoding a 400×240 RGB image using only 40k of scratch RAM (not counting the decoded image, of course) is certainly possible, but not with NanoJPEG’s current codebase. If you really need this and are willing to spend money for the development of such a thing, you’re welcome to contact <a href="http://www.dreamchip.de/" rel="nofollow">my employer</a>.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3809">
+			<div class="cmthead">
+				<span class="author">Andras</span>
+				<span class="date">(2012-01-03 08:34)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Hey KeyJ, I ported your C code to python, and upload it here: <a href="https://github.com/sullerandras/nanojpeg-python" rel="nofollow">https://github.com/sullerandras/nanojpeg-python</a><br>
+I hope you don’t mind.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3824">
+			<div class="cmthead">
+				<span class="author">Erik</span>
+				<span class="date">(2012-06-28 12:16)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>good code !!!</p>
+<p>works perfect! </p>
+<p>what i now need is a preview of a JPEG.</p>
+<p>is it possible to to decode only the first in each 8×8 block to make a fast preview?</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3825">
+			<div class="cmthead">
+				<span class="author">Robert Wood</span>
+				<span class="date">(2012-07-05 19:19)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>This is very interesting. I need essentially what Robert Girard was enquiring about. What’s the minimum about of RAM to convert a 640 x 480 image to a 30 x 32 (sic) colour bit map image? How long would it take you and would your employers really be willing to free up your time? </p>
+<p>Thanks!</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3826">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2012-07-06 08:53)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>Robert Wood:</strong> I can’t give any hard numbers, but in your case, it could go as low as 3-4 KiB if the VLC decoder is replaced by a completely different implementation (which would be much slower though). The upside is that when you’re going to downscale the image by more than a factor of 8, all the costly DCT stuff can be skipped entirely – you’d directly decode a downscaled 80×60 image out of a 640×480 one which can than be further scaled down to any size you like. The downscaling step would need a line buffer of another KiB or so, though.</p>
+<p>Generally speaking, if the exact requirements of the target application are known, it’s possible to tailor a specific solution for that application with minimal memory or performance requirements.</p>
+<p>Regarding the enquiry about paid development, I can just repeat what I said earlier: If you make a contract with my <a href="http://www.dreamchip.de/" rel="nofollow">employer</a> (which is a company offering exactly that kind of engineering services we’re talking about here), you’ll get your customized decoder, and it’s highly likely that the person implementing it will be me :)</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3827">
+			<div class="cmthead">
+				<span class="author">Robert Wood</span>
+				<span class="date">(2012-07-06 15:46)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Fantastic, thanks. I have written to your employers. :~)</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3831">
+			<div class="cmthead">
+				<span class="author"><a href="http://sourceforge.net/projects/onanjpeg/" rel="external nofollow" class="url">Cee.Kay</a></span>
+				<span class="date">(2012-12-27 17:29)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>great code, did an Oberon-2 port of it which can be found under <a href="http://sourceforge.net/projects/onanjpeg/" rel="nofollow">http://sourceforge.net/projects/onanjpeg/</a>. still some work to do on it, but basic decoding works.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3834">
+			<div class="cmthead">
+				<span class="author">Fredrik Wahlgren</span>
+				<span class="date">(2013-01-25 13:20)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>How interesting! I just now found this code. What I want is code that allows me to check filesin a directory that are damaged. I expect premature end of data to be the most common error. The IJG code calls exit which makes it difficult to use</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3835">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2013-01-25 13:36)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>Fredrik:</strong> NanoJPEG could be used to do that, but since it’s limited to Baseline JPEG, it only makes sense if you’re absolutely certain that there are no progressive, CMYK or otherwise unsupported files. In other words, it’s OK if you’re checking digital camera JPEGs, but not for general purpose. In this case, there’s no way around IJG’s libjpeg (which, by the way, does <em>not</em> automatically call <code>exit()</code> for broken files if you write your own error handler).</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3836">
+			<div class="cmthead">
+				<span class="author">Fredrik Wahlgren</span>
+				<span class="date">(2013-01-25 15:59)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Regrettably, it doesn’t seem to react to jpegs suffering from premature end of data, which is what I really want to be able to detect. Other than that, it,s fine and well written</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3837">
+			<div class="cmthead">
+				<span class="author">Fredrik Wahlgren</span>
+				<span class="date">(2013-01-25 16:13)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Hi Key Well, I did write my own error handler , i.e. I copied the code from an example. But it didn’t seem to jump to to right place. I had a breakpoint where I closed the file in my wrapper and I never got there. I think I need to have a second look at the code. I now think that the only way to detect errors in the data is to use jpeglib to make a copy of the input jpg. Then, it *has* to read all the data. I wrote a tool that runs jepegtran on all files in a directory and it reports errors which I want to catch. Interestingly, after a while, if there are many jpegs, jpegtran will fail. I suspect it’s because it doesn’t close the files which it can’t handle, that’s my theory. If i run the tool again, starting from where it failed and after having rebooted, it works as expected.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3838">
+			<div class="cmthead">
+				<span class="author">Fredrik Wahlgren</span>
+				<span class="date">(2013-01-25 16:32)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>It seems I got it wrong when I looked at the code again. Still. I have to make a new file to make sure the data is read and parsed. So, I have to add some code to do this. Stupid me, I thought I could use gdiplus to detect these errors by making a bmp file from the jpeg that I used as input. It doesn’t work, a bmp file is generated and there are no errors whatsoever.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3847">
+			<div class="cmthead">
+				<span class="author">Roel van Uden</span>
+				<span class="date">(2013-03-19 22:25)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>NanoJPEG implemented in .NET is now found at <a href="https://github.com/Deathspike/NanoJPEG.NET" rel="nofollow">https://github.com/Deathspike/NanoJPEG.NET</a>. Is there a some way to motivate you to implement progressive image support? :)</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3848">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2013-03-20 08:46)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>Roel:</strong> More free time would be great :)</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3852">
+			<div class="cmthead">
+				<span class="author">lloyd-g</span>
+				<span class="date">(2013-04-03 16:23)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>I need to make ascii ppm p3 format files, having truble following the data path?</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3853">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2013-04-03 16:50)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>lloyd-g:</strong> ASCII PPM? Ouch, who needs those? Anyway, the format is quite simple: Write "<code>P3\n</code><em>&lt;width&gt;</em><code> </code><em>&lt;height&gt;</em><code>\n255\n</code>« and then write all bytes you get from <code>njGetData()</code> as ASCII decimal numbers, separated by whitespace.<br>
+Useful reading: <code><a href="http://linux.die.net/man/5/ppm" rel="nofollow">man ppm</a></code>.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3861">
+			<div class="cmthead">
+				<span class="author">cDuarte</span>
+				<span class="date">(2013-05-01 22:42)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>how much space is needed to perform calculations???…… size of buffers???………… cause i tried to compile the program for a PIC microcontroller and it does not compile, i think is a memory problem…… any ideas???</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3862">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2013-05-02 08:53)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>cDuarte:</strong> This page (yes, the very page you’re reading right now) clearly says that NanoJPEG requires more than 512 KiB of memory, not counting the decoded image itself. So, no, it’s not really suited for a PIC :) In addition to the memory issues, you should also be aware that NanoJPEG assumes that the C type <code>int</code> is at least 32 bits wide.</p>
+<p>If you really need a JPEG decoder that can work on microcontrollers with just a handful of kilobytes of RAM, and you’re accepting to pay for it, you should contact my employer, <a href="http://dreamchip.de/" rel="nofollow">Dream Chip Technologies</a>, because we have exactly that in our product portfolio.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3883">
+			<div class="cmthead">
+				<span class="author">Matthias</span>
+				<span class="date">(2013-11-24 09:27)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Hi Martin, great website :)<br>
+I’m currently working on a JPEG decoder myself and I got everything working fine until I needed upsampling. So I looked at your code and tried to understand it. Two questions: where did you get the coefficients for bicubic upsampling and why do you perform value clipping on ((x)+64)&gt;&gt;7?</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3884">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2013-11-25 09:32)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>Matthias:</strong> They’re simply the filter taps of <a href="https://en.wikipedia.org/wiki/Bicubic_interpolation#Bicubic_convolution_algorithm" rel="nofollow">bicubic convolution</a> with a = -1/2 and t = 1/4 and 3/4. Well, that’s the <code>CF4</code> set at least – the other sets of coefficients are for the edges of the image, where not all four taps of the filter are available.</p>
+<p>So why is it sampled at 1/4 and 3/4? That’s because those are the points that need to be sampled if you don’t want to get a chroma shift:
+</p><pre>    +---------------+---------------+
+    |       X       |       X       | &lt;= available samples
+    +-------+-------+-------+-------+
+    |   X   |   X   |   X   |   X   | &lt;= upsampled samples
+    +-------+---+---+---+---+-------+
+            |   |   |   |   |
+            0  1/4 1/2 3/4  1         (X = sample centers)
+</pre>
+<p>That’s true for »centered« or »interstitial« sampling. JPEG files from some digital cameras use »co-sited« sampling instead (where the sample centers of the upsampled signal are located at the same positions as in the downsampled signal) – these will get a chroma shift when used with this filter. That’s why uJPEG, the »deluxe version« of NanoJPEG, has a primitive Exif parser to detect those situations and switch over to a different filter then.</p>
+<p>The add-and-shift-before-clip thing is simply due to the fixed-point arithmetic involved: All the filter taps are multiplied by 128, so we’ll need to get rid of that factor at the end. The addition of 64/128 = 1/2 is simply done for rounding.</p>
+<p>By the way, the coefficients are all generated by the <code><a href="http://svn.emphy.de/nanojpeg/trunk/nanojpeg/scripts/cf_coeff.py" rel="nofollow">cf_coeff.py</a></code> script. Feel free to play around with it.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3885">
+			<div class="cmthead">
+				<span class="author">Matthias</span>
+				<span class="date">(2013-11-28 21:12)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Thanks for the quick answer! I get it now. I should know about convolution, after all I did it extensively on the way to my diploma ;)</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3886">
+			<div class="cmthead">
+				<span class="author">Matthias</span>
+				<span class="date">(2013-12-02 17:50)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>I have one more question regarding restart markers ;)<br>
+Everything else works fine now and I thought restart markers could quickly be implemented, but that was far from the truth lol. When I encounter a restart marker, I skip it, but my program keeps crashing.<br>
+As far as I know, the byte before the restart marker is filled up with 1s in order to byte-align the marker, so I also skip these stuff-bits if there’s only 1s left.</p>
+<p>Is there anything special I need to consider when encountering a restart marker?</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3887">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2013-12-03 09:18)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>Matthias:</strong> First, you shouldn’t rely on the last byte before the RST marker being padded with ones, as the standard doesn’t seem to have such a restriction. But that’s a moot point anyway, because you can’t just skip RST markers »on the fly« whenever you find them (as it’s done with padding bytes) – you have to <em>expect</em> them. You need to have a macroblock counter and every time it reaches the value that was defined in the DRI marker segment, you have to stop the entropy decoder, discard the remaining bits of the current byte, skip (and check) the RST marker, and continue with the next macroblock. If you just check for RST markers after each macroblock, you might miss macroblocks that fit into a single byte.<br>
+Finally, you should take into account that the RST marker also resets DC prediction.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3889">
+			<div class="cmthead">
+				<span class="author">Matthias</span>
+				<span class="date">(2013-12-06 08:47)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Thanks a lot, I got it to work now!</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3896">
+			<div class="cmthead">
+				<span class="author">Arkadiusz Gil</span>
+				<span class="date">(2014-04-15 14:00)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>I have made test, seems to me tiny jpeg decoder is about two times faster than nano on the same graphics. for those whom speed is more important than size, tiny jpeg decoder would be a better choice.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3903">
+			<div class="cmthead">
+				<span class="author">ludi</span>
+				<span class="date">(2014-07-30 04:12)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>hi,<br>
+   i want to decode png with _direct_ scaling, e.g. from 1024×720 to 720×576. can you share some info ?</p>
+<p>thx!</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3905">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2014-08-07 09:16)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>ludi:</strong> There’s no library (that I know of) that does this for you, so I’m afraid it’s some manual work. Libpng can read files row-by-row, and you can feed that output into a downscaling algorithm that operates on a row-by-row basis as well, like the one in <a href="http://svn.emphy.de/scripts/trunk/gliss.cpp" rel="nofollow">GLISS</a>.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3921">
+			<div class="cmthead">
+				<span class="author">Max Stepin</span>
+				<span class="date">(2015-01-27 09:30)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Line 551:</p>
+<p>        c-&gt;width =<br>
+        c-&gt;stride =<br>
+        c-&gt;height =<br>
+        c-&gt;stride = </p>
+<p>c-&gt;stride is set twice here…?</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3922">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2015-01-28 21:51)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>Max:</strong> Yes, the first assignment to <code>c-&gt;stride</code> is indeed not necessary. It’s a leftover from refactoring and has been removed now.</p>
+<p>As an interesting sidenote, this got unnoticed for almost six years, but in the last three months, two people found that independently from each other :)</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3924">
+			<div class="cmthead">
+				<span class="author">Max Stepin</span>
+				<span class="date">(2015-02-02 14:13)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Then I have no choice but to beat the other guy by finding something else. :)</p>
+<p>How about this:<br>
+c-&gt;stride = nj.mbwidth * c-&gt;ssx * 8;<br>
+c-&gt;pixels = njAllocMem(c-&gt;stride * nj.mbheight * c-&gt;ssy * 8)</p>
+<p>(considering that nj.mbsizex / ssxmax = 8)</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3926">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2015-02-02 21:50)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>Max:</strong> You’re right again, these formulae can be simplified to what you suggested. And so we have another new version in less than one week … is there anything else you got to tell me? ;)</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3933">
+			<div class="cmthead">
+				<span class="author">Christos</span>
+				<span class="date">(2015-03-10 15:07)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Help needed. I am running the NanoJPeg in microsoft visual studio but its not compiling.<br>
+Its coming up with these errors:<br>
+Error	1: unresolved external symbol _main referenced in function ___tmainCRTStartup</p>
+<p>Error	2: error LNK1120: 1 unresolved externals</p>
+<p>	3: a value of type “void *” cannot be assigned to an entity of type “unsigned char *”</p>
+<p>Any suggestiions on how to correct these</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3934">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2015-03-11 20:59)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>Christos:</strong> Looks like you forgot to add the <code>_NJ_EXAMPLE_PROGRAM</code> preprocessor define to your project settings.<br>
+Anyway, I took your comment as an impulse to update the example Visual Studio project in the <a href="http://svn.emphy.de/nanojpeg/trunk/nanojpeg/win32/" rel="nofollow">win32 subdirectory</a> in SVN to VS 2013. You can have a look there.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3935">
+			<div class="cmthead">
+				<span class="author">Christos</span>
+				<span class="date">(2015-03-15 22:24)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>@KeyJ: thanks a lot for the reply. Is any way you can include the image to be decoded inside the code. So that the original and final image can be compared. I mean without having the user to input images from a file.</p>
+<p>a modified code would be much appreciated. Thanks.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3952">
+			<div class="cmthead">
+				<span class="author">Nova</span>
+				<span class="date">(2015-05-05 20:00)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Hi!</p>
+<p>I need some advise – how I can get YUV picture data?</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3953">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2015-05-05 20:22)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>Nova:</strong> You can’t get YUV data without modifications to the code, but it’s quite simple: Just have a look at the njConvert() function. At the beginning of this function, the decoded, still subsampled YUV data can be accessed in nj.comp[]. The first for() loop removes the subsampling; after that, you have YUV 4:4:4. The if(nj.ncomp == 3) clause then converts to RGB and removes any extra pixels that can occur when the image size is not divisible by the macroblock size. The else clause does the same for grayscale (where the color space conversion itself is a no-op).</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3954">
+			<div class="cmthead">
+				<span class="author">Nova</span>
+				<span class="date">(2015-05-05 21:03)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Ok, I disabled NJ_CHROMA_FILTER 0. And put this line to the code before call Upsampling(…) “fwrite(nj.comp[0].pixels, 1, nj.comp[0].height * nj.comp[0].width, fp);” so I get Y component, but can’t understand how get U anf V components – try many variants and no one look right. I try get U and V by “fwrite(nj.comp[1].pixels, 1, nj.comp[1].height * nj.comp[1].strd, fp);” but not sure about it.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3955">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2015-05-06 13:16)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>Nova:</strong> First, NJ_CHROMA_FILTER has nothing to do with any of this. It specifies which chroma upsampling filter to be used (nearest neighbor or bicubic), but doesn’t influence the way the chroma data is managed.</p>
+<p>Your approach to use <code>fwrite(nj.comp[i].pixels, nj.comp[i].stride, nj.comp[i].height, f)</code> is completely right. There are some things to note here though:<br>
+• Obviously, you need to output all three planes (Y, U/Cb and V/Cr), i.e. you need to write components 0, 1 and 2. And just as obviously, you’ll get a planar YUV format.<br>
+• <code>stride</code> might not be the same as <code>width</code> unless the image size is divisible by the macroblock size. In other words, you might get some extra pixels on the right border.<br>
+• The chroma format depends on the subsampling used by the input JPEG file: If the input is 4:4:4, you’re going to get 4:4:4. If it’s 4:2:0, 4:2:2, 4:1:1 or 4:4:0, you’re going to get exactly that. If you want a fixed format, you need to dump after the <code>for()</code> loop in <code>njConvert()</code>, and you’ll get 4:4:4 then.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3956">
+			<div class="cmthead">
+				<span class="author">Nova</span>
+				<span class="date">(2015-05-06 15:35)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>I have a YUV viewer that can read many YUV types, but no one don’t show correct picture. I completely don’t understand how get U/Cr, V/Cb components. I try this fwrite(nj.comp[1].pixels, nj.comp[1].width, nj.comp[1].height, fp); // U/Cr    fwrite(nj.comp[2].pixels, nj.comp[2].width, nj.comp[2].height, fp); V/Cb but result is incorrect. How I should get correct size for get U/Cr, V/Cb?</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3957">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2015-05-06 17:10)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>Nova:</strong> As a first step, you should try a JPEG file with dimensions (both width and height) which are multiples of 16 (e.g. 640×480) and 4:2:0 color subsampling (sometimes labeled »2×2 1×1 1×1« or »1:2:2« or something; stay clear of softare that doesn’t show you options for that, like Photoshop or IrfanView). With your method of saving the data, this should produce a bog-standard YUV file which can be displayed with any YUV viewer.</p>
+<p>If that works, you can try other subsampling formats (which are not supported by all YUV viewers, mind you).</p>
+<p>Finally, you may want to support non-multiple-of-16 sizes. The simplest way to do that is writing the planes not as a whole with a single <code>fwrite()</code> call, but line for line: For each line, write <code>width</code> pixels, but advance the pointer by <code>stride</code> pixels.</p>
+<p>By the way, if the image width or height are odd (i.e. not a multiple of 2), all bets are off: There’s no clear standard as to what the width and height of the subsampled color components shall be – rounded up or rounded down? Every generator and viewer does it differently; NanoJPEG for example rounds up.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3958">
+			<div class="cmthead">
+				<span class="author">Nova</span>
+				<span class="date">(2015-05-06 18:21)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>It is strange, but when I write components nj.comp[i].pixels i=0,1,2 – channels Cb/Cr are mixing, but when write components nj.comp[i].pixels i=0,2,1 – it is all right.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3959">
+			<div class="cmthead">
+				<span class="author">Nova</span>
+				<span class="date">(2015-05-06 19:00)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>And yes, my test image was 3264×2448 pixels. When resized to 640×480, and do write above – all works fine!</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="alt" id="comment-3960">
+			<div class="cmthead">
+				<span class="author"><a href="http://keyj.emphy.de/" rel="external nofollow" class="url">KeyJ</a></span>
+				<span class="date">(2015-05-06 19:18)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p><strong>Nova:</strong> The confusion about the color plane order was to be expected – there are two very similar planar 4:2:0 formats in broad use, YV12 and I420, with the only difference that YV12 has the order of the color planes reversed.</p>
+			</div>
+
+		</li>
+
+	
+	
+		<li class="" id="comment-3961">
+			<div class="cmthead">
+				<span class="author">Nova</span>
+				<span class="date">(2015-05-07 03:35)</span>
+											</div>
+
+			<div class="cmtbody">
+				<p>Thank you for powerful decoder! Is there the way to detect which YUV format was decoded?</p>
+			</div>
+
+		</li>
+
+	
+	
+	</ul>
+
+ 
+
+
+<h1 id="respond">Post a Reply</h1>
+
+
+<form action="http://keyj.emphy.de/wp-comments-post.php" method="post" id="commentform">
+
+
+<p class="field"><input type="text" name="author" id="author" value="" size="22" tabindex="1">
+<label for="author">Name <em>(required)</em></label></p>
+
+<p class="field"><input type="text" name="email" id="email" value="" size="22" tabindex="2">
+<label for="email">Mail (will not be published) <em>(required)</em></label></p>
+
+<p class="field"><input type="text" name="url" id="url" value="" size="22" tabindex="3">
+<label for="url">Website</label></p>
+
+
+<p class="l"><small><strong>XHTML:</strong> You can use these tags: &lt;a href="" title=""&gt; &lt;abbr title=""&gt; &lt;acronym title=""&gt; &lt;b&gt; &lt;blockquote cite=""&gt; &lt;cite&gt; &lt;code&gt; &lt;del datetime=""&gt; &lt;em&gt; &lt;i&gt; &lt;q cite=""&gt; &lt;s&gt; &lt;strike&gt; &lt;strong&gt; </small></p>
+
+<p><textarea name="comment" id="comment" cols="100%" rows="10" tabindex="4" wrap="virtual"></textarea></p>
+
+<p class="field" id="captcha"><strong>Captcha:</strong><br>
+<label for="answer">What is <span>faster</span>: a <span>car</span> or <span>light</span>?<input type="hidden" name="seed" value="1433259321"><input type="hidden" name="captcha" value=""></label> &nbsp;
+<input type="text" name="answer" id="answer" value="" size="10" tabindex="5"></p>
+
+<p><input name="submit" type="submit" id="submit" tabindex="6" value="Submit Comment">
+<input type="hidden" name="comment_post_ID" value="137">
+</p>
+
+</form>
+
+
+
+</div>
+
+</div>
+
+<!-- 17 queries. 0.667 seconds. -->
+
+</body></html>
