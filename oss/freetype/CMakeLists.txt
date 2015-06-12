@@ -50,6 +50,7 @@ file(GLOB all_files RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     src/cid/*.h
     src/gxvalid/*.c
     src/gxvalid/*.h
+    src/gzip/*.c
     src/lzw/*.c
     src/lzw/*.h
     src/otvalid/*.c
@@ -143,7 +144,9 @@ foreach(file ${all_files})
 endforeach()
 
 z_set_source_groups(${all_files})
+
 add_library(libfreetype STATIC ${EXCLUDE_FROM_ALL} ${all_files})
+set_target_properties(libfreetype PROPERTIES OUTPUT_NAME "freetype")
 
 target_include_directories(libfreetype BEFORE PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 target_include_directories(libfreetype BEFORE PRIVATE
@@ -155,3 +158,5 @@ target_include_directories(libfreetype BEFORE PRIVATE
     src/psaux
     src/psnames
 )
+
+target_link_libraries(libfreetype libbzip2 libpng libz)

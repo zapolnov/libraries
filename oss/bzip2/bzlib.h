@@ -75,7 +75,7 @@ typedef
 #include <stdio.h>
 #endif
 
-#ifdef _WIN32
+#if 0/*def _WIN32*/
 #   include <windows.h>
 #   ifdef small
       /* windows.h define small to char */
