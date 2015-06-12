@@ -28,6 +28,7 @@ include(../../nz/cmake/SetSourceGroups.cmake)
 add_definitions(-DFT2_BUILD_LIBRARY)
 if(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+    add_definitions(/wd4267)
 endif()
 
 file(GLOB all_files RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
