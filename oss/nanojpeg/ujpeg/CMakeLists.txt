@@ -23,6 +23,10 @@
 cmake_minimum_required(VERSION 3.2)
 project(ujpeg C)
 
+if(MSVC)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+endif()
+
 set(source_files ujpeg.c ujpeg.h)
 source_group("Source Files" FILES ${source_files})
 add_library(libujpeg STATIC ${EXCLUDE_FROM_ALL} ${source_files})

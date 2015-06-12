@@ -23,6 +23,10 @@
 cmake_minimum_required(VERSION 3.2)
 project(jpeg-compressor C)
 
+if(MSVC)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+endif()
+
 # jpgd
 
 set(jpgd_source_files jpgd.cpp jpgd.h)

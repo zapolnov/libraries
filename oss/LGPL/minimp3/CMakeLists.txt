@@ -23,6 +23,10 @@
 cmake_minimum_required(VERSION 3.2)
 project(minimp3 C)
 
+if(MSVC)
+    add_definitions(/wd4244)
+endif()
+
 set(source_files minimp3.c minimp3.h)
 source_group("Source Files" FILES ${source_files})
 add_library(libminimp3 STATIC ${EXCLUDE_FROM_ALL} ${source_files})
