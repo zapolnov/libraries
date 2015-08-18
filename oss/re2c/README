@@ -1,4 +1,4 @@
-re2c Version 0.14.2
+re2c Version 0.14.3
 ------------------
 
 Originally written by Peter Bumbulis (peter@csg.uwaterloo.ca)
@@ -41,7 +41,7 @@ re2c) you need the following steps:
 Or you can create a rpm package and install it by the following commands:
     ./configure
     make rpm
-    rpm -Uhv <packagedir>/re2c-0.14.2-1.rpm
+    rpm -Uhv <packagedir>/re2c-0.14.3-1.rpm
 
 If you want to build from CVS then the first thing you should do is 
 regenerating all build files using the following command:
@@ -51,7 +51,7 @@ need to generate RPM packages for cvs builds use these commands:
     ./autogen.sh
     ./configure
     ./makerpm <release>
-    rpm -Uhv <packagedir>/re2c-0.14.2-<release>.rpm
+    rpm -Uhv <packagedir>/re2c-0.14.3-<release>.rpm
 
 Here <realease> should be a number like 1. And <packagedir> must equal 
 the directory where the makerpm step has written the generated rpm to.
