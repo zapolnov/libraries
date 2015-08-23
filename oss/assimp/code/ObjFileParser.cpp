@@ -257,6 +257,17 @@ void ObjFileParser::getVector( std::vector<aiVector3D> &point3d_array ) {
 
         copyNextWord( m_buffer, BUFFERSIZE );
         z = ( float ) fast_atof( m_buffer );
+    } else if( 4 == numComponents ) {
+        copyNextWord( m_buffer, BUFFERSIZE );
+        x = ( float ) fast_atof( m_buffer );
+
+        copyNextWord( m_buffer, BUFFERSIZE );
+        y = ( float ) fast_atof( m_buffer );
+
+        copyNextWord( m_buffer, BUFFERSIZE );
+        z = ( float ) fast_atof( m_buffer );
+
+        copyNextWord( m_buffer, BUFFERSIZE );
     } else {
         ai_assert( !"Invalid number of components" );
     }
